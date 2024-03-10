@@ -3,7 +3,7 @@
   max-width: 1200px;
   margin: 0 auto 12px;
   display: flex;
-  color: rgb(255 255 255 / 80%) !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   text-align: left;
   flex-wrap: wrap;
 }
