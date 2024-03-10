@@ -1,15 +1,15 @@
 /* 文章页背景 */
 .layout_post>#post {
   /* 以下代表透明度为0.7 可以自行修改*/
-  background: rgba(255,255,255,.7);
+  background: rgba(255, 255, 255, 0);
 }
 
 /* 所有页面背景 */
 #aside_content .card-widget, #recent-posts>.recent-post-item, .layout_page>div:first-child:not(.recent-posts), .layout_post>#page, .layout_post>#post, .read-mode .layout_post>#post{
   /* 以下代表透明度为0.7 */
-  background: rgba(255,255,255,.7);
+  background: rgba(255, 255, 255, 0);
 }
 /*侧边卡片的透明度 */
 :root {
---card-bg: rgba(255, 255, 255, .7);
+--card-bg: rgba(255, 255, 255, 0);
 }
