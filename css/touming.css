@@ -1,6 +1,6 @@
 #footer {
-  background: rgba(255, 255, 255, 0.15);
-  color: #000;
+  background: rgba(0, 0, 0, 0.5); /* 黑色，透明度为0.5 */
+  color: #000; /* 文本颜色为黑色 */
   border-top-right-radius: 20px;
   border-top-left-radius: 20px;
   backdrop-filter: saturate(100%) blur(5px);
