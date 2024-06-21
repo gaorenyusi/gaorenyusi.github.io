@@ -1,0 +1,357 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>java动态代理 | GRYS的博客</title><meta name="author" content="GAOREN"><meta name="copyright" content="GAOREN"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="代理模式是什么一、概念 在有些情况下，一个客户不能或者不想直接访问另一个对象，这时需要找一个中介帮忙完成某项任务，这个中介就是代理对象。 例如：购买火车票不一定要去火车站买，可以通过 12306 网站或者去火车票代售点买。又如找女朋友、找保姆、找工作等都可以通过找中介完成。平时的交作业也是通过中介（课代表）来完成的。 二、定义 由于某些原因需要给某对象提供一个代理以控制对该对象的访问。 访问对象不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java动态代理">
+<meta property="og:url" content="https://gaorenyusi.online/2024/06/21/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/index.html">
+<meta property="og:site_name" content="GRYS的博客">
+<meta property="og:description" content="代理模式是什么一、概念 在有些情况下，一个客户不能或者不想直接访问另一个对象，这时需要找一个中介帮忙完成某项任务，这个中介就是代理对象。 例如：购买火车票不一定要去火车站买，可以通过 12306 网站或者去火车票代售点买。又如找女朋友、找保姆、找工作等都可以通过找中介完成。平时的交作业也是通过中介（课代表）来完成的。 二、定义 由于某些原因需要给某对象提供一个代理以控制对该对象的访问。 访问对象不">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://erji.gaorenyusi.online/img/6.jpg">
+<meta property="article:published_time" content="2024-06-21T13:43:43.000Z">
+<meta property="article:modified_time" content="2024-06-21T13:46:42.179Z">
+<meta property="article:author" content="GAOREN">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://erji.gaorenyusi.online/img/6.jpg"><link rel="shortcut icon" href="https://erji.gaorenyusi.online/img/4.jpg"><link rel="canonical" href="https://gaorenyusi.online/2024/06/21/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=4.13.0"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.11.1/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'java动态代理',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-21 21:46:42'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><link rel="stylesheet" href="/css/opacity.css"><link rel="stylesheet" href="/css/touming.css"><link rel="stylesheet" href="/css/mouse.css"><link rel="stylesheet" href="/css/loading-img.css"><link rel="stylesheet" href="/css/cust.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/universe.css"><meta name="generator" content="Hexo 7.1.1"></head><body><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><div class="loading-img"></div><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+
+if (ture) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><script>window.paceOptions = {
+  restartOnPushState: false
+}
+
+document.addEventListener('pjax:send', () => {
+  Pace.restart()
+})
+</script><link rel="stylesheet" href="/css/progress_bar.css"/><script src="https://cdn.jsdelivr.net/npm/pace-js@1.2.4/pace.min.js"></script><!--if theme.preloader--><!--  !=partial('includes/loading/loaded.ejs', {}, {cache:theme.fragment_cache})--><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://erji.gaorenyusi.online/img/4.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://erji.gaorenyusi.online/img/6.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="GRYS的博客"><span class="site-name">GRYS的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fa fa-graduation-cap"></i><span> 博文</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/categories/"><i class="fa-fw fa fa-archive"></i><span> 分类</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fa fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/archives/"><i class="fa-fw fa fa-folder-open"></i><span> 归档</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 生活</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/shuoshuo/"><i class="fa-fw fa fa-comments-o"></i><span> 分享</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fa fa-camera-retro"></i><span> 相册</span></a></li><li><a class="site-page child" href="/music/"><i class="fa-fw fa fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 影视</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/links/"><i class="fa-fw fa fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/comment/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于笔者</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">java动态代理</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-21T13:43:43.000Z" title="发表于 2024-06-21 21:43:43">2024-06-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-21T13:46:42.179Z" title="更新于 2024-06-21 21:46:42">2024-06-21</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF/">技术</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="java动态代理"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="代理模式是什么"><a href="#代理模式是什么" class="headerlink" title="代理模式是什么"></a>代理模式是什么</h2><p><strong>一、概念</strong></p>
+<p>在有些情况下，一个客户不能或者不想直接访问另一个对象，这时需要找一个中介帮忙完成某项任务，这个中介就是代理对象。</p>
+<p>例如：购买火车票不一定要去火车站买，可以通过 12306 网站或者去火车票代售点买。又如找女朋友、找保姆、找工作等都可以通过找中介完成。平时的交作业也是通过中介（课代表）来完成的。</p>
+<p><strong>二、定义</strong></p>
+<p>由于某些原因需要给某对象提供一个代理以控制对该对象的访问。</p>
+<p>访问对象不适合或者不能直接引用目标对象，代理对象就可以作为访问对象和目标对象之间的中介。</p>
+<p><strong>三、代理模式中涉及的主要成员</strong></p>
+<ul>
+<li><em>抽象角色</em>：通过接口或抽象类<em>声明</em>真实主题和代理对象实现的业务方法。</li>
+<li><em>真实角色</em>：<em>实现</em>了抽象主题中的具体业务，是代理对象所代表的真实对象，是最终要引用的对象。</li>
+<li><em>代理</em>：提供了与真实主题相同的接口，其内部含有对真实主题的引用，它可以访问、控制或扩展真实主题的功能。</li>
+<li><em>客户</em> : 将要使用代理角色来进行一些操作 。</li>
+</ul>
+<p><strong>四、优点（都是些客套话）</strong></p>
+<ul>
+<li>代理模式在客户端与目标对象之间起到一个中介作用和保护目标对象的作用</li>
+<li>代理对象可以扩展目标对象的功能</li>
+<li>代理模式能将客户端与目标对象分离，在一定程度上降低了系统的耦合度，增加了程序的可扩展性</li>
+</ul>
+<p><strong>五、缺点</strong></p>
+<ul>
+<li>冗余，由于代理对象要实现与目标对象一致的接口，会产生过多的代理类</li>
+<li>系统设计中类的数量增加，变得难以维护</li>
+</ul>
+<h2 id="静态代理"><a href="#静态代理" class="headerlink" title="静态代理"></a>静态代理</h2><p>需要代理对象和目标对象实现一致的接口。</p>
+<p>例如：学生交作业，一般都是学生先交给课代表，课代表交给老师这种模式。课代表在这里相当于说一个学生代理类。</p>
+<p>homework.java（抽象角色：交作业）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//抽象角色：交作业</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">homework</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">hwsent</span><span class="params">()</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>student.java（真实角色：学生）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//真实角色：学生，交作业</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">student</span> <span class="keyword">implements</span> <span class="title class_">homework</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">hwsent</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;张三交作业&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Proxy.java（代理：课代表）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//代理：课代表</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Proxy</span> <span class="keyword">implements</span> <span class="title class_">homework</span>&#123;</span><br><span class="line">    student Student; </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Proxy</span><span class="params">(student stu)</span>&#123;  <span class="comment">//代理类的构造函数，参数是待会传入的学生类的实列化</span></span><br><span class="line">        <span class="built_in">this</span>.Student = (student) stu;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">Helpsubmit</span><span class="params">()</span>&#123;    <span class="comment">//添加的功能</span></span><br><span class="line">        System.out.println(<span class="string">&quot;课代表帮忙交作业&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">hwsent</span><span class="params">()</span> &#123;  <span class="comment">//接口方法的重写</span></span><br><span class="line">        Helpsubmit();</span><br><span class="line">        <span class="built_in">this</span>.Student.hwsent();<span class="comment">//调用学生类的方法hwsent()</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Main.java（客户：老师，收学生作业）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;老师收作业&quot;</span>);</span><br><span class="line">        student stu=<span class="keyword">new</span> <span class="title class_">student</span>(); </span><br><span class="line">        Proxy kdb=<span class="keyword">new</span> <span class="title class_">Proxy</span>(stu);</span><br><span class="line">        kdb.hwsent(); <span class="comment">//通过调用课代表的hwsent()，而课代表的hwsent()方法又调用了学生的hwsent()方法来实现调用学生的hwsent()</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/QQ%E6%88%AA%E5%9B%BE20240621163830.png" alt="QQ截图20240621163830"></p>
+<p>在这个过程中，老师接触的是课代表，没有接触到具体学生，但是依旧能够收到作业。</p>
+<p><strong>缺点：</strong>一旦实现的功能增加，将会变得异常冗余和复杂，而且当需要的代理的对象过多就需要实现大量的代理类。</p>
+<p>所以又有了动态代理。</p>
+<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><p>与静态代理相同，需要公共接口（抽象角色），委托类（也就是上面的学生，真实角色），代理类。区别就是动态代理是利用反射机制在运行时创建代理类，这样可以解决静态代理代码冗余，难以维护的缺点。</p>
+<p>在Java中常用的动态代理有如下几种方式：</p>
+<ul>
+<li>JDK 原生动态代理</li>
+<li>cglib 动态代理</li>
+<li>javasist 动态代理</li>
+</ul>
+<h3 id="JDK-原生动态代理"><a href="#JDK-原生动态代理" class="headerlink" title="JDK 原生动态代理"></a>JDK 原生动态代理</h3><ol>
+<li>首先实现一个<code>InvocationHandler</code>，方法调用会被转发到该类的invoke()方法。具体看下面<code>newProxyInstance</code>方法的第三个参数。</li>
+<li>然后在需要使用student的时候，通过JDK动态代理获取student的代理对象。(下面的代理类就是上面所说的委托类)</li>
+</ol>
+<p><strong>一、<code>InvocationHandler.invoke</code>方法</strong></p>
+<p>负责提供调用代理的操作:</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">InvocationHandler</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span></span><br><span class="line">        <span class="keyword">throws</span> Throwable;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>proxy</code>为代理类的实例对象，<code>method</code>表示调用的方法名，<code>args</code>为调用方法的参数数组。</p>
+<p>那么既然代理对象是重写的接口的方法，而proxy又为代理类的实列对象，所以只要method为接口的方法就可以通过反射来调用代理对象的重写后的方法：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">method.invoke(proxy,arg);</span><br></pre></td></tr></table></figure>
+
+<p>所以构造一个新的<code>Handler</code>：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 首先实现一个InvocationHandler，方法调用会被转发到该类的invoke()方法，重写InvocationHandler接口的invoke方法。</span></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ProxyHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> homework hw; </span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ProxyHandler</span><span class="params">(homework work)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.hw = work; <span class="comment">////设置需要代理的对象</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(</span></span><br><span class="line"><span class="params">            Object proxy,  //代理类的实例对象，也就是构造函数传下来的<span class="built_in">this</span>.hw</span></span><br><span class="line"><span class="params">            Method method, //调用的方法，由前面决定</span></span><br><span class="line"><span class="params">            Object[] args)</span> <span class="comment">//调用方法的参数数组</span></span><br><span class="line">            <span class="keyword">throws</span> Throwable &#123; </span><br><span class="line">        <span class="keyword">return</span> method.invoke(hw, args);<span class="comment">//反射调用student.hwswent()方法</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出只要调用到了<code>ProxyHandler.invoke</code>方法后，<code>proxy</code>和<code>method</code>都是满足我们想要的就能成功调用到<code>student.hwsent()</code>方法。</p>
+<p>那么又该怎么来调用<code>ProxyHandler.invoke</code>方法呢？接着看</p>
+<p><strong>二、<code>Proxy.newProxyInstance</code>方法</strong></p>
+<p><code>Proxy</code>类：负责动态构建代理类，提供了一个静态方法用于得到代理对象：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line">newProxyInstance(ClassLoader,Class&lt;?&gt;[],InvocationHandler);</span><br></pre></td></tr></table></figure>
+
+<p><code>loader</code>指定代理对象的类加载器，<code>interfaces</code>是指代理对象需要实现的接口，可以同时指定多个接口，<code>handler</code>是方法调用的实际处理者，代理对象的方法调用都会转发到这里</p>
+<p><code>Proxy.newProxyInstance</code>会返回一个实现了指定接口的代理对象（这里就是实现homework接口的student嘛），对该对象的所有方法调用都会转发给<code>handler.invoke()</code>方法（假如返回的代理对象名字是<code>stu</code>，那么<code>stu.hwsent()</code>方法调用时就会转发到<code>handler.invoke()</code>方法）。</p>
+<p>可以看到如果<code>handler</code>为<code>ProxyHandler</code>，就能触发<code>ProxyHandler.invoke</code>方法了，在<code>invoke()</code>方法里我们除了可以加入反射调用<code>student.hwsent</code>方法外，我们还可以加入其他任何逻辑，比如修改方法参数，加入日志功能、安全检查功能等等。</p>
+<p>是不是感觉这个重写<code>invoke</code>方法不就是像上面静态代理的Proxy中的<code>hwsent</code>一样嘛，唯一区别就是可以通过前面的<code>newProxyInstance</code>传入的值来动态改变方法和代理对象，比静态代理方便了很多。</p>
+<p>所以构造handler的invoke方法（比上面多加一句话）：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 首先实现一个InvocationHandler，方法调用会被转发到该类的invoke()方法，重写InvocationHandler接口的invoke方法。</span></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">ProxyHandler</span> <span class="keyword">implements</span> <span class="title class_">InvocationHandler</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> homework hw;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ProxyHandler</span><span class="params">(homework work)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.hw = work;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;课代表帮忙交作业&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> method.invoke(hw, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>客户（老师：收作业）</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 2. 然后在需要使用student的时候，通过JDK动态代理获取student的代理对象。</span></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">    student stu=<span class="keyword">new</span> <span class="title class_">student</span>();</span><br><span class="line">        <span class="type">homework</span> <span class="variable">home</span> <span class="operator">=</span> (homework) Proxy.newProxyInstance(</span><br><span class="line">                stu.getClass().getClassLoader(), <span class="comment">//1. 指定代理对象的类加载器</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">Class</span>&lt;?&gt;[] &#123;homework.class&#125;, <span class="comment">// 2. 代理需要实现的接口，可以有多个</span></span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">ProxyHandler</span>(stu));<span class="comment">// 3. 方法调用的实际处理者，代理对象的方法调用都会转发到这里</span></span><br><span class="line">        System.out.println(<span class="string">&quot;老师收作业&quot;</span>);</span><br><span class="line">        home.hwsent();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最后效果和静态代理一样：</p>
+<p><img src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/QQ%E6%88%AA%E5%9B%BE20240621200055.png" alt="QQ截图20240621200055"></p>
+<h3 id="CGLIB动态代理"><a href="#CGLIB动态代理" class="headerlink" title="CGLIB动态代理"></a>CGLIB动态代理</h3><p>JDK动态代理还有上面的静态代理都是基于公共接口的，如果对象没有实现接口该如何代理呢？CGLIB代理登场</p>
+<p>CGLIB(<em>Code Generation Library</em>)是一个基于ASM的字节码生成库，它允许我们在运行时对字节码进行修改和动态生成。CGLIB通过继承方式实现代理。</p>
+<p>使用cglib需要引入cglib的jar包，在pom.xml中添加下面这段内容，然后重新加载</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cglib<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cglib<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.3.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果出现这个就是ok了：</p>
+<p><img src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/QQ%E6%88%AA%E5%9B%BE20240621201108.png" alt="QQ截图20240621201108"></p>
+<p>假如现在的代理类<code>student</code>没有实现接口：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">student</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">hwsent</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;张三交作业&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>和 jdk 动态代理差不多</p>
+<ol>
+<li>首先实现一个MethodInterceptor，方法调用会被转发到该类的intercept()方法。</li>
+<li>然后在需要使用student的时候，通过CGLIB动态代理获取代理对象。</li>
+</ol>
+<p><strong>一、<code>MethodInterceptor.intercept()</code>方法</strong></p>
+<p>对其进行重写：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.MethodInterceptor;</span><br><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.MethodProxy;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">RentMethodInterceptor</span> <span class="keyword">implements</span> <span class="title class_">MethodInterceptor</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> Object <span class="title function_">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;课代表帮忙交作业&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>obj</code>: 表示代理对象，<code>method</code>: 表示正在被调用的方法，<code>args</code>: 表示方法调用时传递的参数数组，<code>proxy</code>: 表示用于调用原始方法的 <code>MethodProxy</code> 对象（比上面的<code>InvocationHandler.invoke</code>方法多了一个参数，也正是这个参数可以使其在没有接口依然能实现动态代理）</p>
+<p>至于<code>proxy.invokeSuper(obj, args);</code>这里的方法调用我就没深入跟进了，大概意思就是proxy是个代理类，而proxy.invokeSuper(obj, args)是调用代理类的父类（被代理类）的方法，这个感觉不用怎么管，这是这个工具自己的构造。</p>
+<p><strong>二、<code>Enhancer</code>类</strong></p>
+<p>构造：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> net.sf.cglib.proxy.Enhancer;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Main</span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span>  <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span>&#123;</span><br><span class="line">    student stu=<span class="keyword">new</span> <span class="title class_">student</span>();</span><br><span class="line">        <span class="type">Enhancer</span> <span class="variable">en</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Enhancer</span>(); <span class="comment">//工具类</span></span><br><span class="line">        en.setSuperclass(stu.getClass()); <span class="comment">//设置父类</span></span><br><span class="line">        en.setCallback(<span class="keyword">new</span> <span class="title class_">RentMethodInterceptor</span>()); <span class="comment">//设置回调函数</span></span><br><span class="line">        <span class="type">student</span> <span class="variable">proxy</span> <span class="operator">=</span> (student) en.create(); <span class="comment">//代理对象</span></span><br><span class="line">        <span class="comment">//上面的步骤就理解为这个工具使用Enhancer类进行代理的相关设置吧</span></span><br><span class="line">        System.out.println(<span class="string">&quot;老师收作业&quot;</span>);</span><br><span class="line">        <span class="comment">//执行代理对象方法</span></span><br><span class="line">        proxy.hwsent();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/QQ%E6%88%AA%E5%9B%BE20240621210742.png" alt="QQ截图20240621210742"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://gaorenyusi.online">GAOREN</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://gaorenyusi.online/2024/06/21/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/">https://gaorenyusi.online/2024/06/21/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://gaorenyusi.online" target="_blank">GRYS的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/java/">java</a></div><div class="post_share"><div class="social-share" data-image="https://erji.gaorenyusi.online/img/6.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/06/20/CC1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" title="CC1链的分析与利用"><img class="cover" src="https://erji.gaorenyusi.online/img/5.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CC1链的分析与利用</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/06/03/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" title="java反射机制"><img class="cover" src="https://erji.gaorenyusi.online/img/9.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-03</div><div class="title">java反射机制</div></div></a></div><div><a href="/2024/06/05/URLDNS%E9%93%BE%E5%88%86%E6%9E%90/" title="URLDNS链分析"><img class="cover" src="https://erji.gaorenyusi.online/img/3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-05</div><div class="title">URLDNS链分析</div></div></a></div><div><a href="/2024/06/20/CC1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" title="CC1链的分析与利用"><img class="cover" src="https://erji.gaorenyusi.online/img/5.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-20</div><div class="title">CC1链的分析与利用</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://erji.gaorenyusi.online/img/4.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">GAOREN</div><div class="author-info__description">人生不只风和雨</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">9</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://gaorenyusi.github.io"><i class="fab fa-github"></i><span>Come On</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://b23.tv/2x1oLWz" target="_blank" title="B站"><i class="fab fa-bilibili"></i></a><a class="social-icon" href="http://106.53.212.184/" target="_blank" title="QQ"><i class="fab fa-qq"></i></a><a class="social-icon" href="http://106.53.212.184/" target="_blank" title="微信"><i class="fab fa-weixin"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">Welcome To Blog Of GAOREN!!! Hope you find these articles helpful!!!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F%E6%98%AF%E4%BB%80%E4%B9%88"><span class="toc-number">1.</span> <span class="toc-text">代理模式是什么</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">2.</span> <span class="toc-text">静态代理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">动态代理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JDK-%E5%8E%9F%E7%94%9F%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.1.</span> <span class="toc-text">JDK 原生动态代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CGLIB%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86"><span class="toc-number">3.2.</span> <span class="toc-text">CGLIB动态代理</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/06/21/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" title="java动态代理"><img src="https://erji.gaorenyusi.online/img/6.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="java动态代理"/></a><div class="content"><a class="title" href="/2024/06/21/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/" title="java动态代理">java动态代理</a><time datetime="2024-06-21T13:43:43.000Z" title="发表于 2024-06-21 21:43:43">2024-06-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/20/CC1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" title="CC1链的分析与利用"><img src="https://erji.gaorenyusi.online/img/5.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CC1链的分析与利用"/></a><div class="content"><a class="title" href="/2024/06/20/CC1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" title="CC1链的分析与利用">CC1链的分析与利用</a><time datetime="2024-06-20T12:58:47.000Z" title="发表于 2024-06-20 20:58:47">2024-06-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" title="python栈帧沙箱逃逸"><img src="https://erji.gaorenyusi.online/img/13.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="python栈帧沙箱逃逸"/></a><div class="content"><a class="title" href="/2024/06/11/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" title="python栈帧沙箱逃逸">python栈帧沙箱逃逸</a><time datetime="2024-06-11T14:45:36.000Z" title="发表于 2024-06-11 22:45:36">2024-06-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/05/URLDNS%E9%93%BE%E5%88%86%E6%9E%90/" title="URLDNS链分析"><img src="https://erji.gaorenyusi.online/img/3.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="URLDNS链分析"/></a><div class="content"><a class="title" href="/2024/06/05/URLDNS%E9%93%BE%E5%88%86%E6%9E%90/" title="URLDNS链分析">URLDNS链分析</a><time datetime="2024-06-05T05:27:36.000Z" title="发表于 2024-06-05 13:27:36">2024-06-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/06/03/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="java反序列化"><img src="https://erji.gaorenyusi.online/img/10.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="java反序列化"/></a><div class="content"><a class="title" href="/2024/06/03/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" title="java反序列化">java反序列化</a><time datetime="2024-06-03T09:31:05.000Z" title="发表于 2024-06-03 17:31:05">2024-06-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div id="ft"><div class="ft-item-1"><div class="t-top"><div class="t-t-l"><p class="ft-t t-l-t">王国维</p><div class="bg-ad"><div>人生只似风前絮，欢也零星，悲也零星，都作连江点点萍。</div><div class="btn-xz-box"><a class="btn-xz" target="_blank" rel="noopener" href="https://so.gushiwen.cn/mingju/juv_49eedb4b8d5d.aspx">至理名言</a></div></div></div><div class="t-t-r"><p class="ft-t t-l-t">修仙导航</p><ul class="ft-links"><li><a target="_blank" rel="noopener" href="https://fe32.top/about/">关于博主</a><a target="_blank" rel="noopener" href="https://fe32.top/archives/">文章归档</a></li><li><a target="_blank" rel="noopener" href="https://fe32.top/categories/">文章分类</a><a target="_blank" rel="noopener" href="https://fe32.top/tags/">文章标签</a></li><li><a target="_blank" rel="noopener" href="https://fe32.top/specialEffects/">一些特效</a><a target="_blank" rel="noopener" href="https://fe32.top/wallpaper/">一些壁纸</a></li></ul></div></div></div><div class="ft-item-2"><p class="ft-t">推荐友链</p><div class="ft-img-group"><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.zafkiel3.com/"><img src="https://www.zafkielpic.cc/img/p9.jpg" alt="zafkiel3"/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yuy0ung"><img src="https://pic.cnblogs.com/avatar/3450279/20240519153833.png" alt="yuy0ung"/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fupanc.github.io/"><img src="https://fupanc.github.io/images/index.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://www.pri87.vip/"><img src="https://tuchuang.voooe.cn/images/2023/12/11/8A3D3D2AD9542D84681D819FBA82A227.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div><div class="img-group-item"><a target="_blank" rel="noopener" href="https://fe32.top/"><img src="https://bu.dusays.com/2022/05/02/626f92e193879.jpg" alt=""/></a></div></div></div></div><div class="footer_custom_text"><a target="_blank" href="https://wap.miit.gov.cn/" >中国万岁！！！</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=4.13.0"></script><script src="/js/main.js?v=4.13.0"></script><script src="/js/tw_cn.js?v=4.13.0"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0.33/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script defer src="https://rmt.dogedoge.com/fetch/~/source/jsdelivr/npm/jquery@latest/dist/jquery.min.js"></script><script defer data-pjax src="https://cdn.jsdelivr.net/gh/sirxemic/jquery.ripples/dist/jquery.ripples.js"></script><script defer data-pjax src="/js/ripples.js"></script><script async data-pjax src="/js/custom/randombg.js"></script><canvas id="universe"></canvas><script defer src="/js/universe.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/dist/click-heart.min.js" async="async" mobile="false"></script><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/aplayer@1.10.1/dist/APlayer.min.js"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.3/metingjs/dist/Meting.min.js"></script><script src="https://cdn.jsdelivr.net/npm/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=4.13.0"></script></div></div></body></html>
