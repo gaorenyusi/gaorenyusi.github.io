@@ -1,0 +1,2171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Github Pages博客搭建教程 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="Github Pages博客搭建教程">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-08T23:46:57+08:00">
+    <meta property="article:modified_time" content="2025-02-08T23:46:57+08:00">
+    <meta property="article:tag" content="博客部署">
+    <meta property="og:image" content="http://localhost:1313/img/logo.jpg">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="http://localhost:1313/img/logo.jpg">
+  <meta name="twitter:title" content="Github Pages博客搭建教程">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="img/logo.jpg"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" /><link rel="prev" href="http://localhost:1313/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" /><link rel="next" href="http://localhost:1313/log4j2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Github Pages博客搭建教程",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B\/"
+        },"image": ["http:\/\/localhost:1313\/img\/logo.jpg"],"genre": "posts","keywords": "博客部署","wordcount":  6789 ,
+        "url": "http:\/\/localhost:1313\/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B\/","datePublished": "2025-02-08T23:46:57+08:00","dateModified": "2025-02-08T23:46:57+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "xxxx","logo": "http:\/\/localhost:1313\/images\/avatar.png"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script type="text/javascript">(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog"><span id="id-1" class="typeit"></span></a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a><a href="javascript:void(0);" class="menu-item language" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>                      
+                    <select class="language-select" id="language-select-desktop" onchange="location = this.value;"><option value="/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" selected>简体中文</option></select>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog"><span id="id-2" class="typeit"></span></a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a><a href="javascript:void(0);" class="menu-item" title="选择语言">
+                    <i class="fa fa-globe fa-fw" aria-hidden="true"></i>
+                    <select class="language-select" onchange="location = this.value;"><option value="/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" selected>简体中文</option></select>
+                </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Github Pages博客搭建教程</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-02-08">2025-02-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6789 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 14 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#github-pages-hexo-搭建个人博客">Github Pages+ Hexo 搭建个人博客</a>
+      <ul>
+        <li><a href="#一下载-git">一、下载 <strong>Git</strong></a></li>
+        <li><a href="#二下载-nodejs--npm">二、下载 <strong>Node.js</strong> &amp; npm</a></li>
+        <li><a href="#三安装-hexo">三、安装 <strong>Hexo</strong></a></li>
+        <li><a href="#四本地预览">四、本地预览</a></li>
+        <li><a href="#五部署到-github-上">五、部署到 Github 上</a></li>
+        <li><a href="#六主题配置">六、主题配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#github-pages-hugo-搭建个人博客">Github Pages+ Hugo 搭建个人博客</a>
+      <ul>
+        <li><a href="#一主题配置">一、主题配置</a></li>
+        <li><a href="#二部署到-github-pages">二、部署到 github pages</a></li>
+        <li><a href="#三action-自动提交博客">三、Action 自动提交博客</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="github-pages博客搭建教程">Github Pages博客搭建教程</h1>
+<h2 id="github-pages-hexo-搭建个人博客">Github Pages+ Hexo 搭建个人博客</h2>
+<h3 id="一下载-git">一、下载 <strong>Git</strong></h3>
+<p>git是一个包管理工具，在linux是自带的，windows上需要下载。</p>
+<p>参考：<a href="https://www.cnblogs.com/xueweisuoyong/p/11914045.html" target="_blank" rel="noopener noreffer ">https://www.cnblogs.com/xueweisuoyong/p/11914045.html</a></p>
+<h3 id="二下载-nodejs--npm">二、下载 <strong>Node.js</strong> &amp; npm</h3>
+<p>下载参考：<a href="https://blog.csdn.net/weixin_38610651/article/details/108721957" target="_blank" rel="noopener noreffer ">https://blog.csdn.net/weixin_38610651/article/details/108721957 </a></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png" /></p>
+<p>Node.js 默认配置了 npm，因此不需要额外下载，可以根据需要配置 npm下载路径。</p>
+<h3 id="三安装-hexo">三、安装 <strong>Hexo</strong></h3>
+<p>执行命令</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">npm install hexo-cli -g
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>执行 <code>hexo -version</code> 查看是否安装成功，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png" /></p>
+<h3 id="四本地预览">四、本地预览</h3>
+<p>新建一个用于存储博客数据的目录(如 <code>D:\hexo-blog</code>)并确保该目录为空，随后在终端中执行，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hexo init （文件名）（可选，默认本文件夹）等待一段时间，即可成功初始化。此时可使用
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">hexo s -g 本地预览初始化成功的博客
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png"
+        title="image-20240309154352903" /></p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">g是部署，s是本地启动
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>本地预览效果如下：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png"
+        title="image-20240309154111102" /></p>
+<h3 id="五部署到-github-上">五、部署到 Github 上</h3>
+<p>详细看参考：<a href="https://blog.csdn.net/yaorongke/article/details/119089190" target="_blank" rel="noopener noreffer ">https://blog.csdn.net/yaorongke/article/details/119089190</a></p>
+<p>访问地址效果：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png"
+        title="image-20240309164151013" /></p>
+<h3 id="六主题配置">六、主题配置</h3>
+<p>这里选择下载主题 <strong>butterfly</strong>，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png"
+        title="image-20240309171045499" /></p>
+<p>跟多主题详细配置参考：<a href="https://blog.csdn.net/mjh1667002013/article/details/129290903#:~:text=%E3%80%90Hexo%E3%80%91Hexo%E6%90%AD%E5%BB%BAButterfly%E4%B8%BB%E9%A2%98%E5%B9%B6%E5%BF%AB%E9%80%9F%E7%BE%8E%E5%8C%96%201%20%F0%9F%A7%8A1%E3%80%81%E5%AE%89%E8%A3%85butterfly%E4%B8%BB%E9%A2%98%20%E5%9C%A8%20hexo%20%E9%A1%B9%E7%9B%AE%E6%A0%B9%E7%9B%AE%E5%BD%95%E4%B8%8B%E4%B8%8B%E8%BD%BD%E4%B8%BB%E9%A2%98%E3%80%82%20...%202,_config.butterfly.yml%3A%20...%208%20%F0%9F%A7%8A8%E3%80%81%E5%9B%BE%E7%89%87%E8%AE%BE%E7%BD%AE%20%E5%9B%BE%E7%89%87%E5%8F%AF%E4%BB%A5%E7%94%A8%E4%BA%91%E9%93%BE%E6%8E%A5%E6%88%96%E8%80%85%E6%9C%AC%E5%9C%B0%E8%B7%AF%E5%BE%84%EF%BC%9A%20%2Fthemes%2Fbutterfly%2Fsource%2Fimg%20%E3%80%82%20" target="_blank" rel="noopener noreffer ">butterfly主题配置</a></p>
+<p>主题魔改参考：<a href="https://cnhuazhu.top/butterfly/2021/03/28/Hexo%E9%AD%94%E6%94%B9/Hexo%E9%AD%94%E6%94%B9%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener noreffer ">butterfly主题魔改</a></p>
+<h2 id="github-pages-hugo-搭建个人博客">Github Pages+ Hugo 搭建个人博客</h2>
+<p>参考：<a href="https://www.shaohanyun.top/posts/env/blog_build2/" target="_blank" rel="noopener noreffer ">https://www.shaohanyun.top/posts/env/blog_build2/</a></p>
+<p>参考：<a href="https://github.com/lazeroffmichael/example-hugo-blog" target="_blank" rel="noopener noreffer ">https://github.com/lazeroffmichael/example-hugo-blog</a></p>
+<p>参考：<a href="https://lianpf.github.io/posts/other/tools-docs-hugo-papermod/" target="_blank" rel="noopener noreffer ">https://lianpf.github.io/posts/other/tools-docs-hugo-papermod/</a></p>
+<h3 id="一主题配置">一、主题配置</h3>
+<p>把之前的 <code>gaorenyusi.github.io</code> 仓库清空，然后下载 hugo，执行下面命令生成网站主文件</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo new site blog
+</span></span><span class="line"><span class="cl">hugo new site blog --format yaml
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>然后下载主题（这里用的是LoveIt主题，但还是可以参考上面链接）</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd blog
+</span></span><span class="line"><span class="cl">git clone https://github.com/dillonzq/LoveIt.git themes/LoveIt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>可以把 <code>exampleSite</code> 目录中的配置文件 hugo.toml 复制到主文件，然后根据需要修改 hugo.toml</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">  1
+</span><span class="lnt">  2
+</span><span class="lnt">  3
+</span><span class="lnt">  4
+</span><span class="lnt">  5
+</span><span class="lnt">  6
+</span><span class="lnt">  7
+</span><span class="lnt">  8
+</span><span class="lnt">  9
+</span><span class="lnt"> 10
+</span><span class="lnt"> 11
+</span><span class="lnt"> 12
+</span><span class="lnt"> 13
+</span><span class="lnt"> 14
+</span><span class="lnt"> 15
+</span><span class="lnt"> 16
+</span><span class="lnt"> 17
+</span><span class="lnt"> 18
+</span><span class="lnt"> 19
+</span><span class="lnt"> 20
+</span><span class="lnt"> 21
+</span><span class="lnt"> 22
+</span><span class="lnt"> 23
+</span><span class="lnt"> 24
+</span><span class="lnt"> 25
+</span><span class="lnt"> 26
+</span><span class="lnt"> 27
+</span><span class="lnt"> 28
+</span><span class="lnt"> 29
+</span><span class="lnt"> 30
+</span><span class="lnt"> 31
+</span><span class="lnt"> 32
+</span><span class="lnt"> 33
+</span><span class="lnt"> 34
+</span><span class="lnt"> 35
+</span><span class="lnt"> 36
+</span><span class="lnt"> 37
+</span><span class="lnt"> 38
+</span><span class="lnt"> 39
+</span><span class="lnt"> 40
+</span><span class="lnt"> 41
+</span><span class="lnt"> 42
+</span><span class="lnt"> 43
+</span><span class="lnt"> 44
+</span><span class="lnt"> 45
+</span><span class="lnt"> 46
+</span><span class="lnt"> 47
+</span><span class="lnt"> 48
+</span><span class="lnt"> 49
+</span><span class="lnt"> 50
+</span><span class="lnt"> 51
+</span><span class="lnt"> 52
+</span><span class="lnt"> 53
+</span><span class="lnt"> 54
+</span><span class="lnt"> 55
+</span><span class="lnt"> 56
+</span><span class="lnt"> 57
+</span><span class="lnt"> 58
+</span><span class="lnt"> 59
+</span><span class="lnt"> 60
+</span><span class="lnt"> 61
+</span><span class="lnt"> 62
+</span><span class="lnt"> 63
+</span><span class="lnt"> 64
+</span><span class="lnt"> 65
+</span><span class="lnt"> 66
+</span><span class="lnt"> 67
+</span><span class="lnt"> 68
+</span><span class="lnt"> 69
+</span><span class="lnt"> 70
+</span><span class="lnt"> 71
+</span><span class="lnt"> 72
+</span><span class="lnt"> 73
+</span><span class="lnt"> 74
+</span><span class="lnt"> 75
+</span><span class="lnt"> 76
+</span><span class="lnt"> 77
+</span><span class="lnt"> 78
+</span><span class="lnt"> 79
+</span><span class="lnt"> 80
+</span><span class="lnt"> 81
+</span><span class="lnt"> 82
+</span><span class="lnt"> 83
+</span><span class="lnt"> 84
+</span><span class="lnt"> 85
+</span><span class="lnt"> 86
+</span><span class="lnt"> 87
+</span><span class="lnt"> 88
+</span><span class="lnt"> 89
+</span><span class="lnt"> 90
+</span><span class="lnt"> 91
+</span><span class="lnt"> 92
+</span><span class="lnt"> 93
+</span><span class="lnt"> 94
+</span><span class="lnt"> 95
+</span><span class="lnt"> 96
+</span><span class="lnt"> 97
+</span><span class="lnt"> 98
+</span><span class="lnt"> 99
+</span><span class="lnt">100
+</span><span class="lnt">101
+</span><span class="lnt">102
+</span><span class="lnt">103
+</span><span class="lnt">104
+</span><span class="lnt">105
+</span><span class="lnt">106
+</span><span class="lnt">107
+</span><span class="lnt">108
+</span><span class="lnt">109
+</span><span class="lnt">110
+</span><span class="lnt">111
+</span><span class="lnt">112
+</span><span class="lnt">113
+</span><span class="lnt">114
+</span><span class="lnt">115
+</span><span class="lnt">116
+</span><span class="lnt">117
+</span><span class="lnt">118
+</span><span class="lnt">119
+</span><span class="lnt">120
+</span><span class="lnt">121
+</span><span class="lnt">122
+</span><span class="lnt">123
+</span><span class="lnt">124
+</span><span class="lnt">125
+</span><span class="lnt">126
+</span><span class="lnt">127
+</span><span class="lnt">128
+</span><span class="lnt">129
+</span><span class="lnt">130
+</span><span class="lnt">131
+</span><span class="lnt">132
+</span><span class="lnt">133
+</span><span class="lnt">134
+</span><span class="lnt">135
+</span><span class="lnt">136
+</span><span class="lnt">137
+</span><span class="lnt">138
+</span><span class="lnt">139
+</span><span class="lnt">140
+</span><span class="lnt">141
+</span><span class="lnt">142
+</span><span class="lnt">143
+</span><span class="lnt">144
+</span><span class="lnt">145
+</span><span class="lnt">146
+</span><span class="lnt">147
+</span><span class="lnt">148
+</span><span class="lnt">149
+</span><span class="lnt">150
+</span><span class="lnt">151
+</span><span class="lnt">152
+</span><span class="lnt">153
+</span><span class="lnt">154
+</span><span class="lnt">155
+</span><span class="lnt">156
+</span><span class="lnt">157
+</span><span class="lnt">158
+</span><span class="lnt">159
+</span><span class="lnt">160
+</span><span class="lnt">161
+</span><span class="lnt">162
+</span><span class="lnt">163
+</span><span class="lnt">164
+</span><span class="lnt">165
+</span><span class="lnt">166
+</span><span class="lnt">167
+</span><span class="lnt">168
+</span><span class="lnt">169
+</span><span class="lnt">170
+</span><span class="lnt">171
+</span><span class="lnt">172
+</span><span class="lnt">173
+</span><span class="lnt">174
+</span><span class="lnt">175
+</span><span class="lnt">176
+</span><span class="lnt">177
+</span><span class="lnt">178
+</span><span class="lnt">179
+</span><span class="lnt">180
+</span><span class="lnt">181
+</span><span class="lnt">182
+</span><span class="lnt">183
+</span><span class="lnt">184
+</span><span class="lnt">185
+</span><span class="lnt">186
+</span><span class="lnt">187
+</span><span class="lnt">188
+</span><span class="lnt">189
+</span><span class="lnt">190
+</span><span class="lnt">191
+</span><span class="lnt">192
+</span><span class="lnt">193
+</span><span class="lnt">194
+</span><span class="lnt">195
+</span><span class="lnt">196
+</span><span class="lnt">197
+</span><span class="lnt">198
+</span><span class="lnt">199
+</span><span class="lnt">200
+</span><span class="lnt">201
+</span><span class="lnt">202
+</span><span class="lnt">203
+</span><span class="lnt">204
+</span><span class="lnt">205
+</span><span class="lnt">206
+</span><span class="lnt">207
+</span><span class="lnt">208
+</span><span class="lnt">209
+</span><span class="lnt">210
+</span><span class="lnt">211
+</span><span class="lnt">212
+</span><span class="lnt">213
+</span><span class="lnt">214
+</span><span class="lnt">215
+</span><span class="lnt">216
+</span><span class="lnt">217
+</span><span class="lnt">218
+</span><span class="lnt">219
+</span><span class="lnt">220
+</span><span class="lnt">221
+</span><span class="lnt">222
+</span><span class="lnt">223
+</span><span class="lnt">224
+</span><span class="lnt">225
+</span><span class="lnt">226
+</span><span class="lnt">227
+</span><span class="lnt">228
+</span><span class="lnt">229
+</span><span class="lnt">230
+</span><span class="lnt">231
+</span><span class="lnt">232
+</span><span class="lnt">233
+</span><span class="lnt">234
+</span><span class="lnt">235
+</span><span class="lnt">236
+</span><span class="lnt">237
+</span><span class="lnt">238
+</span><span class="lnt">239
+</span><span class="lnt">240
+</span><span class="lnt">241
+</span><span class="lnt">242
+</span><span class="lnt">243
+</span><span class="lnt">244
+</span><span class="lnt">245
+</span><span class="lnt">246
+</span><span class="lnt">247
+</span><span class="lnt">248
+</span><span class="lnt">249
+</span><span class="lnt">250
+</span><span class="lnt">251
+</span><span class="lnt">252
+</span><span class="lnt">253
+</span><span class="lnt">254
+</span><span class="lnt">255
+</span><span class="lnt">256
+</span><span class="lnt">257
+</span><span class="lnt">258
+</span><span class="lnt">259
+</span><span class="lnt">260
+</span><span class="lnt">261
+</span><span class="lnt">262
+</span><span class="lnt">263
+</span><span class="lnt">264
+</span><span class="lnt">265
+</span><span class="lnt">266
+</span><span class="lnt">267
+</span><span class="lnt">268
+</span><span class="lnt">269
+</span><span class="lnt">270
+</span><span class="lnt">271
+</span><span class="lnt">272
+</span><span class="lnt">273
+</span><span class="lnt">274
+</span><span class="lnt">275
+</span><span class="lnt">276
+</span><span class="lnt">277
+</span><span class="lnt">278
+</span><span class="lnt">279
+</span><span class="lnt">280
+</span><span class="lnt">281
+</span><span class="lnt">282
+</span><span class="lnt">283
+</span><span class="lnt">284
+</span><span class="lnt">285
+</span><span class="lnt">286
+</span><span class="lnt">287
+</span><span class="lnt">288
+</span><span class="lnt">289
+</span><span class="lnt">290
+</span><span class="lnt">291
+</span><span class="lnt">292
+</span><span class="lnt">293
+</span><span class="lnt">294
+</span><span class="lnt">295
+</span><span class="lnt">296
+</span><span class="lnt">297
+</span><span class="lnt">298
+</span><span class="lnt">299
+</span><span class="lnt">300
+</span><span class="lnt">301
+</span><span class="lnt">302
+</span><span class="lnt">303
+</span><span class="lnt">304
+</span><span class="lnt">305
+</span><span class="lnt">306
+</span><span class="lnt">307
+</span><span class="lnt">308
+</span><span class="lnt">309
+</span><span class="lnt">310
+</span><span class="lnt">311
+</span><span class="lnt">312
+</span><span class="lnt">313
+</span><span class="lnt">314
+</span><span class="lnt">315
+</span><span class="lnt">316
+</span><span class="lnt">317
+</span><span class="lnt">318
+</span><span class="lnt">319
+</span><span class="lnt">320
+</span><span class="lnt">321
+</span><span class="lnt">322
+</span><span class="lnt">323
+</span><span class="lnt">324
+</span><span class="lnt">325
+</span><span class="lnt">326
+</span><span class="lnt">327
+</span><span class="lnt">328
+</span><span class="lnt">329
+</span><span class="lnt">330
+</span><span class="lnt">331
+</span><span class="lnt">332
+</span><span class="lnt">333
+</span><span class="lnt">334
+</span><span class="lnt">335
+</span><span class="lnt">336
+</span><span class="lnt">337
+</span><span class="lnt">338
+</span><span class="lnt">339
+</span><span class="lnt">340
+</span><span class="lnt">341
+</span><span class="lnt">342
+</span><span class="lnt">343
+</span><span class="lnt">344
+</span><span class="lnt">345
+</span><span class="lnt">346
+</span><span class="lnt">347
+</span><span class="lnt">348
+</span><span class="lnt">349
+</span><span class="lnt">350
+</span><span class="lnt">351
+</span><span class="lnt">352
+</span><span class="lnt">353
+</span><span class="lnt">354
+</span><span class="lnt">355
+</span><span class="lnt">356
+</span><span class="lnt">357
+</span><span class="lnt">358
+</span><span class="lnt">359
+</span><span class="lnt">360
+</span><span class="lnt">361
+</span><span class="lnt">362
+</span><span class="lnt">363
+</span><span class="lnt">364
+</span><span class="lnt">365
+</span><span class="lnt">366
+</span><span class="lnt">367
+</span><span class="lnt">368
+</span><span class="lnt">369
+</span><span class="lnt">370
+</span><span class="lnt">371
+</span><span class="lnt">372
+</span><span class="lnt">373
+</span><span class="lnt">374
+</span><span class="lnt">375
+</span><span class="lnt">376
+</span><span class="lnt">377
+</span><span class="lnt">378
+</span><span class="lnt">379
+</span><span class="lnt">380
+</span><span class="lnt">381
+</span><span class="lnt">382
+</span><span class="lnt">383
+</span><span class="lnt">384
+</span><span class="lnt">385
+</span><span class="lnt">386
+</span><span class="lnt">387
+</span><span class="lnt">388
+</span><span class="lnt">389
+</span><span class="lnt">390
+</span><span class="lnt">391
+</span><span class="lnt">392
+</span><span class="lnt">393
+</span><span class="lnt">394
+</span><span class="lnt">395
+</span><span class="lnt">396
+</span><span class="lnt">397
+</span><span class="lnt">398
+</span><span class="lnt">399
+</span><span class="lnt">400
+</span><span class="lnt">401
+</span><span class="lnt">402
+</span><span class="lnt">403
+</span><span class="lnt">404
+</span><span class="lnt">405
+</span><span class="lnt">406
+</span><span class="lnt">407
+</span><span class="lnt">408
+</span><span class="lnt">409
+</span><span class="lnt">410
+</span><span class="lnt">411
+</span><span class="lnt">412
+</span><span class="lnt">413
+</span><span class="lnt">414
+</span><span class="lnt">415
+</span><span class="lnt">416
+</span><span class="lnt">417
+</span><span class="lnt">418
+</span><span class="lnt">419
+</span><span class="lnt">420
+</span><span class="lnt">421
+</span><span class="lnt">422
+</span><span class="lnt">423
+</span><span class="lnt">424
+</span><span class="lnt">425
+</span><span class="lnt">426
+</span><span class="lnt">427
+</span><span class="lnt">428
+</span><span class="lnt">429
+</span><span class="lnt">430
+</span><span class="lnt">431
+</span><span class="lnt">432
+</span><span class="lnt">433
+</span><span class="lnt">434
+</span><span class="lnt">435
+</span><span class="lnt">436
+</span><span class="lnt">437
+</span><span class="lnt">438
+</span><span class="lnt">439
+</span><span class="lnt">440
+</span><span class="lnt">441
+</span><span class="lnt">442
+</span><span class="lnt">443
+</span><span class="lnt">444
+</span><span class="lnt">445
+</span><span class="lnt">446
+</span><span class="lnt">447
+</span><span class="lnt">448
+</span><span class="lnt">449
+</span><span class="lnt">450
+</span><span class="lnt">451
+</span><span class="lnt">452
+</span><span class="lnt">453
+</span><span class="lnt">454
+</span><span class="lnt">455
+</span><span class="lnt">456
+</span><span class="lnt">457
+</span><span class="lnt">458
+</span><span class="lnt">459
+</span><span class="lnt">460
+</span><span class="lnt">461
+</span><span class="lnt">462
+</span><span class="lnt">463
+</span><span class="lnt">464
+</span><span class="lnt">465
+</span><span class="lnt">466
+</span><span class="lnt">467
+</span><span class="lnt">468
+</span><span class="lnt">469
+</span><span class="lnt">470
+</span><span class="lnt">471
+</span><span class="lnt">472
+</span><span class="lnt">473
+</span><span class="lnt">474
+</span><span class="lnt">475
+</span><span class="lnt">476
+</span><span class="lnt">477
+</span><span class="lnt">478
+</span><span class="lnt">479
+</span><span class="lnt">480
+</span><span class="lnt">481
+</span><span class="lnt">482
+</span><span class="lnt">483
+</span><span class="lnt">484
+</span><span class="lnt">485
+</span><span class="lnt">486
+</span><span class="lnt">487
+</span><span class="lnt">488
+</span><span class="lnt">489
+</span><span class="lnt">490
+</span><span class="lnt">491
+</span><span class="lnt">492
+</span><span class="lnt">493
+</span><span class="lnt">494
+</span><span class="lnt">495
+</span><span class="lnt">496
+</span><span class="lnt">497
+</span><span class="lnt">498
+</span><span class="lnt">499
+</span><span class="lnt">500
+</span><span class="lnt">501
+</span><span class="lnt">502
+</span><span class="lnt">503
+</span><span class="lnt">504
+</span><span class="lnt">505
+</span><span class="lnt">506
+</span><span class="lnt">507
+</span><span class="lnt">508
+</span><span class="lnt">509
+</span><span class="lnt">510
+</span><span class="lnt">511
+</span><span class="lnt">512
+</span><span class="lnt">513
+</span><span class="lnt">514
+</span><span class="lnt">515
+</span><span class="lnt">516
+</span><span class="lnt">517
+</span><span class="lnt">518
+</span><span class="lnt">519
+</span><span class="lnt">520
+</span><span class="lnt">521
+</span><span class="lnt">522
+</span><span class="lnt">523
+</span><span class="lnt">524
+</span><span class="lnt">525
+</span><span class="lnt">526
+</span><span class="lnt">527
+</span><span class="lnt">528
+</span><span class="lnt">529
+</span><span class="lnt">530
+</span><span class="lnt">531
+</span><span class="lnt">532
+</span><span class="lnt">533
+</span><span class="lnt">534
+</span><span class="lnt">535
+</span><span class="lnt">536
+</span><span class="lnt">537
+</span><span class="lnt">538
+</span><span class="lnt">539
+</span><span class="lnt">540
+</span><span class="lnt">541
+</span><span class="lnt">542
+</span><span class="lnt">543
+</span><span class="lnt">544
+</span><span class="lnt">545
+</span><span class="lnt">546
+</span><span class="lnt">547
+</span><span class="lnt">548
+</span><span class="lnt">549
+</span><span class="lnt">550
+</span><span class="lnt">551
+</span><span class="lnt">552
+</span><span class="lnt">553
+</span><span class="lnt">554
+</span><span class="lnt">555
+</span><span class="lnt">556
+</span><span class="lnt">557
+</span><span class="lnt">558
+</span><span class="lnt">559
+</span><span class="lnt">560
+</span><span class="lnt">561
+</span><span class="lnt">562
+</span><span class="lnt">563
+</span><span class="lnt">564
+</span><span class="lnt">565
+</span><span class="lnt">566
+</span><span class="lnt">567
+</span><span class="lnt">568
+</span><span class="lnt">569
+</span><span class="lnt">570
+</span><span class="lnt">571
+</span><span class="lnt">572
+</span><span class="lnt">573
+</span><span class="lnt">574
+</span><span class="lnt">575
+</span><span class="lnt">576
+</span><span class="lnt">577
+</span><span class="lnt">578
+</span><span class="lnt">579
+</span><span class="lnt">580
+</span><span class="lnt">581
+</span><span class="lnt">582
+</span><span class="lnt">583
+</span><span class="lnt">584
+</span><span class="lnt">585
+</span><span class="lnt">586
+</span><span class="lnt">587
+</span><span class="lnt">588
+</span><span class="lnt">589
+</span><span class="lnt">590
+</span><span class="lnt">591
+</span><span class="lnt">592
+</span><span class="lnt">593
+</span><span class="lnt">594
+</span><span class="lnt">595
+</span><span class="lnt">596
+</span><span class="lnt">597
+</span><span class="lnt">598
+</span><span class="lnt">599
+</span><span class="lnt">600
+</span><span class="lnt">601
+</span><span class="lnt">602
+</span><span class="lnt">603
+</span><span class="lnt">604
+</span><span class="lnt">605
+</span><span class="lnt">606
+</span><span class="lnt">607
+</span><span class="lnt">608
+</span><span class="lnt">609
+</span><span class="lnt">610
+</span><span class="lnt">611
+</span><span class="lnt">612
+</span><span class="lnt">613
+</span><span class="lnt">614
+</span><span class="lnt">615
+</span><span class="lnt">616
+</span><span class="lnt">617
+</span><span class="lnt">618
+</span><span class="lnt">619
+</span><span class="lnt">620
+</span><span class="lnt">621
+</span><span class="lnt">622
+</span><span class="lnt">623
+</span><span class="lnt">624
+</span><span class="lnt">625
+</span><span class="lnt">626
+</span><span class="lnt">627
+</span><span class="lnt">628
+</span><span class="lnt">629
+</span><span class="lnt">630
+</span><span class="lnt">631
+</span><span class="lnt">632
+</span><span class="lnt">633
+</span><span class="lnt">634
+</span><span class="lnt">635
+</span><span class="lnt">636
+</span><span class="lnt">637
+</span><span class="lnt">638
+</span><span class="lnt">639
+</span><span class="lnt">640
+</span><span class="lnt">641
+</span><span class="lnt">642
+</span><span class="lnt">643
+</span><span class="lnt">644
+</span><span class="lnt">645
+</span><span class="lnt">646
+</span><span class="lnt">647
+</span><span class="lnt">648
+</span><span class="lnt">649
+</span><span class="lnt">650
+</span><span class="lnt">651
+</span><span class="lnt">652
+</span><span class="lnt">653
+</span><span class="lnt">654
+</span><span class="lnt">655
+</span><span class="lnt">656
+</span><span class="lnt">657
+</span><span class="lnt">658
+</span><span class="lnt">659
+</span><span class="lnt">660
+</span><span class="lnt">661
+</span><span class="lnt">662
+</span><span class="lnt">663
+</span><span class="lnt">664
+</span><span class="lnt">665
+</span><span class="lnt">666
+</span><span class="lnt">667
+</span><span class="lnt">668
+</span><span class="lnt">669
+</span><span class="lnt">670
+</span><span class="lnt">671
+</span><span class="lnt">672
+</span><span class="lnt">673
+</span><span class="lnt">674
+</span><span class="lnt">675
+</span><span class="lnt">676
+</span><span class="lnt">677
+</span><span class="lnt">678
+</span><span class="lnt">679
+</span><span class="lnt">680
+</span><span class="lnt">681
+</span><span class="lnt">682
+</span><span class="lnt">683
+</span><span class="lnt">684
+</span><span class="lnt">685
+</span><span class="lnt">686
+</span><span class="lnt">687
+</span><span class="lnt">688
+</span><span class="lnt">689
+</span><span class="lnt">690
+</span><span class="lnt">691
+</span><span class="lnt">692
+</span><span class="lnt">693
+</span><span class="lnt">694
+</span><span class="lnt">695
+</span><span class="lnt">696
+</span><span class="lnt">697
+</span><span class="lnt">698
+</span><span class="lnt">699
+</span><span class="lnt">700
+</span><span class="lnt">701
+</span><span class="lnt">702
+</span><span class="lnt">703
+</span><span class="lnt">704
+</span><span class="lnt">705
+</span><span class="lnt">706
+</span><span class="lnt">707
+</span><span class="lnt">708
+</span><span class="lnt">709
+</span><span class="lnt">710
+</span><span class="lnt">711
+</span><span class="lnt">712
+</span><span class="lnt">713
+</span><span class="lnt">714
+</span><span class="lnt">715
+</span><span class="lnt">716
+</span><span class="lnt">717
+</span><span class="lnt">718
+</span><span class="lnt">719
+</span><span class="lnt">720
+</span><span class="lnt">721
+</span><span class="lnt">722
+</span><span class="lnt">723
+</span><span class="lnt">724
+</span><span class="lnt">725
+</span><span class="lnt">726
+</span><span class="lnt">727
+</span><span class="lnt">728
+</span><span class="lnt">729
+</span><span class="lnt">730
+</span><span class="lnt">731
+</span><span class="lnt">732
+</span><span class="lnt">733
+</span><span class="lnt">734
+</span><span class="lnt">735
+</span><span class="lnt">736
+</span><span class="lnt">737
+</span><span class="lnt">738
+</span><span class="lnt">739
+</span><span class="lnt">740
+</span><span class="lnt">741
+</span><span class="lnt">742
+</span><span class="lnt">743
+</span><span class="lnt">744
+</span><span class="lnt">745
+</span><span class="lnt">746
+</span><span class="lnt">747
+</span><span class="lnt">748
+</span><span class="lnt">749
+</span><span class="lnt">750
+</span><span class="lnt">751
+</span><span class="lnt">752
+</span><span class="lnt">753
+</span><span class="lnt">754
+</span><span class="lnt">755
+</span><span class="lnt">756
+</span><span class="lnt">757
+</span><span class="lnt">758
+</span><span class="lnt">759
+</span><span class="lnt">760
+</span><span class="lnt">761
+</span><span class="lnt">762
+</span><span class="lnt">763
+</span><span class="lnt">764
+</span><span class="lnt">765
+</span><span class="lnt">766
+</span><span class="lnt">767
+</span><span class="lnt">768
+</span><span class="lnt">769
+</span><span class="lnt">770
+</span><span class="lnt">771
+</span><span class="lnt">772
+</span><span class="lnt">773
+</span><span class="lnt">774
+</span><span class="lnt">775
+</span><span class="lnt">776
+</span><span class="lnt">777
+</span><span class="lnt">778
+</span><span class="lnt">779
+</span><span class="lnt">780
+</span><span class="lnt">781
+</span><span class="lnt">782
+</span><span class="lnt">783
+</span><span class="lnt">784
+</span><span class="lnt">785
+</span><span class="lnt">786
+</span><span class="lnt">787
+</span><span class="lnt">788
+</span><span class="lnt">789
+</span><span class="lnt">790
+</span><span class="lnt">791
+</span><span class="lnt">792
+</span><span class="lnt">793
+</span><span class="lnt">794
+</span><span class="lnt">795
+</span><span class="lnt">796
+</span><span class="lnt">797
+</span><span class="lnt">798
+</span><span class="lnt">799
+</span><span class="lnt">800
+</span><span class="lnt">801
+</span><span class="lnt">802
+</span><span class="lnt">803
+</span><span class="lnt">804
+</span><span class="lnt">805
+</span><span class="lnt">806
+</span><span class="lnt">807
+</span><span class="lnt">808
+</span><span class="lnt">809
+</span><span class="lnt">810
+</span><span class="lnt">811
+</span><span class="lnt">812
+</span><span class="lnt">813
+</span><span class="lnt">814
+</span><span class="lnt">815
+</span><span class="lnt">816
+</span><span class="lnt">817
+</span><span class="lnt">818
+</span><span class="lnt">819
+</span><span class="lnt">820
+</span><span class="lnt">821
+</span><span class="lnt">822
+</span><span class="lnt">823
+</span><span class="lnt">824
+</span><span class="lnt">825
+</span><span class="lnt">826
+</span><span class="lnt">827
+</span><span class="lnt">828
+</span><span class="lnt">829
+</span><span class="lnt">830
+</span><span class="lnt">831
+</span><span class="lnt">832
+</span><span class="lnt">833
+</span><span class="lnt">834
+</span><span class="lnt">835
+</span><span class="lnt">836
+</span><span class="lnt">837
+</span><span class="lnt">838
+</span><span class="lnt">839
+</span><span class="lnt">840
+</span><span class="lnt">841
+</span><span class="lnt">842
+</span><span class="lnt">843
+</span><span class="lnt">844
+</span><span class="lnt">845
+</span><span class="lnt">846
+</span><span class="lnt">847
+</span><span class="lnt">848
+</span><span class="lnt">849
+</span><span class="lnt">850
+</span><span class="lnt">851
+</span><span class="lnt">852
+</span><span class="lnt">853
+</span><span class="lnt">854
+</span><span class="lnt">855
+</span><span class="lnt">856
+</span><span class="lnt">857
+</span><span class="lnt">858
+</span><span class="lnt">859
+</span><span class="lnt">860
+</span><span class="lnt">861
+</span><span class="lnt">862
+</span><span class="lnt">863
+</span><span class="lnt">864
+</span><span class="lnt">865
+</span><span class="lnt">866
+</span><span class="lnt">867
+</span><span class="lnt">868
+</span><span class="lnt">869
+</span><span class="lnt">870
+</span><span class="lnt">871
+</span><span class="lnt">872
+</span><span class="lnt">873
+</span><span class="lnt">874
+</span><span class="lnt">875
+</span><span class="lnt">876
+</span><span class="lnt">877
+</span><span class="lnt">878
+</span><span class="lnt">879
+</span><span class="lnt">880
+</span><span class="lnt">881
+</span><span class="lnt">882
+</span><span class="lnt">883
+</span><span class="lnt">884
+</span><span class="lnt">885
+</span><span class="lnt">886
+</span><span class="lnt">887
+</span><span class="lnt">888
+</span><span class="lnt">889
+</span><span class="lnt">890
+</span><span class="lnt">891
+</span><span class="lnt">892
+</span><span class="lnt">893
+</span><span class="lnt">894
+</span><span class="lnt">895
+</span><span class="lnt">896
+</span><span class="lnt">897
+</span><span class="lnt">898
+</span><span class="lnt">899
+</span><span class="lnt">900
+</span><span class="lnt">901
+</span><span class="lnt">902
+</span><span class="lnt">903
+</span><span class="lnt">904
+</span><span class="lnt">905
+</span><span class="lnt">906
+</span><span class="lnt">907
+</span><span class="lnt">908
+</span><span class="lnt">909
+</span><span class="lnt">910
+</span><span class="lnt">911
+</span><span class="lnt">912
+</span><span class="lnt">913
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-toml" data-lang="toml"><span class="line"><span class="cl"><span class="nx">baseURL</span> <span class="p">=</span> <span class="s2">&#34;https://gaorenyusi.github.io/&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">theme</span> <span class="p">=</span> <span class="s2">&#34;LoveIt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;Gaorenyusi&#39;s Blog&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># determines default content language [&#34;en&#34;, &#34;zh-cn&#34;, &#34;fr&#34;, &#34;pl&#34;, ...]</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 设置默认的语言 [&#34;en&#34;, &#34;zh-cn&#34;, &#34;fr&#34;, &#34;pl&#34;, ...]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">defaultContentLanguage</span> <span class="p">=</span> <span class="s2">&#34;zh-cn&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c"># language code [&#34;en&#34;, &#34;zh-CN&#34;, &#34;fr&#34;, &#34;pl&#34;, ...]</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 网站语言, 仅在这里 CN 大写 [&#34;en&#34;, &#34;zh-CN&#34;, &#34;fr&#34;, &#34;pl&#34;, ...]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">languageCode</span> <span class="p">=</span> <span class="s2">&#34;zh-CN&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c"># language name [&#34;English&#34;, &#34;简体中文&#34;, &#34;Français&#34;, &#34;Polski&#34;, ...]</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 语言名称 [&#34;English&#34;, &#34;简体中文&#34;, &#34;Français&#34;, &#34;Polski&#34;, ...]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">languageName</span> <span class="p">=</span> <span class="s2">&#34;简体中文&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c"># whether to include Chinese/Japanese/Korean</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 是否包括中日韩文字</span>
+</span></span><span class="line"><span class="cl"><span class="nx">hasCJKLanguage</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># google analytics code [UA-XXXXXXXX-X]</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 谷歌分析代号 [UA-XXXXXXXX-X]</span>
+</span></span><span class="line"><span class="cl"><span class="nx">googleAnalytics</span> <span class="p">=</span> <span class="s2">&#34;UA-123-45&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c"># copyright description used only for seo schema</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 版权描述，仅仅用于 SEO</span>
+</span></span><span class="line"><span class="cl"><span class="nx">copyright</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nx">enableRobotsTXT</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl"><span class="nx">enableGitInfo</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl"><span class="nx">enableEmoji</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># ignore some build errors</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 忽略一些构建错误</span>
+</span></span><span class="line"><span class="cl"><span class="nx">ignoreErrors</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;error-remote-getjson&#34;</span><span class="p">,</span> <span class="s2">&#34;error-missing-instagram-accesstoken&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Pagination config</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 分页配置</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">pagination</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">disableAliases</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">pagerSize</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">path</span> <span class="p">=</span> <span class="s2">&#34;page&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">params</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># site default theme [&#34;auto&#34;, &#34;light&#34;, &#34;dark&#34;]</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 网站默认主题 [&#34;auto&#34;, &#34;light&#34;, &#34;dark&#34;]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">defaultTheme</span> <span class="p">=</span> <span class="s2">&#34;auto&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># public git repo url only then enableGitInfo is true</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 公共 git 仓库路径，仅在 enableGitInfo 设为 true 时有效</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">gitRepo</span> <span class="p">=</span> <span class="s2">&#34;https://github.com/dillonzq/LoveIt&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># which hash function used for SRI, when empty, no SRI is used</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># [&#34;sha256&#34;, &#34;sha384&#34;, &#34;sha512&#34;, &#34;md5&#34;]</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 哪种哈希函数用来 SRI, 为空时表示不使用 SRI</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># [&#34;sha256&#34;, &#34;sha384&#34;, &#34;sha512&#34;, &#34;md5&#34;]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">fingerprint</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># date format</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 日期格式</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">dateFormat</span> <span class="p">=</span> <span class="s2">&#34;2006-01-02&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># website title for Open Graph and Twitter Cards</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 网站标题, 用于 Open Graph 和 Twitter Cards</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;gaorenyusi&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># website description for RSS, SEO, Open Graph and Twitter Cards</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 网站描述, 用于 RSS, SEO, Open Graph 和 Twitter Cards</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">description</span> <span class="p">=</span> <span class="s2">&#34;白茶清欢无别事，我在等风也等你&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># website images for Open Graph and Twitter Cards</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 网站图片, 用于 Open Graph 和 Twitter Cards</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">images</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;img/logo.jpg&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Author config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 作者配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">author</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;gaorenyusi&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">email</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">link</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Header config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 页面头部导航栏配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">header</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># desktop header mode [&#34;fixed&#34;, &#34;normal&#34;, &#34;auto&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 桌面端导航栏模式 [&#34;fixed&#34;, &#34;normal&#34;, &#34;auto&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">desktopMode</span> <span class="p">=</span> <span class="s2">&#34;fixed&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># mobile header mode [&#34;fixed&#34;, &#34;normal&#34;, &#34;auto&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 移动端导航栏模式 [&#34;fixed&#34;, &#34;normal&#34;, &#34;auto&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">mobileMode</span> <span class="p">=</span> <span class="s2">&#34;auto&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Header title config</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 页面头部导航栏标题配置</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">header</span><span class="p">.</span><span class="nx">title</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># URL of the LOGO</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># LOGO 的 URL</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">logo</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># title name</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 标题名称</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;Gaorenyusi&#39;s Blog&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># you can add extra information before the name (HTML format is supported), such as icons</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 你可以在名称 (允许 HTML 格式) 之前添加其他信息, 例如图标</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># pre = &#34;&lt;i class=&#39;far fa-kiss-wink-heart fa-fw&#39; aria-hidden=&#39;true&#39;&gt;&lt;/i&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># you can add extra information after the name (HTML format is supported), such as icons</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 你可以在名称 (允许 HTML 格式) 之后添加其他信息, 例如图标</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to use typeit animation for title name</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否为标题显示打字机动画</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">typeit</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Footer config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 页面底部信息配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">footer</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Custom content (HTML format is supported)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 自定义内容 (支持 HTML 格式)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">custom</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to show Hugo and theme info</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否显示 Hugo 和主题信息</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">hugo</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to show copyright info</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否显示版权信息</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">copyright</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to show the author</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否显示作者</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">author</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># site creation time</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 网站创立年份</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">since</span> <span class="p">=</span> <span class="mi">2024</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># ICP info only in China (HTML format is supported)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># ICP 备案信息，仅在中国使用 (支持 HTML 格式)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">icp</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># license info (HTML format is supported)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 许可协议信息 (支持 HTML 格式)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">license</span><span class="p">=</span> <span class="s1">&#39;&lt;a rel=&#34;license external nofollow noopener noreffer&#34; href=&#34;https://creativecommons.org/licenses/by-nc/4.0/&#34; target=&#34;_blank&#34;&gt;CC BY-NC 4.0&lt;/a&gt;&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Section (all posts) page config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Section (所有文章) 页面配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">section</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># special amount of posts in each section page</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># section 页面每页显示文章数量</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">paginate</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># date format (month and day)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 日期格式 (月和日)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dateFormat</span> <span class="p">=</span> <span class="s2">&#34;01-02&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># amount of RSS pages</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># RSS 文章数目</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">rss</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># List (category or tag) page config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># List (目录或标签) 页面配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">list</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># special amount of posts in each list page</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># list 页面每页显示文章数量</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">paginate</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># date format (month and day)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 日期格式 (月和日)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dateFormat</span> <span class="p">=</span> <span class="s2">&#34;01-02&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># amount of RSS pages</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># RSS 文章数目</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">rss</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># App icon config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 应用图标配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">app</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># optional site title override for the app when added to an iOS home screen or Android launcher</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 当添加到 iOS 主屏幕或者 Android 启动器时的标题, 覆盖默认标题</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;gaorenyusi&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to omit favicon resource links</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否隐藏网站图标资源链接</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">noFavicon</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># modern SVG favicon to use in place of older style .png and .ico files</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 更现代的 SVG 网站图标, 可替代旧的 .png 和 .ico 文件</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">svgFavicon</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Android browser theme color</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Android 浏览器主题色</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">themeColor</span> <span class="p">=</span> <span class="s2">&#34;#ffffff&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Safari mask icon color</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Safari 图标颜色</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">iconColor</span> <span class="p">=</span> <span class="s2">&#34;#5bbad5&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Windows v8-11 tile color</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Windows v8-11 磁贴颜色</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">tileColor</span> <span class="p">=</span> <span class="s2">&#34;#da532c&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Search config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 搜索配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">search</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># type of search engine [&#34;lunr&#34;, &#34;algolia&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 搜索引擎的类型 [&#34;lunr&#34;, &#34;algolia&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">type</span> <span class="p">=</span> <span class="s2">&#34;algolia&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># max index length of the chunked content</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 文章内容最长索引长度</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">contentLength</span> <span class="p">=</span> <span class="mi">4000</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># placeholder of the search bar</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 搜索框的占位提示语</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">placeholder</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># max number of results length</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 最大结果数目</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">maxResultLength</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># snippet length of the result</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 结果内容片段长度</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">snippetLength</span> <span class="p">=</span> <span class="mi">30</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># HTML tag name of the highlight part in results</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 搜索结果中高亮部分的 HTML 标签</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">highlightTag</span> <span class="p">=</span> <span class="s2">&#34;em&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to use the absolute URL based on the baseURL in search index</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否在搜索索引中使用基于 baseURL 的绝对路径</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">absoluteURL</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">search</span><span class="p">.</span><span class="nx">algolia</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">index</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">appID</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">searchKey</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Home page config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 主页信息设置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># amount of RSS pages</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># RSS 文章数目</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">rss</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Home page profile</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 主页个人信息</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">.</span><span class="nx">profile</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Gravatar Email for preferred avatar in home page</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Gravatar 邮箱，用于优先在主页显示的头像</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">gravatarEmail</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># URL of avatar shown in home page</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 主页显示头像的 URL</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">avatarURL</span> <span class="p">=</span> <span class="s2">&#34;/img/logo.jpg&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># title shown in home page (HTML format is supported)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 主页显示的网站标题 (支持 HTML 格式)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># subtitle shown in home page (HTML format is supported)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 主页显示的网站副标题 (允许 HTML 格式)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">subtitle</span> <span class="p">=</span> <span class="s2">&#34;A Clean, Elegant but Advanced Hugo Theme&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to use typeit animation for subtitle</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否为副标题显示打字机动画</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">typeit</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to show social links</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否显示社交账号</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">social</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># disclaimer (HTML format is supported)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 免责声明 (支持 HTML 格式)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">disclaimer</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Home page posts</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 主页文章列表</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">.</span><span class="nx">posts</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># special amount of posts in each home posts page</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 主页每页显示文章数量</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">paginate</span> <span class="p">=</span> <span class="mi">6</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">showFullContent</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Social config in home page</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 主页的社交信息设置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">social</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">GitHub</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Linkedin</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Twitter</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Instagram</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Facebook</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Telegram</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Medium</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Gitlab</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Youtubelegacy</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Youtubecustom</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Youtubechannel</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Tumblr</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Quora</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Keybase</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Pinterest</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Reddit</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Codepen</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">FreeCodeCamp</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Bitbucket</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Stackoverflow</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Weibo</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Odnoklassniki</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">VK</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Flickr</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Xing</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Snapchat</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Soundcloud</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Spotify</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Bandcamp</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Paypal</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Fivehundredpx</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Mix</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Goodreads</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Lastfm</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Foursquare</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Hackernews</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Kickstarter</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Patreon</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Steam</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Twitch</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Strava</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Skype</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Whatsapp</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Zhihu</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Douban</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Angellist</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Slidershare</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Jsfiddle</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Deviantart</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Behance</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Dribbble</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Wordpress</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Vine</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Googlescholar</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Researchgate</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Mastodon</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Thingiverse</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Devto</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Gitea</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">XMPP</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Matrix</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Bilibili</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Discord</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">DiscordInvite</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Lichess</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ORCID</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Pleroma</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Kaggle</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">MediaWiki</span><span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Plume</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">HackTheBox</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">RootMe</span><span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Malt</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">TikTok</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">TryHackMe</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Codeberg</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Email</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">RSS</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Page global config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 文章页面全局配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to hide a page from home page</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否在主页隐藏一篇文章</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">hiddenFromHomePage</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to hide a page from search results</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否在搜索结果中隐藏一篇文章</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">hiddenFromSearch</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to enable twemoji</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否使用 twemoji</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">twemoji</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to enable lightgallery</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否使用 lightgallery</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lightgallery</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to enable the ruby extended syntax</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否使用 ruby 扩展语法</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">ruby</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to enable the fraction extended syntax</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否使用 fraction 扩展语法</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fraction</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to enable the fontawesome extended syntax</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否使用 fontawesome 扩展语法</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">fontawesome</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to show link to Raw Markdown content of the content</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否显示原始 Markdown 文档内容的链接</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">linkToMarkdown</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to show the full text content in RSS</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否在 RSS 中显示全文内容</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">rssFullText</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Table of the contents config</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 目录配置</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">toc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to enable the table of the contents</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否使用目录</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to keep the static table of the contents in front of the post</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否保持使用文章前面的静态目录</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">keepStatic</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to make the table of the contents in the sidebar automatically collapsed</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否使侧边目录自动折叠展开</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">auto</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Code config</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 代码配置</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">code</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to show the copy button of the code block</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否显示代码块的复制按钮</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">copy</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># the maximum number of lines of displayed code by default</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 默认展开显示的代码行数</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">maxShownLines</span> <span class="p">=</span> <span class="mi">50</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># KaTeX mathematical formulas config (KaTeX https://katex.org/)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># KaTeX 数学公式配置 (KaTeX https://katex.org/)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">math</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># default inline delimiter is $ ... $ and \( ... \)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 默认行内定界符是 $ ... $ 和 \( ... \)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">inlineLeftDelimiter</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">inlineRightDelimiter</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># default block delimiter is $$ ... $$, \[ ... \], \begin{equation} ... \end{equation} and some other functions</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 默认块定界符是 $$ ... $$, \[ ... \],  \begin{equation} ... \end{equation} 和一些其它的函数</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">blockLeftDelimiter</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">blockRightDelimiter</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># KaTeX extension copy_tex</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># KaTeX 插件 copy_tex</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">copyTex</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># KaTeX extension mhchem</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># KaTeX 插件 mhchem</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">mhchem</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Mapbox GL JS config (Mapbox GL JS https://docs.mapbox.com/mapbox-gl-js)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Mapbox GL JS 配置 (Mapbox GL JS https://docs.mapbox.com/mapbox-gl-js)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">mapbox</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># access token of Mapbox GL JS</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Mapbox GL JS 的 access token</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">accessToken</span> <span class="p">=</span> <span class="s2">&#34;pk.eyJ1IjoiZGlsbG9uenEiLCJhIjoiY2s2czd2M2x3MDA0NjNmcGxmcjVrZmc2cyJ9.aSjv2BNuZUfARvxRYjSVZQ&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># style for the light theme</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 浅色主题的地图样式</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">lightStyle</span> <span class="p">=</span> <span class="s2">&#34;mapbox://styles/mapbox/light-v10?optimize=true&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># style for the dark theme</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 深色主题的地图样式</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">darkStyle</span> <span class="p">=</span> <span class="s2">&#34;mapbox://styles/mapbox/dark-v10?optimize=true&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to add NavigationControl (https://docs.mapbox.com/mapbox-gl-js/api/#navigationcontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否添加 NavigationControl (https://docs.mapbox.com/mapbox-gl-js/api/#navigationcontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">navigation</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to add GeolocateControl (https://docs.mapbox.com/mapbox-gl-js/api/#geolocatecontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否添加 GeolocateControl (https://docs.mapbox.com/mapbox-gl-js/api/#geolocatecontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">geolocate</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to add ScaleControl (https://docs.mapbox.com/mapbox-gl-js/api/#scalecontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否添加 ScaleControl (https://docs.mapbox.com/mapbox-gl-js/api/#scalecontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">scale</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to add FullscreenControl (https://docs.mapbox.com/mapbox-gl-js/api/#fullscreencontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否添加 FullscreenControl (https://docs.mapbox.com/mapbox-gl-js/api/#fullscreencontrol)</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">fullscreen</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Social share links in post page</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 文章页面的分享信息设置</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">share</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Twitter</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Facebook</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Linkedin</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Whatsapp</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Pinterest</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Tumblr</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">HackerNews</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Reddit</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">VK</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Buffer</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Xing</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Line</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Instapaper</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Pocket</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Flipboard</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Weibo</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Blogger</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Baidu</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Odnoklassniki</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Evernote</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Skype</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Trello</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">Mix</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Comment config</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 评论系统设置</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Disqus comment config (https://disqus.com/)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Disqus 评论系统设置 (https://disqus.com/)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">disqus</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># Disqus shortname to use Disqus in posts</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># Disqus 的 shortname，用来在文章中启用 Disqus 评论系统</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">shortname</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Gitalk comment config (https://github.com/gitalk/gitalk)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Gitalk 评论系统设置 (https://github.com/gitalk/gitalk)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">gitalk</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">owner</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">repo</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">clientId</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">clientSecret</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Valine comment config (https://github.com/xCss/Valine)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Valine 评论系统设置 (https://github.com/xCss/Valine)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">valine</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">appId</span> <span class="p">=</span> <span class="s2">&#34;QGzwQXOqs5JOhN4RGPOkR2mR-MdYXbMMI&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">appKey</span> <span class="p">=</span> <span class="s2">&#34;WBmoGyJtbqUswvfLh6L8iEBr&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">placeholder</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">avatar</span> <span class="p">=</span> <span class="s2">&#34;mp&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">meta</span><span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pageSize</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># automatically adapt the current theme i18n configuration when empty</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># 为空时自动适配当前主题 i18n 配置</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lang</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">visitor</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">recordIP</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">highlight</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enableQQ</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">serverURLs</span> <span class="p">=</span> <span class="s2">&#34;https://leancloud.hugoloveit.com&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># emoji data file name, default is &#34;google.yml&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># [&#34;apple.yml&#34;, &#34;google.yml&#34;, &#34;facebook.yml&#34;, &#34;twitter.yml&#34;]</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># located in &#34;themes/LoveIt/assets/lib/valine/emoji/&#34; directory</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># you can store your own data files in the same path under your project:</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># &#34;assets/lib/valine/emoji/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># emoji 数据文件名称, 默认是 &#34;google.yml&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># [&#34;apple.yml&#34;, &#34;google.yml&#34;, &#34;facebook.yml&#34;, &#34;twitter.yml&#34;]</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># 位于 &#34;themes/LoveIt/assets/lib/valine/emoji/&#34; 目录</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># 可以在你的项目下相同路径存放你自己的数据文件:</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># &#34;assets/lib/valine/emoji/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">emoji</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Facebook comment config (https://developers.facebook.com/docs/plugins/comments)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Facebook 评论系统设置 (https://developers.facebook.com/docs/plugins/comments)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">facebook</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">width</span> <span class="p">=</span> <span class="s2">&#34;100%&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">numPosts</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">appId</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># automatically adapt the current theme i18n configuration when empty</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># 为空时自动适配当前主题 i18n 配置</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">languageCode</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Telegram comments config (https://comments.app/)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Telegram comments 评论系统设置 (https://comments.app/)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">telegram</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">siteID</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">limit</span> <span class="p">=</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">height</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">color</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">colorful</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dislikes</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">outlined</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Commento comment config (https://commento.io/)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Commento comment 评论系统设置 (https://commento.io/)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">commento</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># utterances comment config (https://utteranc.es/)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># utterances comment 评论系统设置 (https://utteranc.es/)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">utterances</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># owner/repo</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">repo</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">issueTerm</span> <span class="p">=</span> <span class="s2">&#34;pathname&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">label</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lightTheme</span> <span class="p">=</span> <span class="s2">&#34;github-light&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">darkTheme</span> <span class="p">=</span> <span class="s2">&#34;github-dark&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># giscus comment config (https://giscus.app/)</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># giscus comment 评论系统设置 (https://giscus.app/zh-CN)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">comment</span><span class="p">.</span><span class="nx">giscus</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># You can refer to the official documentation of giscus to use the following configuration.</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># 你可以参考官方文档来使用下列配置</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">repo</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">repoId</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">category</span> <span class="p">=</span> <span class="s2">&#34;Announcements&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">categoryId</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># automatically adapt the current theme i18n configuration when empty</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># 为空时自动适配当前主题 i18n 配置</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lang</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">mapping</span> <span class="p">=</span> <span class="s2">&#34;pathname&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">reactionsEnabled</span> <span class="p">=</span> <span class="s2">&#34;1&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">emitMetadata</span> <span class="p">=</span> <span class="s2">&#34;0&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">inputPosition</span> <span class="p">=</span> <span class="s2">&#34;bottom&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lazyLoading</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">lightTheme</span> <span class="p">=</span> <span class="s2">&#34;light&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">darkTheme</span> <span class="p">=</span> <span class="s2">&#34;dark&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Third-party library config</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 第三方库配置</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">library</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">library</span><span class="p">.</span><span class="nx">css</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># someCSS = &#34;some.css&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># located in &#34;assets/&#34; 位于 &#34;assets/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># Or 或者</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># someCSS = &#34;https://cdn.example.com/some.css&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">library</span><span class="p">.</span><span class="nx">js</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># someJavascript = &#34;some.js&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># located in &#34;assets/&#34; 位于 &#34;assets/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># Or 或者</span>
+</span></span><span class="line"><span class="cl">        <span class="c"># someJavascript = &#34;https://cdn.example.com/some.js&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Page SEO config</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 页面 SEO 配置</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">seo</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># image URL</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 图片 URL</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">images</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;img/logo.jpg&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># Publisher info</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 出版者信息</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">page</span><span class="p">.</span><span class="nx">seo</span><span class="p">.</span><span class="nx">publisher</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">logoUrl</span> <span class="p">=</span> <span class="s2">&#34;/images/avatar.png&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># TypeIt config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># TypeIt 配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">typeit</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># typing speed between each step (measured in milliseconds)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 每一步的打字速度 (单位是毫秒)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">speed</span> <span class="p">=</span> <span class="mi">100</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># blinking speed of the cursor (measured in milliseconds)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 光标的闪烁速度 (单位是毫秒)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">cursorSpeed</span> <span class="p">=</span> <span class="mi">1000</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># character used for the cursor (HTML format is supported)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 光标的字符 (支持 HTML 格式)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">cursorChar</span> <span class="p">=</span> <span class="s2">&#34;|&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># cursor duration after typing finishing (measured in milliseconds, &#34;-1&#34; means unlimited)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 打字结束之后光标的持续时间 (单位是毫秒, &#34;-1&#34; 代表无限大)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">duration</span> <span class="p">=</span> <span class="mi">-1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Site verification code for Google/Bing/Yandex/Pinterest/Baidu</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 网站验证代码，用于 Google/Bing/Yandex/Pinterest/Baidu</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">verification</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">google</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">bing</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">yandex</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">pinterest</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">baidu</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Site SEO config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 网站 SEO 配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">seo</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># image URL</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 图片 URL</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">image</span> <span class="p">=</span> <span class="s2">&#34;/images/Apple-Devices-Preview.png&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># thumbnail URL</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 缩略图 URL</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">thumbnailUrl</span> <span class="p">=</span> <span class="s2">&#34;/images/screenshot.png&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Analytics config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 网站分析配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">analytics</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Google Analytics</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">analytics</span><span class="p">.</span><span class="nx">google</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">id</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to anonymize IP</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否匿名化用户 IP</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">anonymizeIP</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Fathom Analytics</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">analytics</span><span class="p">.</span><span class="nx">fathom</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">id</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># server url for your tracker if you&#39;re self hosting</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 自行托管追踪器时的主机路径</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">server</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Plausible Analytics</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">analytics</span><span class="p">.</span><span class="nx">plausible</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">dataDomain</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># Yandex Metrica</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">analytics</span><span class="p">.</span><span class="nx">yandexMetrica</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">id</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Cookie consent config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Cookie 许可配置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">cookieconsent</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">enable</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># text strings used for Cookie consent banner</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 用于 Cookie 许可横幅的文本字符串</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">cookieconsent</span><span class="p">.</span><span class="nx">content</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">message</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">dismiss</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">link</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># CDN config for third-party library files</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 第三方库文件的 CDN 设置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">cdn</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># CDN data file name, disabled by default</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># [&#34;jsdelivr.yml&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># located in &#34;themes/LoveIt/assets/data/cdn/&#34; directory</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># you can store your own data files in the same path under your project:</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># &#34;assets/data/cdn/&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># CDN 数据文件名称, 默认不启用</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># [&#34;jsdelivr.yml&#34;]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 位于 &#34;themes/LoveIt/assets/data/cdn/&#34; 目录</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 可以在你的项目下相同路径存放你自己的数据文件:</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># &#34;assets/data/cdn/&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">data</span> <span class="p">=</span> <span class="s2">&#34;jsdelivr.yml&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c"># Compatibility config</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 兼容性设置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">params</span><span class="p">.</span><span class="nx">compatibility</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to use Polyfill.io to be compatible with older browsers</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否使用 Polyfill.io 来兼容旧式浏览器</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">polyfill</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># whether to use object-fit-images to be compatible with older browsers</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># 是否使用 object-fit-images 来兼容旧式浏览器</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">objectFit</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Markup related configuration in Hugo</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Hugo 解析文档的配置</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">markup</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Syntax Highlighting (https://gohugo.io/content-management/syntax-highlighting)</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 语法高亮设置 (https://gohugo.io/content-management/syntax-highlighting)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">markup</span><span class="p">.</span><span class="nx">highlight</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">codeFences</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">guessSyntax</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lineNos</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">lineNumbersInTable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># false is a necessary configuration (https://github.com/dillonzq/LoveIt/issues/158)</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># false 是必要的设置 (https://github.com/dillonzq/LoveIt/issues/158)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">noClasses</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Goldmark is from Hugo 0.60 the default library used for Markdown</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Goldmark 是 Hugo 0.60 以来的默认 Markdown 解析库</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">markup</span><span class="p">.</span><span class="nx">goldmark</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">markup</span><span class="p">.</span><span class="nx">goldmark</span><span class="p">.</span><span class="nx">extensions</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">definitionList</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">footnote</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">linkify</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">strikethrough</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">table</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">taskList</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">typographer</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">markup</span><span class="p">.</span><span class="nx">goldmark</span><span class="p">.</span><span class="nx">renderer</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># whether to use HTML tags directly in the document</span>
+</span></span><span class="line"><span class="cl">      <span class="c"># 是否在文档中直接使用 HTML 标签</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">unsafe</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Table Of Contents settings</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># 目录设置</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">markup</span><span class="p">.</span><span class="nx">tableOfContents</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">startLevel</span> <span class="p">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">endLevel</span> <span class="p">=</span> <span class="mi">6</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Sitemap config</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 网站地图配置</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">sitemap</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">changefreq</span> <span class="p">=</span> <span class="s2">&#34;weekly&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">filename</span> <span class="p">=</span> <span class="s2">&#34;sitemap.xml&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">priority</span> <span class="p">=</span> <span class="mf">0.5</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Permalinks config (https://gohugo.io/content-management/urls/#permalinks)</span>
+</span></span><span class="line"><span class="cl"><span class="c"># Permalinks 配置 (https://gohugo.io/content-management/urls/#permalinks)</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">permalinks</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># posts = &#34;:year/:month/:filename&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">posts</span> <span class="p">=</span> <span class="s2">&#34;:filename&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Privacy config (https://gohugo.io/about/hugo-and-gdpr/)</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 隐私信息配置 (https://gohugo.io/about/hugo-and-gdpr/)</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">privacy</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># privacy of the Google Analytics (replaced by params.analytics.google)</span>
+</span></span><span class="line"><span class="cl">  <span class="c"># Google Analytics 相关隐私 (被 params.analytics.google 替代)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">privacy</span><span class="p">.</span><span class="nx">googleAnalytics</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="c"># ...</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">privacy</span><span class="p">.</span><span class="nx">twitter</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">enableDNT</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">privacy</span><span class="p">.</span><span class="nx">youtube</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">privacyEnhanced</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Options to make output .md files</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 用于输出 Markdown 格式文档的设置</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">mediaTypes</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">mediaTypes</span><span class="p">.</span><span class="s2">&#34;text/plain&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">suffixes</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;md&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Options to make output .md files</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 用于输出 Markdown 格式文档的设置</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">outputFormats</span><span class="p">.</span><span class="nx">MarkDown</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">mediaType</span> <span class="p">=</span> <span class="s2">&#34;text/plain&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">isPlainText</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">isHTML</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Options to make hugo output files</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 用于 Hugo 输出文档的设置</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">outputs</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">home</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;HTML&#34;</span><span class="p">,</span> <span class="s2">&#34;RSS&#34;</span><span class="p">,</span> <span class="s2">&#34;JSON&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">page</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;HTML&#34;</span><span class="p">,</span> <span class="s2">&#34;MarkDown&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">section</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;HTML&#34;</span><span class="p">,</span> <span class="s2">&#34;RSS&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">taxonomy</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;HTML&#34;</span><span class="p">,</span> <span class="s2">&#34;RSS&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">taxonomyTerm</span> <span class="p">=</span> <span class="p">[</span><span class="s2">&#34;HTML&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c"># Multilingual</span>
+</span></span><span class="line"><span class="cl"><span class="c"># 多语言</span>
+</span></span><span class="line"><span class="cl"><span class="p">[</span><span class="nx">languages</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">weight</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">languageCode</span> <span class="p">=</span> <span class="s2">&#34;en&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">languageName</span> <span class="p">=</span> <span class="s2">&#34;English&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">hasCJKLanguage</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">copyright</span> <span class="p">=</span> <span class="s2">&#34;This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">menu</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;posts&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;Posts&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/posts/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;tags&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;Tags&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/tags/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;categories&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;Categories&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/categories/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;documentation&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;Docs&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/categories/documentation/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">5</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;about&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;About&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/about/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">6</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;github&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&lt;i class=&#39;fab fa-github fa-fw&#39; aria-hidden=&#39;true&#39;&gt;&lt;/i&gt;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;https://github.com/dillonzq/LoveIt&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;GitHub&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">params</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">search</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">type</span> <span class="p">=</span> <span class="s2">&#34;algolia&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">contentLength</span> <span class="p">=</span> <span class="mi">4000</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">placeholder</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">maxResultLength</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">snippetLength</span> <span class="p">=</span> <span class="mi">30</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">highlightTag</span> <span class="p">=</span> <span class="s2">&#34;em&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">absoluteURL</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">search</span><span class="p">.</span><span class="nx">algolia</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">index</span> <span class="p">=</span> <span class="s2">&#34;index.en&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">appID</span> <span class="p">=</span> <span class="s2">&#34;PASDMWALPK&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">searchKey</span> <span class="p">=</span> <span class="s2">&#34;b42948e51daaa93df92381c8e2ac0f93&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">rss</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">.</span><span class="nx">profile</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">gravatarEmail</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">avatarURL</span> <span class="p">=</span> <span class="s2">&#34;/images/avatar.png&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">subtitle</span> <span class="p">=</span> <span class="s2">&#34;A Clean, Elegant but Advanced Hugo Theme&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">typeit</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">social</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">disclaimer</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">social</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">GitHub</span> <span class="p">=</span> <span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Twitter</span> <span class="p">=</span> <span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Instagram</span> <span class="p">=</span> <span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Facebook</span> <span class="p">=</span> <span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Telegram</span> <span class="p">=</span> <span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Youtubelegacy</span> <span class="p">=</span> <span class="s2">&#34;xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Phone</span> <span class="p">=</span> <span class="s2">&#34;555-555-555&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Email</span> <span class="p">=</span> <span class="s2">&#34;xxxx@xxxx.com&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">RSS</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">en</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">social</span><span class="p">.</span><span class="nx">Mastodon</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">id</span> <span class="p">=</span> <span class="s2">&#34;@xxxx&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">prefix</span> <span class="p">=</span> <span class="s2">&#34;https://mastodon.technology/&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">weight</span> <span class="p">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">languageCode</span> <span class="p">=</span> <span class="s2">&#34;zh-CN&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">languageName</span> <span class="p">=</span> <span class="s2">&#34;简体中文&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">hasCJKLanguage</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">copyright</span> <span class="p">=</span> <span class="s2">&#34;This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">menu</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;home&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;主页&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;posts&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;文章&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/posts/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;tags&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;标签&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/tags/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">menu</span><span class="p">.</span><span class="nx">main</span><span class="p">]]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">weight</span> <span class="p">=</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">identifier</span> <span class="p">=</span> <span class="s2">&#34;about&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">pre</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">post</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">name</span> <span class="p">=</span> <span class="s2">&#34;关于&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">url</span> <span class="p">=</span> <span class="s2">&#34;/about/&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">params</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">search</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">type</span> <span class="p">=</span> <span class="s2">&#34;algolia&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">contentLength</span> <span class="p">=</span> <span class="mi">4000</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">placeholder</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">maxResultLength</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">snippetLength</span> <span class="p">=</span> <span class="mi">50</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">highlightTag</span> <span class="p">=</span> <span class="s2">&#34;em&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">absoluteURL</span> <span class="p">=</span> <span class="kc">false</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">search</span><span class="p">.</span><span class="nx">algolia</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">index</span> <span class="p">=</span> <span class="s2">&#34;index.zh-cn&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">appID</span> <span class="p">=</span> <span class="s2">&#34;PASDMWALPK&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">searchKey</span> <span class="p">=</span> <span class="s2">&#34;b42948e51daaa93df92381c8e2ac0f93&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">rss</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">        <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">home</span><span class="p">.</span><span class="nx">profile</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">enable</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">gravatarEmail</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">imageWidth</span><span class="p">=</span> <span class="mi">150</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">imageHeight</span><span class="p">=</span> <span class="mi">150</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">imageUrl</span> <span class="p">=</span> <span class="s2">&#34;/img/logo.jpg&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">title</span> <span class="p">=</span> <span class="s2">&#34;白茶清欢无别事，我在等风也等你&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">subtitle</span> <span class="p">=</span> <span class="s2">&#34;高人于斯&#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">typeit</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">social</span> <span class="p">=</span> <span class="kc">true</span>
+</span></span><span class="line"><span class="cl">          <span class="nx">disclaimer</span> <span class="p">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">      <span class="p">[</span><span class="nx">languages</span><span class="p">.</span><span class="nx">zh-cn</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">social</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">GitHub</span> <span class="p">=</span> <span class="s2">&#34;gaorenyusi&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Bilibili</span> <span class="p">=</span> <span class="s2">&#34;353741931&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">Email</span> <span class="p">=</span> <span class="s2">&#34;2711547386@qq.com&#34;</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>最后执行下面命令进行本地预览</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">hugo server -D
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p><code>-D</code> 是生成 public 目录，然后访问地址 <code>http://localhost:1313</code> 进行本地访问，</p>
+<p>参考：<a href="https://developer.aliyun.com/article/859477" target="_blank" rel="noopener noreffer ">https://developer.aliyun.com/article/859477</a></p>
+<h3 id="二部署到-github-pages">二、部署到 github pages</h3>
+<p>在 public 目录下执行下面命令即可，</p>
+<div class="highlight"><div class="chroma">
+<table class="lntable"><tr><td class="lntd">
+<pre tabindex="0" class="chroma"><code><span class="lnt">1
+</span><span class="lnt">2
+</span><span class="lnt">3
+</span><span class="lnt">4
+</span><span class="lnt">5
+</span><span class="lnt">6
+</span></code></pre></td>
+<td class="lntd">
+<pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">git init
+</span></span><span class="line"><span class="cl">git add .
+</span></span><span class="line"><span class="cl">git commit -m &#34;first commit&#34;
+</span></span><span class="line"><span class="cl">git branch -M main
+</span></span><span class="line"><span class="cl">git remote add origin 仓库地址
+</span></span><span class="line"><span class="cl">git push -u origin main -f
+</span></span></code></pre></td></tr></table>
+</div>
+</div><h3 id="三action-自动提交博客">三、Action 自动提交博客</h3>
+<p>参考：https://ratmomo.github.io/p/2024/06/%E4%BD%BF%E7%94%A8-hugo&ndash;github-pages-%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#%E7%95%AA%E5%A4%96%E7%AF%87%E4%BD%BF%E7%94%A8github-action%E8%87%AA%E5%8A%A8%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-02-08</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"><span>
+                            <a class="link-to-markdown" href="/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/index.md" target="_blank">阅读原始文档</a>
+                        </span></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" data-title="Github Pages博客搭建教程" data-hashtags="博客部署"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" data-hashtag="博客部署"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2/">博客部署</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" class="prev" rel="prev" title="DOM型XSS学习"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DOM型XSS学习</a>
+            <a href="/log4j2/" class="next" rel="next" title="Log4j2 漏洞复现">Log4j2 漏洞复现<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script type="text/javascript" src="/lib/autocomplete/autocomplete.min.js"></script><script type="text/javascript" src="/lib/algoliasearch/algoliasearch-lite.umd.min.js"></script><script type="text/javascript" src="/lib/lazysizes/lazysizes.min.js"></script><script type="text/javascript" src="/lib/twemoji/twemoji.min.js"></script><script type="text/javascript" src="/lib/clipboard/clipboard.min.js"></script><script type="text/javascript" src="/lib/sharer/sharer.min.js"></script><script type="text/javascript" src="/lib/typeit/index.umd.js"></script><script type="text/javascript">window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"data":{"id-1":"Gaorenyusi's Blog","id-2":"Gaorenyusi's Blog"},"search":{"algoliaAppID":"PASDMWALPK","algoliaIndex":"index.zh-cn","algoliaSearchKey":"b42948e51daaa93df92381c8e2ac0f93","highlightTag":"em","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"algolia"},"twemoji":true,"typeit":{"cursorChar":"|","cursorSpeed":1000,"data":{"id-1":["id-1"],"id-2":["id-2"]},"duration":-1,"speed":100}};</script><script type="text/javascript" src="/js/theme.min.js"></script></body>
+</html>

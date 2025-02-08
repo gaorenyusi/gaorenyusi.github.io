@@ -2,8 +2,7 @@
     xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
     xmlns:xhtml="http://www.w3.org/1999/xhtml"
     ><url>
-            <loc>http://localhost:1313/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/</loc><lastmod>2024-10-31T15:07:59&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>http://localhost:1313/</loc><lastmod>2024-10-31T15:07:59&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
+            <loc>http://localhost:1313/</loc><lastmod>2025-02-09T00:10:48&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
                         href="http://localhost:1313/en/"
@@ -12,7 +11,10 @@
                     hreflang="zh-cn"
                     href="http://localhost:1313/"
                     /></url><url>
-            <loc>http://localhost:1313/posts/</loc><lastmod>2024-10-31T15:07:59&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
+            <loc>http://localhost:1313/log4j2/</loc><lastmod>2025-02-09T00:10:48&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/posts/</loc><lastmod>2025-02-09T00:10:48&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/</loc><lastmod>2025-02-08T23:46:57&#43;08:00</lastmod><changefreq>weekly</changefreq><priority>1</priority></url><url>
+            <loc>http://localhost:1313/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/</loc><lastmod>2024-10-31T15:07:59&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>http://localhost:1313/tags/</loc><lastmod>2024-10-31T15:07:59&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
@@ -41,7 +43,6 @@
             <loc>http://localhost:1313/nodejs-vm/</loc><lastmod>2024-03-26T19:44:34&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>http://localhost:1313/tags/redis/</loc><lastmod>2024-03-09T19:28:01&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>http://localhost:1313/rdis/</loc><lastmod>2024-03-09T19:28:01&#43;00:00</lastmod><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
-            <loc>http://localhost:1313/about/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url><url>
             <loc>http://localhost:1313/categories/</loc><changefreq>weekly</changefreq><priority>0.5</priority><xhtml:link
                         rel="alternate"
                         hreflang="en"
@@ -50,4 +51,5 @@
                     rel="alternate"
                     hreflang="zh-cn"
                     href="http://localhost:1313/categories/"
-                    /></url></urlset>
+                    /></url><url>
+            <loc>http://localhost:1313/about/</loc><changefreq>weekly</changefreq><priority>0.5</priority></url></urlset>
