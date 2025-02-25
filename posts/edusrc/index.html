@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>记一次 edu 证书站失败的逻辑漏洞 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/edusrc/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="记一次 edu 证书站失败的逻辑漏洞">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-10-20T11:41:26+00:00">
+    <meta property="article:modified_time" content="2024-10-20T11:41:26+00:00">
+    <meta property="article:tag" content="Src">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="记一次 edu 证书站失败的逻辑漏洞">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/edusrc/" /><link rel="prev" href="http://localhost:1313/posts/cc1%E8%A1%A5%E5%85%85-lazymap%E5%88%A9%E7%94%A8/" /><link rel="next" href="http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "记一次 edu 证书站失败的逻辑漏洞",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/edusrc\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "src","wordcount":  416 ,
+        "url": "http:\/\/localhost:1313\/posts\/edusrc\/","datePublished": "2024-10-20T11:41:26+00:00","dateModified": "2024-10-20T11:41:26+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">记一次 edu 证书站失败的逻辑漏洞</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/src/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Src</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-10-20">2024-10-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 416 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 1 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents"></nav></div>
+            </div><div class="content" id="content"><h1 id="记一次-edu-证书站失败的逻辑漏洞">记一次 edu 证书站失败的逻辑漏洞</h1>
+<p>闲来无事，在礼物中心看到个证书站，看名称感觉应该挺好挖的，简单信息搜集一波，在 hunter 上查看子域名，发现有个管理系统</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018222953476.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018222953476.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018222953476.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018222953476.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018222953476.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018222953476.png" /></p>
+<p>访问该链接，是个登录框</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223030237.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223030237.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223030237.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223030237.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223030237.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223030237.png" /></p>
+<p>现在需要去搞一手学号什么的了（因为是随便看看的所以没有先信息搜集），利用 hack 语法找了半天只找到 16，17 级的学生学号，尝试利用显示账号错误，看来还是需要找近几年的了，</p>
+<p>又去 dy，xhs 等社交平台上找了半天发现没有竟然没找到，最后直接通过 16，17 的学号重新构造爆破的 24 级学号，尝试弱密码登录发现没戏，直接试试抓包改回包</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223703357.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223703357.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223703357.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223703357.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223703357.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223703357.png" /></p>
+<p>把回包的 402 改为 200</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223808670.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223808670.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223808670.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223808670.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223808670.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241018223808670.png" /></p>
+<p>提示</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170338625.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170338625.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170338625.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170338625.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170338625.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170338625.png" /></p>
+<p>说明应该是成功登录进去了，但是还是需要对用户进行鉴权才会显示功能点，那么既然登录存在逻辑漏洞，是否修改密码也存在相同的漏洞，</p>
+<p>同理抓包修改</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019165933048.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019165933048.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019165933048.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019165933048.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019165933048.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019165933048.png" /></p>
+<p>发现直接来到了设置新密码，说明逻辑漏洞绕过成功了，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170819414.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170819414.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170819414.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170819414.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170819414.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170819414.png" /></p>
+<p>最后修改密码成功，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170144626.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170144626.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170144626.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170144626.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170144626.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019170144626.png" /></p>
+<p>再次进行登录，发现还是提示账号或密码有误，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019171048286.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019171048286.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019171048286.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019171048286.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019171048286.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20241019171048286.png" /></p>
+<p>猜测该逻辑漏洞可能只是前端逻辑漏洞，通过修改的响应值只能决定前端的显示。数据并没有写入后端。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-10-20</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/edusrc/" data-title="记一次 edu 证书站失败的逻辑漏洞" data-hashtags="src"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/edusrc/" data-hashtag="src"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/src/">Src</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/cc1%E8%A1%A5%E5%85%85-lazymap%E5%88%A9%E7%94%A8/" class="prev" rel="prev" title="CC1补充-LazyMap利用"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CC1补充-LazyMap利用</a>
+            <a href="/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/" class="next" rel="next" title="XSS靶场训练">XSS靶场训练<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

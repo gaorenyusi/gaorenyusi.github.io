@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Github Pages博客搭建教程 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="Github Pages博客搭建教程">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-08T23:46:57+08:00">
+    <meta property="article:modified_time" content="2025-02-08T23:46:57+08:00">
+    <meta property="article:tag" content="博客部署">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="Github Pages博客搭建教程">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" /><link rel="prev" href="http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" /><link rel="next" href="http://localhost:1313/posts/log4j2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Github Pages博客搭建教程",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "博客部署","wordcount":  1314 ,
+        "url": "http:\/\/localhost:1313\/posts\/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B\/","datePublished": "2025-02-08T23:46:57+08:00","dateModified": "2025-02-08T23:46:57+08:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Github Pages博客搭建教程</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-02-08">2025-02-08</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1314 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 3 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#github-pages-hexo-搭建个人博客">Github Pages+ Hexo 搭建个人博客</a>
+      <ul>
+        <li><a href="#一下载-git">一、下载 <strong>Git</strong></a></li>
+        <li><a href="#二下载-nodejs--npm">二、下载 <strong>Node.js</strong> &amp; npm</a></li>
+        <li><a href="#三安装-hexo">三、安装 <strong>Hexo</strong></a></li>
+        <li><a href="#四本地预览">四、本地预览</a></li>
+        <li><a href="#五部署到-github-上">五、部署到 Github 上</a></li>
+        <li><a href="#六主题配置">六、主题配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#github-pages-hugo-搭建个人博客">Github Pages+ Hugo 搭建个人博客</a>
+      <ul>
+        <li><a href="#一主题配置">一、主题配置</a></li>
+        <li><a href="#二部署到-github-pages">二、部署到 github pages</a></li>
+        <li><a href="#三action-自动提交博客">三、Action 自动提交博客</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="github-pages博客搭建教程">Github Pages博客搭建教程</h1>
+<h2 id="github-pages-hexo-搭建个人博客">Github Pages+ Hexo 搭建个人博客</h2>
+<h3 id="一下载-git">一、下载 <strong>Git</strong></h3>
+<p>git是一个包管理工具，在linux是自带的，windows上需要下载。</p>
+<p>参考：<a href="https://www.cnblogs.com/xueweisuoyong/p/11914045.html" target="_blank" rel="noopener noreffer ">https://www.cnblogs.com/xueweisuoyong/p/11914045.html</a></p>
+<h3 id="二下载-nodejs--npm">二、下载 <strong>Node.js</strong> &amp; npm</h3>
+<p>下载参考：<a href="https://blog.csdn.net/weixin_38610651/article/details/108721957" target="_blank" rel="noopener noreffer ">https://blog.csdn.net/weixin_38610651/article/details/108721957 </a></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202202816350.png" /></p>
+<p>Node.js 默认配置了 npm，因此不需要额外下载，可以根据需要配置 npm下载路径。</p>
+<h3 id="三安装-hexo">三、安装 <strong>Hexo</strong></h3>
+<p>执行命令</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">npm install hexo-cli -g</span></span></code></pre></div></div><p>执行 <code>hexo -version</code> 查看是否安装成功，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/file-20250202203310420.png" /></p>
+<h3 id="四本地预览">四、本地预览</h3>
+<p>新建一个用于存储博客数据的目录(如 <code>D:\hexo-blog</code>)并确保该目录为空，随后在终端中执行，</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hexo init （文件名）（可选，默认本文件夹）等待一段时间，即可成功初始化。此时可使用
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">hexo s -g 本地预览初始化成功的博客</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154352903.png"
+        title="image-20240309154352903" /></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">g是部署，s是本地启动</span></span></code></pre></div></div><p>本地预览效果如下：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309154111102.png"
+        title="image-20240309154111102" /></p>
+<h3 id="五部署到-github-上">五、部署到 Github 上</h3>
+<p>详细看参考：<a href="https://blog.csdn.net/yaorongke/article/details/119089190" target="_blank" rel="noopener noreffer ">https://blog.csdn.net/yaorongke/article/details/119089190</a></p>
+<p>访问地址效果：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309164151013.png"
+        title="image-20240309164151013" /></p>
+<h3 id="六主题配置">六、主题配置</h3>
+<p>这里选择下载主题 <strong>butterfly</strong>，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240309171045499.png"
+        title="image-20240309171045499" /></p>
+<p>跟多主题详细配置参考：<a href="https://blog.csdn.net/mjh1667002013/article/details/129290903#:~:text=%E3%80%90Hexo%E3%80%91Hexo%E6%90%AD%E5%BB%BAButterfly%E4%B8%BB%E9%A2%98%E5%B9%B6%E5%BF%AB%E9%80%9F%E7%BE%8E%E5%8C%96%201%20%F0%9F%A7%8A1%E3%80%81%E5%AE%89%E8%A3%85butterfly%E4%B8%BB%E9%A2%98%20%E5%9C%A8%20hexo%20%E9%A1%B9%E7%9B%AE%E6%A0%B9%E7%9B%AE%E5%BD%95%E4%B8%8B%E4%B8%8B%E8%BD%BD%E4%B8%BB%E9%A2%98%E3%80%82%20...%202,_config.butterfly.yml%3A%20...%208%20%F0%9F%A7%8A8%E3%80%81%E5%9B%BE%E7%89%87%E8%AE%BE%E7%BD%AE%20%E5%9B%BE%E7%89%87%E5%8F%AF%E4%BB%A5%E7%94%A8%E4%BA%91%E9%93%BE%E6%8E%A5%E6%88%96%E8%80%85%E6%9C%AC%E5%9C%B0%E8%B7%AF%E5%BE%84%EF%BC%9A%20%2Fthemes%2Fbutterfly%2Fsource%2Fimg%20%E3%80%82%20" target="_blank" rel="noopener noreffer ">butterfly主题配置</a></p>
+<p>主题魔改参考：<a href="https://cnhuazhu.top/butterfly/2021/03/28/Hexo%E9%AD%94%E6%94%B9/Hexo%E9%AD%94%E6%94%B9%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener noreffer ">butterfly主题魔改</a></p>
+<h2 id="github-pages-hugo-搭建个人博客">Github Pages+ Hugo 搭建个人博客</h2>
+<p>参考：<a href="https://www.shaohanyun.top/posts/env/blog_build2/" target="_blank" rel="noopener noreffer ">https://www.shaohanyun.top/posts/env/blog_build2/</a></p>
+<p>参考：<a href="https://github.com/lazeroffmichael/example-hugo-blog" target="_blank" rel="noopener noreffer ">https://github.com/lazeroffmichael/example-hugo-blog</a></p>
+<p>参考：<a href="https://lianpf.github.io/posts/other/tools-docs-hugo-papermod/" target="_blank" rel="noopener noreffer ">https://lianpf.github.io/posts/other/tools-docs-hugo-papermod/</a></p>
+<h3 id="一主题配置">一、主题配置</h3>
+<p>把之前的 <code>gaorenyusi.github.io</code> 仓库清空，然后下载 hugo，执行下面命令生成网站主文件</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">hugo new site blog
+</span></span><span class="line"><span class="cl">hugo new site blog --format yaml</span></span></code></pre></div></div><p>然后下载主题（这里用的是LoveIt主题，但还是可以参考上面链接）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd blog
+</span></span><span class="line"><span class="cl">git clone https://github.com/dillonzq/LoveIt.git themes/LoveIt</span></span></code></pre></div></div><p>可以把 <code>exampleSite</code> 目录中的配置文件 hugo.toml 复制到主文件，然后根据需要修改 hugo.toml</p>
+<p>我的配置文件：<a href="https://github.com/gaorenyusi/blog-comment/blob/main/hugo.toml" target="_blank" rel="noopener noreffer "><i class="far fa-file-archive fa-fw" aria-hidden="true"></i>&nbsp;hugo.toml</a>.</p>
+<p>最后执行下面命令进行本地预览</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">hugo server -D</span></span></code></pre></div></div><p><code>-D</code> 是生成 public 目录，然后访问地址 <code>http://localhost:1313</code> 进行本地访问，</p>
+<p>更多主题配置:
+<a href="https://kissingfire123.github.io/2022/05/15_hugo%E6%A1%86%E6%9E%B6%E5%8D%9A%E5%AE%A2loveit%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE%E8%BF%87%E7%A8%8B%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener noreffer ">LoveIt主题配置</a></p>
+<h3 id="二部署到-github-pages">二、部署到 github pages</h3>
+<p>在 public 目录下执行下面命令即可，</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">git init
+</span></span><span class="line"><span class="cl">git add .
+</span></span><span class="line"><span class="cl">git commit -m &#34;first commit&#34;
+</span></span><span class="line"><span class="cl">git branch -M main
+</span></span><span class="line"><span class="cl">git remote add origin 仓库地址
+</span></span><span class="line"><span class="cl">git push -u origin main -f</span></span></code></pre></div></div><h3 id="三action-自动提交博客">三、Action 自动提交博客</h3>
+<div class="details admonition note">
+        <div class="details-summary admonition-title">
+            <i class="icon fas fa-pencil-alt fa-fw" aria-hidden="true"></i>什么是Github Action?<i class="details-icon fas fa-angle-right fa-fw" aria-hidden="true"></i>
+        </div>
+        <div class="details-content">
+            <div class="admonition-content"><p>Github Action 是 Github 提供的 CI 系统，可以让用户编写脚本，并在触发指定的操作后（比如新 commit push 到仓库），自动触发脚本。它可以：</p>
+<ul>
+<li>编译项目</li>
+<li>测试项目</li>
+<li>登陆远程服务器</li>
+<li>发布服务</li>
+<li>等等……</li>
+</ul></div>
+        </div>
+    </div>
+<p>具体配置参考：<a href="https://ratmomo.github.io/p/2024/06/%E4%BD%BF%E7%94%A8-hugo--github-pages-%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#%E7%95%AA%E5%A4%96%E7%AF%87%E4%BD%BF%E7%94%A8github-action%E8%87%AA%E5%8A%A8%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2" target="_blank" rel="noopener noreffer ">https://ratmomo.github.io/p/2024/06/%E4%BD%BF%E7%94%A8-hugo&ndash;github-pages-%E9%83%A8%E7%BD%B2%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/#%E7%95%AA%E5%A4%96%E7%AF%87%E4%BD%BF%E7%94%A8github-action%E8%87%AA%E5%8A%A8%E5%8F%91%E5%B8%83%E5%8D%9A%E5%AE%A2</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-02-08</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" data-title="Github Pages博客搭建教程" data-hashtags="博客部署"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" data-hashtag="博客部署"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/%E5%8D%9A%E5%AE%A2%E9%83%A8%E7%BD%B2/">博客部署</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" class="prev" rel="prev" title="DOM型XSS学习"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DOM型XSS学习</a>
+            <a href="/posts/log4j2/" class="next" rel="next" title="Log4j2 漏洞复现">Log4j2 漏洞复现<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

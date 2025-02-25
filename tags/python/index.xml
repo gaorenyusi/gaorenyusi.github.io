@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Python - 标签 - Gaorenyusi&#39;s Blog</title>
+        <link>http://localhost:1313/tags/python/</link>
+        <description>Python - 标签 - Gaorenyusi&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 11 Jun 2024 22:45:36 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/python/" rel="self" type="application/rss+xml" /><item>
+    <title>python栈帧沙箱逃逸</title>
+    <link>http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</link>
+    <pubDate>Tue, 11 Jun 2024 22:45:36 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
+</rss>

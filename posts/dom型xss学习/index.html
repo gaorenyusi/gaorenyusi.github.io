@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>DOM型XSS学习 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="DOM型XSS学习">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-10-31T15:07:59+00:00">
+    <meta property="article:modified_time" content="2024-10-31T15:07:59+00:00">
+    <meta property="article:tag" content="Xss">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="DOM型XSS学习">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" /><link rel="prev" href="http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/" /><link rel="next" href="http://localhost:1313/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "DOM型XSS学习",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "xss","wordcount":  1741 ,
+        "url": "http:\/\/localhost:1313\/posts\/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0\/","datePublished": "2024-10-31T15:07:59+00:00","dateModified": "2024-10-31T15:07:59+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">DOM型XSS学习</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>漏洞学习</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-10-31">2024-10-31</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1741 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#dom-型-xss-是什么">DOM 型 XSS 是什么</a></li>
+    <li><a href="#常见的危险函数">常见的危险函数</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#sources">Sources</a></li>
+            <li><a href="#sinks">Sinks</a></li>
+            <li><a href="#写html页面类">写HTML页面类</a></li>
+            <li><a href="#直接修改dom类">直接修改DOM类</a></li>
+            <li><a href="#替换文档url类">替换文档URL类</a></li>
+            <li><a href="#打开修改窗口类">打开/修改窗口类</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#dvwa-的-dom-型-xss">DVWA 的 DOM 型 XSS</a>
+      <ul>
+        <li>
+          <ul>
+            <li><a href="#难度一简单"><strong>难度：一、简单</strong></a></li>
+            <li><a href="#难度二中等"><strong>难度：二、中等</strong></a></li>
+            <li><a href="#难度三困难"><strong>难度：三、困难</strong></a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="dom型xss学习">DOM型XSS学习</h1>
+<p>Ps：之前一直没好好学过 xss，特别是 dom 型 xss 快忘得差不多了，所以今天抽空简单补补，也不是学得很深入。</p>
+<h2 id="dom-型-xss-是什么">DOM 型 XSS 是什么</h2>
+<p>DOM型XSS是基于DOM文档对象模型的一种漏洞，DOM 型 XSS 并不会和后台进行交互。由客户端的脚本程序通过DOM动态地检查和修改页面内容，从客户端获得DOM中的数据（如从URL中获取数据）并在本地进行执行。</p>
+<p>常见的危险危险函数如：</p>
+<p>document.URL，document.write，location，window.location。</p>
+<p>如下面的HTML文件就存在DOM型XSS，其功能是当我们在URL栏输入参数name的值后，就会在当前页面显示输入如的name的值，其功能的实现全都在前端JS中进行、未与后台进行任何交互：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="cp">&lt;!DOCTYPE html&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl">	<span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>DOM XSS<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl">	<span class="kd">var</span> <span class="nx">pos</span><span class="o">=</span><span class="nb">document</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">indexOf</span><span class="p">(</span><span class="s2">&#34;name=&#34;</span><span class="p">)</span><span class="o">+</span><span class="mi">5</span><span class="p">;</span>  
+</span></span><span class="line"><span class="cl">	<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nb">decodeURI</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="nx">pos</span><span class="p">,</span><span class="nb">document</span><span class="p">.</span><span class="nx">URL</span><span class="p">.</span><span class="nx">length</span><span class="p">)));</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span></span></span></code></pre></div></div><p><code>document.URL</code> 获取用户输入，代码中未经过任何过滤就传递给了 <code>document.write</code> 输出到当前页面中。那么传入 <code>name=&lt;script&gt;alert (111)&lt;/script&gt;</code> 就可以触发 xss 漏洞</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701113551792.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701113551792.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701113551792.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701113551792.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701113551792.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701113551792.png" /></p>
+<p>是不是感觉很像反射型 xss，只是不同的是这里不会后端进行交互，可以看到 dom 中已经插入了我们的元素，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701114200675.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701114200675.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701114200675.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701114200675.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701114200675.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240701114200675.png" /></p>
+<p>但是查看源码是没有的。</p>
+<h2 id="常见的危险函数">常见的危险函数</h2>
+<p>下面列下外部输入Sources和危险敏感操作Sinks（包括执行/输出页面），而对于DOM型XSS漏洞挖掘来说，可以简单归纳为在客户端加载的JS代码中，存在Sources+Sinks的情况即有可能存在DOM型XSS。</p>
+<h4 id="sources">Sources</h4>
+<ul>
+<li>document.URL</li>
+<li>document.URLUnencoded</li>
+<li>document.location（及其许多属性）</li>
+<li>document.referrer</li>
+<li>window.location（及其许多属性）</li>
+<li>location</li>
+<li>location.href</li>
+<li>location.search</li>
+<li>location.hash</li>
+<li>location.pathname</li>
+</ul>
+<h4 id="sinks">Sinks</h4>
+<p><strong>直接执行脚本类</strong></p>
+<ul>
+<li>eval(…)</li>
+<li>window.execScript(…)</li>
+<li>window.setInterval(…)</li>
+<li>window.setTimeout(…)</li>
+</ul>
+<h4 id="写html页面类">写HTML页面类</h4>
+<ul>
+<li>document.write(…)</li>
+<li>document.writeln(…)</li>
+<li>element.innerHTML(…)</li>
+</ul>
+<h4 id="直接修改dom类">直接修改DOM类</h4>
+<ul>
+<li>document.forms[0].action=… (and various other collections)</li>
+<li>document.attachEvent(…)</li>
+<li>document.create…(…)</li>
+<li>document.execCommand(…)</li>
+<li>document.body. … (accessing the DOM through the body object)</li>
+<li>window.attachEvent(…)</li>
+</ul>
+<h4 id="替换文档url类">替换文档URL类</h4>
+<ul>
+<li>document.location=… (and assigning to location’s href, host and hostname)</li>
+<li>document.location.hostname=…</li>
+<li>document.location.replace(…)</li>
+<li>document.location.assign(…)</li>
+<li>document.URL=…</li>
+<li>window.navigate(…)</li>
+</ul>
+<h4 id="打开修改窗口类">打开/修改窗口类</h4>
+<ul>
+<li>document.open(…)</li>
+<li>window.open(…)</li>
+<li>window.location.href=… (and assigning to location’s href, host and hostname)</li>
+</ul>
+<p>当然，除此之外，还有比较细节的特性这里就不列举了，可自行研究。</p>
+<p>相关例子参考：http://www.mi1k7ea.com/2019/06/25/%E6%B5%85%E6%9E%90DOM%E5%9E%8BXSS/</p>
+<h2 id="dvwa-的-dom-型-xss">DVWA 的 DOM 型 XSS</h2>
+<p>开题：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240702223519629.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240702223519629.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240702223519629.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240702223519629.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240702223519629.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240702223519629.png" /></p>
+<h4 id="难度一简单"><strong>难度：一、简单</strong></h4>
+<p>由于是 dom 型 xss 直接查看其元素。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703144637043.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703144637043.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703144637043.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703144637043.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703144637043.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703144637043.png" /></p>
+<p>看到先是获取参数 defalut 的值然后把其写入 <code>&lt;optinon&gt;</code> 标签中，然后查看源码发现没有任何过滤</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>      
+</span></span><span class="line"><span class="cl"><span class="c1"># No protections, anything goes      
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div></div><p>所以传参<code>?default=&lt;script&gt;alert(&quot;aaa&quot;)&lt;/script&gt;</code></p>
+<p>执行</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145058201.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145058201.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145058201.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145058201.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145058201.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145058201.png" /></p>
+<p>发现元素已经成功插入</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145130167.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145130167.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145130167.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145130167.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145130167.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240703145130167.png" /></p>
+<h4 id="难度二中等"><strong>难度：二、中等</strong></h4>
+<p>原理是一样的，就是多做了些过滤，查看源码</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>      
+</span></span><span class="line"><span class="cl"><span class="c1">// Is there any input?   
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span> <span class="nx">array_key_exists</span><span class="p">(</span> <span class="s2">&#34;default&#34;</span><span class="p">,</span> <span class="nv">$_GET </span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">is_null </span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span> <span class="s1">&#39;default&#39;</span> <span class="p">])</span> <span class="p">)</span> <span class="p">{</span>    
+</span></span><span class="line"><span class="cl"><span class="nv">$default </span><span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">];</span>       
+</span></span><span class="line"><span class="cl"><span class="c1"># Do not allow script tags    
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">if</span> <span class="p">(</span><span class="nx">stripos </span><span class="p">(</span><span class="nv">$default</span><span class="p">,</span> <span class="s2">&#34;&lt;script&#34;</span><span class="p">)</span> <span class="o">!==</span> <span class="k">false</span><span class="p">)</span> <span class="p">{</span>        
+</span></span><span class="line"><span class="cl"><span class="nx">header </span><span class="p">(</span><span class="s2">&#34;location: ?default=English&#34;</span><span class="p">);</span>           
+</span></span><span class="line"><span class="cl"><span class="k">exit</span><span class="p">;</span>       
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>   
+</span></span><span class="line"><span class="cl"><span class="p">}</span>      
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div></div><p>意思就是我们输入的参数值中不能有 <code>&lt;script</code> 标签，那么还可以用其它的标签</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">HTML</span> <span class="err">的</span> <span class="o">&lt;</span> <span class="n">img</span> <span class="o">&gt;</span> <span class="err">标签定义</span> <span class="n">HTML</span> <span class="err">页面中的图像，该标签支持</span> <span class="n">onerror</span> <span class="err">事件，在装载文档或图像的过程中如果发生了错误就会触发。使用这些内容构造出</span> <span class="n">payload</span> <span class="err">如下，因为我们没有图片可供载入，因此会出错从而触发</span> <span class="n">onerror</span> <span class="err">事件输出</span> <span class="n">cookie</span><span class="err">。</span></span></span></code></pre></div></div><p>所以构造：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">?default=English<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;&lt;/</span><span class="nt">select</span><span class="p">&gt;&lt;</span><span class="nt">img</span> <span class="na">src </span><span class="o">=</span> <span class="s">1</span> <span class="na">onerror </span><span class="o">=</span> <span class="s">alert(document.cookie)</span><span class="p">&gt;</span></span></span></code></pre></div></div><p>或者</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">&gt;<span class="p">&lt;/</span><span class="nt">option</span><span class="p">&gt;&lt;/</span><span class="nt">select</span><span class="p">&gt;&lt;</span><span class="nt">iframe</span> <span class="na">onload</span><span class="o">=</span><span class="s">alert(/xss/)</span><span class="p">&gt;</span></span></span></code></pre></div></div><h4 id="难度三困难"><strong>难度：三、困难</strong></h4>
+<p>源码：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>      
+</span></span><span class="line"><span class="cl"><span class="c1">// Is there any input?   
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="p">(</span> <span class="nx">array_key_exists</span><span class="p">(</span> <span class="s2">&#34;default&#34;</span><span class="p">,</span> <span class="nv">$_GET </span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="nx">is_null </span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span> <span class="s1">&#39;default&#39;</span> <span class="p">])</span> <span class="p">)</span> <span class="p">{</span>    
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># White list the allowable languages    
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="k">switch</span> <span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;default&#39;</span><span class="p">])</span> <span class="p">{</span>           
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="s2">&#34;French&#34;</span><span class="o">:</span>           
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="s2">&#34;English&#34;</span><span class="o">:</span>           
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="s2">&#34;German&#34;</span><span class="o">:</span>           
+</span></span><span class="line"><span class="cl">    <span class="k">case</span> <span class="s2">&#34;Spanish&#34;</span><span class="o">:</span>            
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="c1"># ok            
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="k">break</span><span class="p">;</span>           
+</span></span><span class="line"><span class="cl">    <span class="k">default</span><span class="o">:</span>            
+</span></span><span class="line"><span class="cl">      <span class="nx">header </span><span class="p">(</span><span class="s2">&#34;location: ?default=English&#34;</span><span class="p">);</span>              
+</span></span><span class="line"><span class="cl">      <span class="k">exit</span><span class="p">;</span>       
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>   
+</span></span><span class="line"><span class="cl"><span class="p">}</span>     
+</span></span><span class="line"><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div></div><p>发现是个白名单，只允许输入指定的参数，其他的都会跳转为 <code>?default=English</code></p>
+<p>但这里没过滤 <code>&lt;script&gt;</code> 标签。</p>
+<p>简单构造：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">English #<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">alert</span><span class="p">(</span><span class="nb">document</span><span class="p">.</span><span class="nx">cookie</span><span class="p">)&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div></div></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-10-31</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" data-title="DOM型XSS学习" data-hashtags="xss"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" data-hashtag="xss"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/xss/">Xss</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/" class="prev" rel="prev" title="XSS靶场训练"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>XSS靶场训练</a>
+            <a href="/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" class="next" rel="next" title="Github Pages博客搭建教程">Github Pages博客搭建教程<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

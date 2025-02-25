@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>XSS靶场训练 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="XSS靶场训练">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-10-20T11:41:26+00:00">
+    <meta property="article:modified_time" content="2024-10-20T11:41:26+00:00">
+    <meta property="article:tag" content="Xss">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="XSS靶场训练">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/" /><link rel="prev" href="http://localhost:1313/posts/edusrc/" /><link rel="next" href="http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "XSS靶场训练",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "xss","wordcount":  1877 ,
+        "url": "http:\/\/localhost:1313\/posts\/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83\/","datePublished": "2024-10-20T11:41:26+00:00","dateModified": "2024-10-20T11:41:26+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">XSS靶场训练</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>漏洞学习</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-10-20">2024-10-20</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1877 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#level-1">level-1</a></li>
+    <li><a href="#level-2">level-2</a></li>
+    <li><a href="#level-3">level-3</a></li>
+    <li><a href="#level-4">level-4</a></li>
+    <li><a href="#level-5">level-5</a></li>
+    <li><a href="#level-6">level-6</a></li>
+    <li><a href="#leve-7">leve-7</a></li>
+    <li><a href="#level-8">level-8</a></li>
+    <li><a href="#level-9">level-9</a></li>
+    <li><a href="#level-10">level-10</a></li>
+    <li><a href="#level-11">level-11</a></li>
+    <li><a href="#level-12">level-12</a></li>
+    <li><a href="#level-13">level-13</a></li>
+    <li><a href="#level-14">level-14</a></li>
+    <li><a href="#level-15">level-15</a></li>
+    <li><a href="#level-16">level-16</a></li>
+    <li><a href="#level-17">level-17</a></li>
+    <li><a href="#level-18">level-18</a></li>
+    <li><a href="#level-19">level-19</a></li>
+    <li><a href="#level-20">level-20</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="xss靶场">XSS靶场</h1>
+<h2 id="level-1">level-1</h2>
+<p>发现有个name传参，看源代码 get 传参 name 的值 test 插入了 html 里头</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-01-10%20114617.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-01-10%20114617.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-01-10%20114617.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-01-10%20114617.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-01-10%20114617.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-01-10%20114617.png" /></p>
+<p>然后应用 alter 函数就能触发第二关，那么传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">alert</span><span class="p">()&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110115137784.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110115137784.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110115137784.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110115137784.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110115137784.png"
+        title="image-20240110115137784" /></p>
+<h2 id="level-2">level-2</h2>
+<p>传入参数值</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl"><span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">alert</span><span class="p">()&lt;/</span><span class="nt">script</span><span class="p">&gt;</span></span></span></code></pre></div></div><p>查看源代码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110120207165.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110120207165.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110120207165.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110120207165.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110120207165.png"
+        title="image-20240110120207165" /></p>
+<p>&lt;&gt;符号被转义，但是下面一句是正常的，传入的 &ldquo;&gt;和&lt;&ldquo;与前后形成闭合。从而被当作标签处理，所以传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">&#34;&gt;<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span><span class="nx">alert</span><span class="p">()&lt;/</span><span class="nt">script</span><span class="p">&gt;</span><span class="err">&lt;</span>&#34;</span></span></code></pre></div></div><h2 id="level-3">level-3</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122014222.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122014222.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122014222.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122014222.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122014222.png"
+        title="image-20240110122014222" /></p>
+<p>查看源码发现上下都被转义了，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122656369.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122656369.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122656369.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122656369.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110122656369.png"
+        title="image-20240110122656369" /></p>
+<p>有 input 标签，那么就 onfocus 事件绕过，所以传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">&#39; onfocus=javascript:alert() &#39;</span></span></code></pre></div></div><p>单引号和前后闭合，javascript: 是伪协议，传入后再次点击输入框触发。</p>
+<h2 id="level-4">level-4</h2>
+<p>查看源代码发现 input 标签会自动删除尖括号，继续用level-3的方法，改成双引号闭合。记得空格</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/%e5%b1%8f%e5%b9%95%e6%88%aa%e5%9b%be%202024-01-10%20123740.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/%e5%b1%8f%e5%b9%95%e6%88%aa%e5%9b%be%202024-01-10%20123740.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/%e5%b1%8f%e5%b9%95%e6%88%aa%e5%9b%be%202024-01-10%20123740.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/%e5%b1%8f%e5%b9%95%e6%88%aa%e5%9b%be%202024-01-10%20123740.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/屏幕截图%202024-01-10%20123740.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/屏幕截图%202024-01-10%20123740.png" /></p>
+<h2 id="level-5">level-5</h2>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110125142687.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110125142687.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110125142687.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110125142687.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110125142687.png"
+        title="image-20240110125142687" /></p>
+<p>查看源代码，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131008010.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131008010.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131008010.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131008010.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131008010.png"
+        title="image-20240110131008010" /></p>
+<p>直接看源码吧，发现函数 strtolower 会转为小写，所以不能大小写绕过。前几关的方法也用不了了，那么这里传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">&#34;&gt;<span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">javascript:alert()</span><span class="p">&gt;</span>xxx<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span><span class="err">&lt;</span>&#34;</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131403812.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131403812.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131403812.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131403812.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131403812.png"
+        title="image-20240110131403812" /></p>
+<h2 id="level-6">level-6</h2>
+<p>比上一关多过滤了 href ，但这关可以使用大小写绕过</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131916777.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131916777.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131916777.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131916777.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110131916777.png"
+        title="image-20240110131916777" /></p>
+<p>因为str_replace()函数不区分大小写，这里又没加大写转小写的函数</p>
+<h2 id="leve-7">leve-7</h2>
+<p>查看源码发现会把关键字替换为空。可以双写绕过</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132552305.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132552305.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132552305.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132552305.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132552305.png"
+        title="image-20240110132552305" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132533496.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132533496.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132533496.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132533496.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110132533496.png"
+        title="image-20240110132533496" /></p>
+<h2 id="level-8">level-8</h2>
+<p>直接看源码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133649272.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133649272.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133649272.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133649272.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133649272.png"
+        title="image-20240110133649272" /></p>
+<p>过滤的有点多，可以使用unicode编码绕过</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133248152.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133248152.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133248152.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133248152.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133248152.png"
+        title="image-20240110133248152" /></p>
+<p>在线编码网址：https://www.matools.com/code-convert-unicode，和另一种的区别</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133443772.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133443772.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133443772.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133443772.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110133443772.png"
+        title="image-20240110133443772" /></p>
+<h2 id="level-9">level-9</h2>
+<p>多了个条件</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134023426.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134023426.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134023426.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134023426.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134023426.png"
+        title="image-20240110134023426" /></p>
+<p>也就是传的值要有 http:// ，即传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&amp;#106;&amp;#97;&amp;#118;&amp;#97;&amp;#115;&amp;#99;&amp;#114;&amp;#105;&amp;#112;&amp;#116;&amp;#58;&amp;#97;&amp;#108;&amp;#101;&amp;#114;&amp;#116;&amp;#40;&amp;#41;/* http:// */</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134252187.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134252187.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134252187.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134252187.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110134252187.png"
+        title="image-20240110134252187" /></p>
+<h2 id="level-10">level-10</h2>
+<p>查看源码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141536806.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141536806.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141536806.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141536806.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141536806.png"
+        title="image-20240110141536806" /></p>
+<p>发现有隐藏参数 t_sort ，可以看到还过滤了尖括号，用 onfocus 事件绕过。这里还要把 type 从 hidden 改为 test</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">&#34; onfocus=javascript:alert() type=&#34;text</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141947763.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141947763.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141947763.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141947763.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110141947763.png"
+        title="image-20240110141947763" /></p>
+<h2 id="level-11">level-11</h2>
+<p>![屏幕截图 2024-01-10 142511](<a href="https://raw.githubusercontent.com/gaorenyusi/img/master/img/" target="_blank" rel="noopener noreffer ">https://raw.githubusercontent.com/gaorenyusi/img/master/img/</a>屏幕截图 2024-01-10 142511.png)</p>
+<p>四个隐藏参数，都进行传参，发现只有 t_sort 有数据，但被转义了，然后看wp说 ref 是 referer 头部的数据，然后过滤了&lt;&gt;</p>
+<p>所以上面的payload继续用，利用hacker传到referer头部</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110142920775.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110142920775.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110142920775.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110142920775.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110142920775.png"
+        title="image-20240110142920775" /></p>
+<h2 id="level-12">level-12</h2>
+<p>看源码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143150144.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143150144.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143150144.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143150144.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143150144.png"
+        title="image-20240110143150144" /></p>
+<p>从ua不难看出是user agent头部，和上关区别不大</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143133909.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143133909.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143133909.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143133909.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143133909.png"
+        title="image-20240110143133909" /></p>
+<h2 id="level-13">level-13</h2>
+<p>这次参数是 t_cook ，那么看来是cookie了，抓包看看参数</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143905319.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143905319.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143905319.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143905319.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110143905319.png"
+        title="image-20240110143905319" /></p>
+<p>user，那么给user传上面构造。得到</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">这个也行 &#34; onclick=alert() type=&#34;text </span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110144009177.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110144009177.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110144009177.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110144009177.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110144009177.png"
+        title="image-20240110144009177" /></p>
+<h2 id="level-14">level-14</h2>
+<p>这关卡的 iframe 引用的地址打不开了，参考师傅们的14关可以自己本地搭建，意思就是引用到本地的网址，在本地放上 exif xss 漏洞。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110150733127.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110150733127.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110150733127.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110150733127.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110150733127.png"
+        title="image-20240110150733127" /></p>
+<p>复制师傅们的代码，开启 exif ，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151156916.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151156916.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151156916.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151156916.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151156916.png"
+        title="image-20240110151156916" /></p>
+<p>把地址改为 <code>http://127.0.0.1:89</code>，然后上传的图片里面有xss恶意代码就会因为exif解析而触发，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151233093.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151233093.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151233093.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151233093.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110151233093.png"
+        title="image-20240110151233093" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152053247.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152053247.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152053247.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152053247.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152053247.png"
+        title="image-20240110152053247" /></p>
+<p>后面换成了index.php，端口换一下就行，影响不大，</p>
+<p>![](<a href="https://raw.githubusercontent.com/gaorenyusi/img/master/img/" target="_blank" rel="noopener noreffer ">https://raw.githubusercontent.com/gaorenyusi/img/master/img/</a>屏幕截图 2024-01-10 152026.png)</p>
+<p>参考：<a href="https://blog.csdn.net/qq_40929683/article/details/120422266" target="_blank" rel="noopener noreffer ">https://blog.csdn.net/qq_40929683/article/details/120422266</a></p>
+<h2 id="level-15">level-15</h2>
+<p>源代码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152712083.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152712083.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152712083.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152712083.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152712083.png"
+        title="image-20240110152712083" /></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">ng-include指令就是文件包涵的意思，用来包涵外部的html文件，如果包涵的内容是地址，需要加引号</span></span></code></pre></div></div><p>列如</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153023441.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153023441.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153023441.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153023441.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153023441.png"
+        title="image-20240110153023441" /></p>
+<p>然后有</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152757457.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152757457.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152757457.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152757457.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110152757457.png"
+        title="image-20240110152757457" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153545619.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153545619.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153545619.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153545619.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110153545619.png"
+        title="image-20240110153545619" /></p>
+<p>但是不能包涵那些直接弹窗的东西如<code>&lt;script&gt;</code>，可以包含手动弹窗，比如<code>&lt;a&gt;、&lt;input&gt;、&lt;img&gt;、&lt;p&gt;</code>标签等等，那么构造</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="o">?</span><span class="nx">src</span><span class="o">=</span><span class="s1">&#39;/level1.php?name=&lt;img src=1 onmouseover=alert()&gt;&#39;</span></span></span></code></pre></div></div><p>![](<a href="https://raw.githubusercontent.com/gaorenyusi/img/master/img/" target="_blank" rel="noopener noreffer ">https://raw.githubusercontent.com/gaorenyusi/img/master/img/</a>屏幕截图 2024-01-10 153113.png)</p>
+<h2 id="level-16">level-16</h2>
+<p>直接看源码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110160746591.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110160746591.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110160746591.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110160746591.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110160746591.png"
+        title="image-20240110160746591" /></p>
+<p>首先 script 标签被过滤了，那么换其他的标签（用不需要用 / 符号的标签），至于空格用%0a代替</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">&lt;img%0asrc=&#34;x&#34;%0aonerror=alert(&#34;xss&#34;);&gt;</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161403426.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161403426.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161403426.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161403426.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161403426.png"
+        title="image-20240110161403426" /></p>
+<h2 id="level-17">level-17</h2>
+<p>直接看源代码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161807711.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161807711.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161807711.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161807711.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110161807711.png"
+        title="image-20240110161807711" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162212566.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162212566.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162212566.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162212566.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162212566.png"
+        title="image-20240110162212566" /></p>
+<p>简单解释就是包含正确的区域就行了，把源码改为包含level15.png（swf文件要下载 flash player 插件才行）就能正常包含区域，然后传入</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">?arg01= onmouseover&amp;arg02=alert()</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162840688.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162840688.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162840688.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162840688.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110162840688.png"
+        title="image-20240110162840688" /></p>
+<h2 id="level-18">level-18</h2>
+<p>看源码和17关差不多，改了包含文件直接传17关的payload</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110163847522.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110163847522.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110163847522.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110163847522.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110163847522.png"
+        title="image-20240110163847522" /></p>
+<h2 id="level-19">level-19</h2>
+<p>涉及到了 swf 的反编译，下载个flash player看看（不知道为啥重复了几遍）。根据师傅解释这里<code>flash</code>里面提示<code>sifr.js</code>是没有定义的，所以需要反编译看看源码。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110182516967.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110182516967.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110182516967.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110182516967.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110182516967.png"
+        title="image-20240110182516967" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110165821013.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110165821013.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110165821013.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110165821013.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110165821013.png"
+        title="image-20240110165821013" /></p>
+<p>工具 jpexs</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175023082.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175023082.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175023082.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175023082.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175023082.png"
+        title="image-20240110175023082" /></p>
+<p>下载后，跟着师傅做</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180041947.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180041947.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180041947.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180041947.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180041947.png"
+        title="image-20240110180041947" /></p>
+<p>发现flash显示的内容</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175853022.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175853022.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175853022.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175853022.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110175853022.png"
+        title="image-20240110175853022" /></p>
+<p>发现%s是显示内容的一个变量，溯源%s，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180150858.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180150858.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180150858.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180150858.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180150858.png"
+        title="image-20240110180150858" /></p>
+<p>读不懂，看师傅wp大概是和version有关，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180519029.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180519029.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180519029.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180519029.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180519029.png"
+        title="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110180519029.png" /></p>
+<p>看不懂一点&#x1f613;&#x1f613;&#x1f613;，不管那么多了，跟着传入payload，那个version就是反编译看出来的，大概是version=123，然后find里%s就显示的123</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181016412.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181016412.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181016412.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181016412.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181016412.png"
+        title="image-20240110181016412" /></p>
+<p>继续</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="nx">arg01</span><span class="o">=</span><span class="nx">version</span><span class="o">&amp;</span><span class="nx">arg02</span><span class="o">=&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="o">=</span><span class="s2">&#34;javascript:alert(/xss/)&#34;</span><span class="o">&gt;</span><span class="nx">xss</span><span class="o">&lt;</span><span class="err">/a&gt;</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181225647.png"
+        data-srcset="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181225647.png, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181225647.png 1.5x, https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181225647.png 2x"
+        data-sizes="auto"
+        alt="https://raw.githubusercontent.com/gaorenyusi/img/master/img/image-20240110181225647.png"
+        title="image-20240110181225647" /></p>
+<h2 id="level-20">level-20</h2>
+<p>也要反编译，看看wp得了</p>
+<p>参考：<a href="https://blog.csdn.net/u014029795/article/details/103217680" target="_blank" rel="noopener noreffer ">https://blog.csdn.net/u014029795/article/details/103217680</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-10-20</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/" data-title="XSS靶场训练" data-hashtags="xss"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/" data-hashtag="xss"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/xss/">Xss</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/edusrc/" class="prev" rel="prev" title="记一次 edu 证书站失败的逻辑漏洞"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>记一次 edu 证书站失败的逻辑漏洞</a>
+            <a href="/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" class="next" rel="next" title="DOM型XSS学习">DOM型XSS学习<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

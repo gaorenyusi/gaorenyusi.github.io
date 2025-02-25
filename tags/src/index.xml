@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>Src - 标签 - Gaorenyusi&#39;s Blog</title>
+        <link>http://localhost:1313/tags/src/</link>
+        <description>Src - 标签 - Gaorenyusi&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 20 Oct 2024 11:41:26 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/src/" rel="self" type="application/rss+xml" /><item>
+    <title>记一次 edu 证书站失败的逻辑漏洞</title>
+    <link>http://localhost:1313/posts/edusrc/</link>
+    <pubDate>Sun, 20 Oct 2024 11:41:26 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/edusrc/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
+</rss>

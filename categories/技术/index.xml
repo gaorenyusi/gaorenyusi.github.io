@@ -1,0 +1,15 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>技术 - 分类 - Gaorenyusi&#39;s Blog</title>
+        <link>http://localhost:1313/categories/%E6%8A%80%E6%9C%AF/</link>
+        <description>技术 - 分类 - Gaorenyusi&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 20 Oct 2024 11:41:26 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/categories/%E6%8A%80%E6%9C%AF/" rel="self" type="application/rss+xml" /><item>
+    <title>XSS靶场训练</title>
+    <link>http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/</link>
+    <pubDate>Sun, 20 Oct 2024 11:41:26 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
+</rss>

