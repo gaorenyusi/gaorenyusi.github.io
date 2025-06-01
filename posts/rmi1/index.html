@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>java RMI反序列化-原理篇 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/rmi1/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="java RMI反序列化-原理篇">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-06-30T20:58:47+00:00">
+    <meta property="article:modified_time" content="2024-06-30T20:58:47+00:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="反序列化">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="java RMI反序列化-原理篇">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/rmi1/" /><link rel="prev" href="http://localhost:1313/posts/cc7/" /><link rel="next" href="http://localhost:1313/posts/rm2/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "java RMI反序列化-原理篇",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/rmi1\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "java, 反序列化","wordcount":  6063 ,
+        "url": "http:\/\/localhost:1313\/posts\/rmi1\/","datePublished": "2024-06-30T20:58:47+00:00","dateModified": "2024-06-30T20:58:47+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">java RMI反序列化-原理篇</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/javasec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Javasec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-06-30">2024-06-30</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 6063 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 13 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#rmi-是什么">RMI 是什么？</a>
+      <ul>
+        <li><a href="#rmi-的架构">RMI 的架构</a></li>
+        <li><a href="#rmi-实列元素">RMI 实列元素</a></li>
+      </ul>
+    </li>
+    <li><a href="#rmi-的实现">RMI 的实现</a>
+      <ul>
+        <li><a href="#一个rmi-实列">一个RMI 实列</a>
+          <ul>
+            <li><a href="#rmi-server">RMI Server</a></li>
+            <li><a href="#rmi-registry">RMI Registry</a></li>
+            <li><a href="#rmi-client">RMI Client</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#源码分析">源码分析</a>
+      <ul>
+        <li><a href="#服务注册">服务注册</a>
+          <ul>
+            <li><a href="#创建远程服务">创建远程服务</a></li>
+            <li><a href="#创建注册中心">创建注册中心</a></li>
+            <li><a href="#服务端绑定">服务端绑定</a></li>
+          </ul>
+        </li>
+        <li><a href="#服务发现">服务发现</a></li>
+        <li><a href="#整个服务调用三个地方过程">整个服务调用三个地方过程</a>
+          <ul>
+            <li><a href="#客户端">客户端</a></li>
+            <li><a href="#注册中心">注册中心</a></li>
+            <li><a href="#服务端">服务端</a></li>
+          </ul>
+        </li>
+        <li><a href="#总结">总结</a></li>
+        <li><a href="#dgc">DGC</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="java-rmi反序列化-原理篇">java RMI反序列化-原理篇</h1>
+<p><strong>前言</strong>：RMI 作为后续漏洞中最为基本的利用手段之一，学习的必要性非常之大。本文着重偏向于 RMI 通信原理的理解，如果只懂利用，就太脚本小子了。</p>
+<p>这里有个坑点：就是 RMI 当中的攻击手法只在 jdk8u121 之前才可以进行攻击，因为在 8u121 之后，bind rebind unbind 这三个方法只能对 localhost 进行攻击，后续我们会提到。</p>
+<h2 id="rmi-是什么">RMI 是什么？</h2>
+<p>Java RMI（Java Remote Method Invocation），即Java远程方法调用。是Java编程语言里，一种用于实现远程过程调用的应用程序编程接口。RMI 使用 JRMP(一种协议)实现，使得客户端运行的程序可以调用远程服务器上的对象。是实现RPC的一种方式。</p>
+<h3 id="rmi-的架构">RMI 的架构</h3>
+<p><strong>Stub和Skeleton</strong></p>
+<p>Stub（存根）和 Skeleton（骨架），当客户端试图调用一个远端对象，实际上会调用客户端本地的一个代理类，也就是 Stub。而在调用服务端的目标类之前，也会经过一个对应的代理类，也就是 Skeleton。它从 Stub 接收远程方法调用并将它们传递给对象。</p>
+<h3 id="rmi-实列元素">RMI 实列元素</h3>
+<ul>
+<li>Client：客户端，客户端调用服务端的方法</li>
+<li>Server：服务端，服务端通过绑定远程对象，这个对象可以封装很多网络操作，也就是 Socket</li>
+<li>Registry：注册中心，类比成 RMI 的电话薄。提供服务注册与服务获取。即 Server 端向 Registry 注册服务，比如地址、端口等一些信息，Client 端从 Registry 获取远程对象的一些信息，如地址、端口等，然后进行远程调用。</li>
+</ul>
+<h2 id="rmi-的实现">RMI 的实现</h2>
+<p>这张图非常详细的描述了 RMI 的过程，先是远程的服务端创建并注册远程对象，然后客户端再进行查找的的时候先会去注册中心进行查找，然后注册中心返回服务端远程对象的存根
+然后调用远程对象方法时，客户端本地存根和服务端骨架进行通信，然后就是骨架代理进行方法调用并且再服务端进行执行，然后骨架又把结果返回给存根，最后存根把结果给客户端，更详细的图</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240704155117374.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240704155117374.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240704155117374.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240704155117374.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240704155117374.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240704155117374.png" /></p>
+<h3 id="一个rmi-实列">一个RMI 实列</h3>
+<p><strong>java. rmi. Remote 接口</strong></p>
+<p><code>java.rmi.Remote</code> 接口用于标识可以从非本地虚拟机调用其方法的接口。任何作为远程对象的对象必须直接或者间接实现。只有那些远程接口（继承 <code>java.rmi.Remote</code> 接口）中指定的方法才可以远程使用。</p>
+<p><strong>java.rmi.server.UnicastRemoteObject类</strong></p>
+<p>RMI 提供了一些远程对象实现可以继承的便利类，这些类有助于远程对象的创建，其中包括java.rmi.server.UnicastRemoteObject类。这个类构造方法会调用exportObject或调用exportObject静态方法，它会返回远程对象代理类，也就是Stub。如果不继承该类可以手动调用其静态方法 <code>exportObject</code> 来手动 export 对象。</p>
+<h4 id="rmi-server">RMI Server</h4>
+<p><strong>一、编写一个远程接口</strong></p>
+<p><strong>远程接口要求：</strong></p>
+<ul>
+<li>使用public声明，否则客户端在尝试加载实现远程接口的远程对象时会出错。（如果客户端、服务端放一起没关系）</li>
+<li>同时需要继承Remote类，也就是需要实现java.rmi.Remote接口</li>
+<li>接口的方法需要声明java.rmi.RemoteException报错</li>
+<li>服务端实现这个远程接口</li>
+</ul>
+<p>定义一个我们期望能够远程调用的接口，这个接口必须扩展 <code>java.rmi.Remote</code> 接口，用来远程调用的对象作为这个接口的实例，也将实现这个接口，为这个接口生成的代理（Stub）也是如此。这个接口中的所有方法都必须声明抛出 <code>java.rmi.RemoteException</code> 异常，</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.Remote</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.RemoteException</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">interface</span> <span class="nc">RMIinter</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">Remote</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">hello</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">RemoteException</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p><strong>二、编写一个实现了这个远程接口的实现类</strong></p>
+<p>实现类要求：</p>
+<ul>
+<li>实现远程接口</li>
+<li>继承UnicastRemoteObject类（具体效果上面有说）</li>
+<li>构造函数需要抛出一个RemoteException错误</li>
+<li>实现类中使用的对象必须都可序列化，即都继承java.io.Serializable</li>
+<li>注册远程对象</li>
+</ul>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.RemoteException</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.server.UnicastRemoteObject</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">RMIobj</span><span class="w"> </span><span class="kd">extends</span><span class="w"> </span><span class="n">UnicastRemoteObject</span><span class="w"> </span><span class="kd">implements</span><span class="w"> </span><span class="n">RMIinter</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">protected</span><span class="w"> </span><span class="nf">RMIobj</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">RemoteException</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kd">super</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">hello</span><span class="p">()</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">RemoteException</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;hello()被调用&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="s">&#34;gaoren&#34;</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p>现在被调用的对象就创建好了，接下来就是如何实现调用了。</p>
+<h4 id="rmi-registry">RMI Registry</h4>
+<p>在上面的流程图不难看到还有个Registry 的思想（不再解释），这种思想主要由 <code>java.rmi.registry.Registry</code> 和 <code>java.rmi.Naming</code> 来实现。</p>
+<p><strong>1、java.rmi.Naming</strong></p>
+<p>这是一个 final 类，提供了在远程对象注册表（Registry）中存储和获取远程对象引用的方法，这个类提供的每个方法都有一个 URL 格式的参数，格式如下： <code>//host:port/name</code>：</p>
+<ul>
+<li>host 表示注册表所在的主机</li>
+<li>port 表示注册表接受调用的端口号，默认为 1099</li>
+<li>name 表示一个注册 Remote Object 的引用的名称，不能是注册表中的一些关键字</li>
+</ul>
+<p>Naming 提供了查询（lookup）、绑定（bind）、重新绑定（rebind）、接触绑定（unbind）、list（列表）用来对注册表进行操作。也就是说，Naming 是一个用来对注册表进行操作的类。而这些方法的具体实现，其实是调用 <code>LocateRegistry.getRegistry</code> 方法获取了 Registry 接口的实现类，并调用其相关方法进行实现的。</p>
+<p><strong>2、java.rmi.registry.Registry</strong></p>
+<p>这个接口在 RMI 下有两个实现类，分别是 <code>RegistryImpl_Skel</code> 以及 <code>RegistryImpl_Stub</code>。</p>
+<p>我们通常使用 <code>LocateRegistry#createRegistry()</code> 方法来创建注册中心</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.Naming</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.registry.LocateRegistry</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">Registry</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">args</span><span class="o">[]</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">LocateRegistry</span><span class="p">.</span><span class="na">createRegistry</span><span class="p">(</span><span class="n">1099</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Server Start&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 创建远程对象  </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">RMIinter</span><span class="w"> </span><span class="n">rmiobj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RMIobj</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 绑定远程对象  </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Naming</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="s">&#34;rmi://localhost:1099/Hello&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">rmiobj</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><h4 id="rmi-client">RMI Client</h4>
+<p>客户端进行调用，向注册中心查询相应的Name，调用相应的远程方法</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.NotBoundException</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.RemoteException</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.registry.LocateRegistry</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.registry.Registry</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.Arrays</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">cilent</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">RemoteException</span><span class="p">,</span><span class="w"> </span><span class="n">NotBoundException</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Registry</span><span class="w"> </span><span class="n">registry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LocateRegistry</span><span class="p">.</span><span class="na">getRegistry</span><span class="p">(</span><span class="s">&#34;localhost&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">1099</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">Arrays</span><span class="p">.</span><span class="na">toString</span><span class="p">(</span><span class="n">registry</span><span class="p">.</span><span class="na">list</span><span class="p">()));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">RMIinter</span><span class="w"> </span><span class="n">stub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">RMIinter</span><span class="p">)</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="na">lookup</span><span class="p">(</span><span class="s">&#34;Hello&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="n">stub</span><span class="p">.</span><span class="na">hello</span><span class="p">());</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p>这里 RMIinter 接口在 Client/Server/Registry 均应该存在，只不过通常 Registry 与 Server 通常在同一端上。</p>
+<p>首先需要启动服务端RMI服务，运行服务端代码。然后客户端请求远程方法，也就是运行客户端的代码
+服务端</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090441795.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090441795.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090441795.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090441795.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090441795.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090441795.png" /></p>
+<p>客户端</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090428311.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090428311.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090428311.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090428311.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090428311.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720090428311.png" /></p>
+<p>这样一次简单的远程调用就完成了，不难发现其实方法的执行是在服务端执行的。</p>
+<h2 id="源码分析">源码分析</h2>
+<p>总共是 6 个互相通信过程+3 个创建过程。</p>
+<h3 id="服务注册">服务注册</h3>
+<h4 id="创建远程服务">创建远程服务</h4>
+<p>关键代码：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">RMIinter</span><span class="w"> </span><span class="n">rmiobj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RMIobj</span><span class="p">();</span></span></span></code></pre></div></div><p>在这句代码下上断点然后开始调试，在到 <code>UnicastRemoteObject</code> 构造函数之前，会先调用其静态方法进行一些赋值，不过不影响不用管，直接到其构造函数</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111315889.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111315889.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111315889.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111315889.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111315889.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111315889.png" /></p>
+<p>初始化时会调用 <code>exportObject</code> 方法，这里的 obj 是我们要注册的远程对象。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111452114.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111452114.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111452114.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111452114.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111452114.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727111452114.png" /></p>
+<p>可以看到这里的 <code>exportObject</code> 方法是个静态函数，所以说如果没有继承 <code>UnicastRemoteObject</code> 类可与进行静态调用其方法。然后其参数 new 了一个 <code>UnicastServerRef</code> 类，跟进一手</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112111637.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112111637.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112111637.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112111637.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112111637.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112111637.png" /></p>
+<p>又 new 了一个 <code>LiveRef</code> 类，继续跟进</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112214283.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112214283.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112214283.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112214283.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112214283.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112214283.png" /></p>
+<p>this 就是调用其构造函数，然后 new 的那个就是个 id，跟进其构造函数，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112354305.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112354305.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112354305.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112354305.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112354305.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112354305.png" /></p>
+<p>三个参数，第二个参数就是处理的网络请求，把端口进行一通处理，继续跟进 this</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112938946.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112938946.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112938946.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112938946.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112938946.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727112938946.png" /></p>
+<p>可以看到刚刚的第二个参数就是 ip 和端口嘛，然后出去。</p>
+<p><font color=red>其实这里总的来说就是创建了个 LiveRef 类然后将其赋值给服务端和客户端。</font></p>
+<p>出来后继续跟进 <code>exportObject</code> 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113459317.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113459317.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113459317.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113459317.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113459317.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113459317.png" /></p>
+<p>这里可以看到把刚刚的 <code>liveref</code> 赋值给了 <code>sref</code>，也就是服务端。包含了我们的网络处理信息。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113613433.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113613433.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113613433.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113613433.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113613433.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113613433.png" /></p>
+<p>跟进 <code>sref.exportObject</code> 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png" /></p>
+<p>可以看到这里出现了 <code>stub</code> 代理类，通过 <code>createProxy</code> 来创建的，跟进</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114931265.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114931265.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114931265.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114931265.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114931265.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114931265.png" /></p>
+<p>先看下这里的三个参数</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114949506.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114949506.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114949506.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114949506.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114949506.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727114949506.png" /></p>
+<p>impClass 就是 stub 代理类，cilentRef 实质上还是之前创建的 ref。</p>
+<p>继续看看到一处逻辑</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115809129.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115809129.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115809129.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115809129.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115809129.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115809129.png" /></p>
+<p><font color=red>最主要的是 stubClassExists(remoteClass)，其值为真就调用 if 语句</font>，跟进看看：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115947810.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115947810.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115947810.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115947810.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115947810.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727115947810.png" /></p>
+<p>因为这里的 remoteClass 没有 remoteClass_Stub 所以返回 false，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727120328316.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727120328316.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727120328316.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727120328316.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727120328316.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727120328316.png" /></p>
+<p><strong>那么就会进行动态代理的创建，用 <code>RemoteObjectInvocationHandler</code> 为<code>UnicastRef</code>对象创建动态代理，最后会返回一个Remote类型的代理类，在调用代理类方法时，就会会调用 <code>RemoteObjectInvocationHandler.invoke</code> 方法，这个后面再议</strong>。</p>
+<p>继续下一步，stub 创建好后其实可以看到里面最主要的还是 ref 部分。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121346130.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121346130.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121346130.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121346130.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121346130.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121346130.png" /></p>
+<p>再往下走，发现其创建了 target 类，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121641853.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121641853.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121641853.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121641853.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121641853.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121641853.png" /></p>
+<p>看其参数，也就是一个总封装，把前面那些对象什么的全部放了进去。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121928549.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121928549.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121928549.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121928549.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121928549.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727121928549.png" /></p>
+<p>继续跟进看到调用了 <code>ref.exportObject</code>，然后一直跟进</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122314956.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122314956.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122314956.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122314956.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122314956.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122314956.png" /></p>
+<p>最后到了 <code>TCPTransport.exportObject</code> 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122505408.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122505408.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122505408.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122505408.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122505408.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122505408.png" /></p>
+<p><code>listen()</code> 里面就是涉及到网络请求的内容的，就是开启一个端口然后等待客户端连接进行操作。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122913504.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122913504.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122913504.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122913504.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122913504.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727122913504.png" /></p>
+<p>可以看到就是已经开启端口了（默认的随机端口），然后又调用了父类的 exportObject 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720225531160.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720225531160.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720225531160.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720225531160.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720225531160.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240720225531160.png" /></p>
+<p>将<code>Target</code>对象存放进<code>ObjectTable</code>中，ObjectTable 用来管理所有发布的服务实例 Target。</p>
+<p>其实总的来说涉及到的大多是网络通信的东西，就是把创建的 ref 赋值给服务端然后创建个 stub，在把前面那些对象全部封装进 target，然后在 TCPTransport 中对网络通信进行处理发布服务，最后把 target 放进 ObjectTable 中。</p>
+<h4 id="创建注册中心">创建注册中心</h4>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">LocateRegistry</span><span class="p">.</span><span class="na">createRegistry</span><span class="p">(</span><span class="n">1099</span><span class="p">);</span></span></span></code></pre></div></div><p>跟进 <code>createRegistry</code> 函数，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210718200.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210718200.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210718200.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210718200.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210718200.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210718200.png" /></p>
+<p><code>new</code> 了一个 <code>RegistryImpl</code> 对象，继续跟进，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210955198.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210955198.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210955198.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210955198.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210955198.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727210955198.png" /></p>
+<p>看到这里和上面远程对象注册很像，都 new 了个 liveref 对象，这里就不在跟进了和上面是一样的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211223405.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211223405.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211223405.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211223405.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211223405.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211223405.png" /></p>
+<p>继续走又创建了个 <code>UnicastServerRef</code> 对象，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211319743.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211319743.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211319743.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211319743.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211319743.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211319743.png" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727211538936.png"
+        data-srcset="assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727211538936.png, assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727211538936.png 1.5x, assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727211538936.png 2x"
+        data-sizes="auto"
+        alt="assets/java%20RMI反序列化-原理篇/image-20240727211538936.png"
+        title="assets/java%20RMI反序列化-原理篇/image-20240727211538936.png" /></p>
+<p>就是个赋值，跟进 <code>setup</code> 方法里面，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211718988.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211718988.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211718988.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211718988.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211718988.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727211718988.png" /></p>
+<p>调用了 <code>uref.exportObject</code> 方法，回顾上面的远程对象注册，是调用的 <code>sref.exportObject</code>，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727113911894.png" /></p>
+<p>其实都是 <code>UnicastServerRef</code> 的 <code>exportObject</code> 方法，这里的 this 是 <code>RegestryImpl</code> 对象</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212404575.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212404575.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212404575.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212404575.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212404575.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212404575.png" /></p>
+<p>继续跟进</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240726203951695.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240726203951695.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240726203951695.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240726203951695.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240726203951695.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240726203951695.png" /></p>
+<p>又是创建 stub，不过稍有区别了，跟进</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212805943.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212805943.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212805943.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212805943.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212805943.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727212805943.png" /></p>
+<p><strong>这里的 <code>RometeClass</code> 是 <code>RegestryImpl</code> 对象，由于存在 <code>RegestryImpl_Stub</code> ，所以会返回 true，执行 if 语句。</strong></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213121649.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213121649.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213121649.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213121649.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213121649.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213121649.png" /></p>
+<p>执行的 <code>createStub</code> 方法其实也就是创建了个 <code>RegestryImpl_Stub</code> 实列化对象，</p>
+<p>最后回到 <code>exportObject </code> 方法，stub 代理类也就创建好了，对比和上面远程对象注册中的 stub 确实不一样，上面的 stub 是动态代理创建的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213602804.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213602804.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213602804.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213602804.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213602804.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213602804.png" /></p>
+<p>然后又因为满足下面的 if 条件会执行 <code>setSkeleton</code> 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213919288.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213919288.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213919288.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213919288.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213919288.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727213919288.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727214042983.png"
+        data-srcset="assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727214042983.png, assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727214042983.png 1.5x, assets/java%20RMI%e5%8f%8d%e5%ba%8f%e5%88%97%e5%8c%96-%e5%8e%9f%e7%90%86%e7%af%87/image-20240727214042983.png 2x"
+        data-sizes="auto"
+        alt="assets/java%20RMI反序列化-原理篇/image-20240727214042983.png"
+        title="assets/java%20RMI反序列化-原理篇/image-20240727214042983.png" /></p>
+<p><strong>看到又是创建 skle 代理，其实和 stub 代理创建差别不大，实列化了 <code>RegestryImpl_Skel</code> 对象</strong></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214407141.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214407141.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214407141.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214407141.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214407141.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214407141.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214609192.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214609192.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214609192.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214609192.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214609192.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214609192.png" /></p>
+<p>最后又是创建了个 target 对象</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214719765.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214719765.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214719765.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214719765.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214719765.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214719765.png" /></p>
+<p>也是把刚刚那些对象进行一个总封装，不过比起上面的远程对象注册多了个远程对象 Impl 中多了 skel 对象，并且 stub 对象也不一样了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214826127.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214826127.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214826127.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214826127.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214826127.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727214826127.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215014442.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215014442.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215014442.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215014442.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215014442.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215014442.png" /></p>
+<p><strong>最后还是调用 <code>putTarget</code> 方法将其添加进 objecttable 中，可以看到多了一个 hashmap，11 是远程对象注册添加的，至于那个 2 是 DGC ，后面再说。</strong></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215848487.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215848487.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215848487.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215848487.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215848487.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727215848487.png" /></p>
+<p>创建注册中心与创建远程服务的大部分流程相同，差异在：</p>
+<ul>
+<li>远程服务对象使用动态代理，invoke 方法最终调用 UnicastRef 的 invoke 方法，注册中心使用 RegistryImpl_Stub，同时还创建了 RegistryImpl_Skel</li>
+<li>远程对象默认随机端口，注册中心默认是 1099（当然也可以指定）</li>
+</ul>
+<h4 id="服务端绑定">服务端绑定</h4>
+<p>关键代码，</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Naming</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="s">&#34;rmi://localhost:1099/Hello&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">rmiobj</span><span class="p">);</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221605128.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221605128.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221605128.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221605128.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221605128.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221605128.png" /></p>
+<p>先是把两个参数进行处理，然后只把 name 被 obj 传入 <code>registry.bind</code> 中。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221648201.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221648201.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221648201.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221648201.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221648201.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727221648201.png" /></p>
+<p>调用了 <code>newCall</code> 方法，（这里我这个类是 class 文件，没有源码无法正常调试，随便调调好了）</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222211350.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222211350.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222211350.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222211350.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222211350.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222211350.png" /></p>
+<p>继续跟进，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222129967.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222129967.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222129967.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222129967.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222129967.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222129967.png" /></p>
+<p>看到熟悉的 ref 了，总之这个方法就是建立一个连接，然后继续看到会对其进行序列化，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222456951.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222456951.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222456951.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222456951.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222456951.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222456951.png" /></p>
+<p>然后执行了<code>UnicastRef.invoke</code>方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222856664.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222856664.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222856664.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222856664.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222856664.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222856664.png" /></p>
+<p>跟进后在方法 <code>executeCall</code> ，在该方法中又对连接对象行了反序列化。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222948440.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222948440.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222948440.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222948440.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222948440.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727222948440.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727223236410.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727223236410.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727223236410.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727223236410.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727223236410.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727223236410.png" /></p>
+<p>这个应该属于远程绑定，一般服务端和注册中心在一端可以直接执行如下命令进行绑定</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">java</span><span class="p">.</span><span class="na">rmi</span><span class="p">.</span><span class="na">registry</span><span class="p">.</span><span class="na">Registry</span><span class="w"> </span><span class="n">r</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LocateRegistry</span><span class="p">.</span><span class="na">createRegistry</span><span class="p">(</span><span class="n">1099</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">r</span><span class="p">.</span><span class="na">bind</span><span class="p">(</span><span class="s">&#34;Hello&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">rmiobj</span><span class="p">);</span></span></span></code></pre></div></div><p>这个 bind 就太好分析了，就不多说了。</p>
+<h3 id="服务发现">服务发现</h3>
+<p>服务发现，就是获取注册中心并对其进行操作的过程，这里面包含 Server 端和 Client 端两种。如果是在 Server 端，我们希望在注册中心上绑定（bind）我们的服务，如果是 Client 端，我们希望在注册中心遍历（list）、查找（lookup）和调用服务。</p>
+<p>相应代码：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">RMIinter</span><span class="w"> </span><span class="n">stub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">RMIinter</span><span class="p">)</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="na">lookup</span><span class="p">(</span><span class="s">&#34;Hello&#34;</span><span class="p">);</span></span></span></code></pre></div></div><p>调用 lookup 方法，通过对应的 <code>RMI_NAME</code>，获取远程对象接口</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727085341352.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727085341352.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727085341352.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727085341352.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727085341352.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727085341352.png" /></p>
+<p>同样是个建立个连接，然后对 remoteCall 进行序列化。</p>
+<p>又通过 <code>UnicastRef.invoke </code> 方法传输这个 <code>remoteCall</code>，通过反序列化来获取注册远程对象时创建的代理类 stub。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727090213121.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727090213121.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727090213121.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727090213121.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727090213121.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727090213121.png" /></p>
+<p>最后return这个对象。</p>
+<h3 id="整个服务调用三个地方过程">整个服务调用三个地方过程</h3>
+<p>上面 Client 拿到 Registry 端返回的动态代理对象并且反序列化后，对其进行调用，这看起来是本地进行调用，但实际上是动态代理的 RemoteObjectInvocationHandler 委托 RemoteRef 的 invoke 方法进行远程通信，由于这个动态代理类中保存了真正 Server 端对此项服务监听的端口，因此 Client 端直接与 Server 端进行通信。</p>
+<h4 id="客户端">客户端</h4>
+<p>话不多说，直接看</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727224816386.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727224816386.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727224816386.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727224816386.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727224816386.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727224816386.png" /></p>
+<p>stub 是个动态代理类，在其调用 <code>hello()</code> 方法的时候会直接调用到 handler 的 invoke 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225001037.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225001037.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225001037.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225001037.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225001037.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225001037.png" /></p>
+<p>最后调用到了<code>invokeRemoteMethod</code> 函数</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225133934.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225133934.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225133934.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225133934.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225133934.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225133934.png" /></p>
+<p>跟进，这里 ref 是 UnicastRef，会调用其 invoke 方法。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225234929.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225234929.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225234929.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225234929.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225234929.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225234929.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225600259.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225600259.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225600259.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225600259.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225600259.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225600259.png" /></p>
+<p><code>marshalValue()</code> 就是进行序列化，是对传入的参数进行序列化，只是这里调用的 hello 方法是个无参方法。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225649500.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225649500.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225649500.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225649500.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225649500.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225649500.png" /></p>
+<p>然后继续看见调用了<code>executeCall</code> 函数。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225854412.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225854412.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225854412.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225854412.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225854412.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727225854412.png" /></p>
+<p>刚刚上面服务注册不难看出里面可以进行反序列化，这里不在深入了，继续看这个 invoke 方法逻辑，发现如果方法有返回值还会调用 <code>unmarshalValue</code> 方法进行反序列化，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230115700.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230115700.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230115700.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230115700.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230115700.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230115700.png" /></p>
+<p>但是由于这里返回值是 string 型不符合条件会直接返回。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230339750.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230339750.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230339750.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230339750.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230339750.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240727230339750.png" /></p>
+<p>到此客户端的方法调用就结束了。</p>
+<p><strong>这里又两个反序列化的点，第一个就是直接的 stub 进行反序列化，第二个就是返回值进行反序列化。</strong></p>
+<h4 id="注册中心">注册中心</h4>
+<p>接下来继续看注册中心，要从 listen 哪里开始跟进，总之就是发布网络后处理一些请求的 <code>JRMP</code> 协议内容，最后调用到了 <code>serviceCall</code> 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001052266.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001052266.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001052266.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001052266.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001052266.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001052266.png" /></p>
+<p>可以对 objectTable 进行了个获取，看看 target 里是什么</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001207440.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001207440.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001207440.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001207440.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001207440.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001207440.png" /></p>
+<p>就是注册中心的 stub 嘛，然后继续看发现其分发器 disp 里有 skel 代理类</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001420384.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001420384.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001420384.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001420384.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001420384.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001420384.png" /></p>
+<p>在该函数最下面调用了 disp.dispatch 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001926785.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001926785.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001926785.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001926785.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001926785.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728001926785.png" /></p>
+<p>然后继续看，skel 不是 null 满足条件执行 if 语句，调用 <code>oldDispatch</code> 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002040385.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002040385.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002040385.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002040385.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002040385.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002040385.png" /></p>
+<p>在这个方法里面最后调用到了 skle 的 dispatch 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002326968.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002326968.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002326968.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002326968.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002326968.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002326968.png" /></p>
+<p>跟踪进入</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002416856.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002416856.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002416856.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002416856.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002416856.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728002416856.png" /></p>
+<p>由于这个类是 class 文件，就简单分析一下吧，有很多 case，然后这里客户端调用的是 lookup 方法是 2</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728005250937.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728005250937.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728005250937.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728005250937.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728005250937.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728005250937.png" /></p>
+<p>就是查找 RMI 服务名绑定的接口对象，序列化该对象并通过 RemoteCall 传输到客户端。</p>
+<h4 id="服务端">服务端</h4>
+<p>最后在看服务端是怎么处理的。</p>
+<p>前面是差不多的就是在进行 skle 的条件判断的时候会是 false</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004228271.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004228271.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004228271.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004228271.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004228271.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004228271.png" /></p>
+<p>不会执行 if 语句，继续向下走，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728003950323.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728003950323.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728003950323.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728003950323.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728003950323.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728003950323.png" /></p>
+<p>发现其会把在客户端进行序列化的参数进行反序列化（我这里方法没有参数无法进行调试）。</p>
+<p>最后进行方法调用。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004504264.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004504264.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004504264.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004504264.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004504264.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004504264.png" /></p>
+<p>然后再把返回值进行序列化</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004553675.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004553675.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004553675.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004553675.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004553675.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728004553675.png" /></p>
+<p>至此就完美闭环了。</p>
+<h3 id="总结">总结</h3>
+<p>RMI 底层通讯采用了Stub (运行在客户端) 和 Skeleton (运行在服务端) 机制，RMI 调用远程方法的大致如下：</p>
+<ol>
+<li>RMI 客户端在调用远程方法时会先创建 Stub ( <code>sun.rmi.registry.RegistryImpl_Stub</code> )。</li>
+<li>Stub 会将 Remote 对象传递给远程引用层 ( <code>java.rmi.server.RemoteRef</code> ) 并创建 <code>java.rmi.server.RemoteCall</code>( 远程调用 )对象。</li>
+<li>RemoteCall 序列化 RMI 服务名称、Remote 对象。</li>
+<li>RMI 客户端的远程引用层传输 RemoteCall 序列化后的请求信息通过 Socket 连接的方式传输到 RMI 服务端的远程引用层。</li>
+<li>RMI服务端的远程引用层( <code>sun.rmi.server.UnicastServerRef</code> )收到请求会请求传递给 Skeleton ( <code>sun.rmi.registry.RegistryImpl_Skel#dispatch</code> )。</li>
+<li>Skeleton 调用 RemoteCall 反序列化 RMI 客户端传过来的序列化。</li>
+<li>Skeleton 处理客户端请求：bind、list、lookup、rebind、unbind，如果是 lookup 则查找 RMI 服务名绑定的接口对象，序列化该对象并通过 RemoteCall 传输到客户端。</li>
+<li>RMI 客户端反序列化服务端结果，获取远程对象的引用。</li>
+<li>RMI 客户端调用远程方法，RMI服务端反射调用RMI服务实现类的对应方法并序列化执行结果返回给客户端。</li>
+<li>RMI 客户端反序列化 RMI 远程方法调用结果。</li>
+</ol>
+<h3 id="dgc">DGC</h3>
+<p>Distributed Garbage Collection，分布式垃圾回收</p>
+<p>当 RMI 服务器返回一个对象到其客户端（远程方法的调用方）时，其跟踪远程对象在客户机中的使用。当再没有更多的对客户机上远程对象的引用时，或者如果引用的“租借”过期并且没有更新，服务器将垃圾回收远程对象。</p>
+<p>在前面远程对象注册时调用 put 时发现，在还没有 put 进行封装 target 时，里面已经存在一个 target 了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010247769.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010247769.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010247769.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010247769.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010247769.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010247769.png" /></p>
+<p>可以看见其 stub 是 <code>DGCImpl_Stub</code> 类，那这个是怎么创建的呢？可以看见在执行 <code>putTarget</code> 方法时有这么一串代码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010529480.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010529480.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010529480.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010529480.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010529480.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010529480.png" /></p>
+<p>因为这里的 dgclog 是个静态变量</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010707360.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010707360.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010707360.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010707360.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010707360.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728010707360.png" /></p>
+<p>在调用静态变量时会完成类的初始化，最后会创建代理类</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011009610.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011009610.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011009610.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011009610.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011009610.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011009610.png" /></p>
+<p>从上面的 target 不难看出这里的 stub 创建更像注册中心中 stub 的创建，因为 DCGImpl 存在 DCGImpl_Stub，所以相同的还会创建 DGCImpl_Skel 对象。</p>
+<p>Java提供了<code>java.rmi.dgc.DGC</code>接口，这个接口继承了Remote接口，定义了dirty和clean方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011559527.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011559527.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011559527.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011559527.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011559527.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011559527.png" /></p>
+<p>看到 dirty 方法调用了 UnicastRef.invoke 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011819683.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011819683.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011819683.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011819683.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011819683.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728011819683.png" /></p>
+<p>剩下的就是里面反序列化了。然后再看服务端的 DCGImpl_Skel 中</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728012104950.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728012104950.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728012104950.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728012104950.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728012104950.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240728012104950.png" /></p>
+<p>case1 或 2 就是对应的不同方法嘛，也是存在反序列化的。</p>
+<p>参考：<a href="https://su18.org/post/rmi-attack/#2-%E6%94%BB%E5%87%BB-registry-%E7%AB%AF" target="_blank" rel="noopener noreffer ">https://su18.org/post/rmi-attack/#2-攻击-registry-端</a><br>
+参考：<a href="https://nivi4.notion.site/Java-RMI-8eae42201b154ecc89455a480bcfc164" target="_blank" rel="noopener noreffer ">https://nivi4.notion.site/Java-RMI-8eae42201b154ecc89455a480bcfc164</a><br>
+参考：<a href="https://xz.aliyun.com/t/9053?time__1311=n4%2BxnD0DuAiti%3DGkD9D0x05Sb%2BDOSYKaNTNaTek4D#toc-1" target="_blank" rel="noopener noreffer ">https://xz.aliyun.com/t/9053?time__1311=n4%2BxnD0DuAiti%3DGkD9D0x05Sb%2BDOSYKaNTNaTek4D#toc-1</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-06-30</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/rmi1/" data-title="java RMI反序列化-原理篇" data-hashtags="java,反序列化"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/rmi1/" data-hashtag="java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/cc7/" class="prev" rel="prev" title="CC7分析与利用"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>CC7分析与利用</a>
+            <a href="/posts/rm2/" class="next" rel="next" title="java RMI反序列化-攻击篇">java RMI反序列化-攻击篇<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

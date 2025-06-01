@@ -3,20 +3,36 @@
         <title>Tags - 标签 - Gaorenyusi&#39;s Blog</title>
         <link>http://localhost:1313/tags/</link>
         <description>Tags - 标签 - Gaorenyusi&#39;s Blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Tue, 25 Feb 2025 00:00:00 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 26 Apr 2025 20:58:47 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>Java</title>
+    <link>http://localhost:1313/tags/java/</link>
+    <pubDate>Sat, 26 Apr 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/tags/java/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>反序列化</title>
+    <link>http://localhost:1313/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+    <pubDate>Tue, 01 Apr 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>JNDI</title>
+    <link>http://localhost:1313/tags/jndi/</link>
+    <pubDate>Thu, 27 Feb 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/tags/jndi/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>CTF</title>
     <link>http://localhost:1313/tags/ctf/</link>
     <pubDate>Tue, 25 Feb 2025 00:00:00 &#43;0000</pubDate>
     <author>gaorenyusi</author>
     <guid>http://localhost:1313/tags/ctf/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Java</title>
-    <link>http://localhost:1313/tags/java/</link>
-    <pubDate>Sun, 09 Feb 2025 00:10:48 &#43;0800</pubDate>
-    <author>gaorenyusi</author>
-    <guid>http://localhost:1313/tags/java/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
@@ -36,6 +52,14 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
+    <title>Struts2</title>
+    <link>http://localhost:1313/tags/struts2/</link>
+    <pubDate>Wed, 22 Jan 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/tags/struts2/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Xss</title>
     <link>http://localhost:1313/tags/xss/</link>
     <pubDate>Thu, 31 Oct 2024 15:07:59 &#43;0000</pubDate>
@@ -52,35 +76,11 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>反序列化</title>
-    <link>http://localhost:1313/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link>
-    <pubDate>Sat, 22 Jun 2024 23:03:27 &#43;0000</pubDate>
+    <title>Shiro</title>
+    <link>http://localhost:1313/tags/shiro/</link>
+    <pubDate>Sat, 12 Oct 2024 20:58:47 &#43;0000</pubDate>
     <author>gaorenyusi</author>
-    <guid>http://localhost:1313/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Python</title>
-    <link>http://localhost:1313/tags/python/</link>
-    <pubDate>Tue, 11 Jun 2024 22:45:36 &#43;0000</pubDate>
-    <author>gaorenyusi</author>
-    <guid>http://localhost:1313/tags/python/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>沙箱逃逸</title>
-    <link>http://localhost:1313/tags/%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</link>
-    <pubDate>Tue, 11 Jun 2024 22:45:36 &#43;0000</pubDate>
-    <author>gaorenyusi</author>
-    <guid>http://localhost:1313/tags/%E6%B2%99%E7%AE%B1%E9%80%83%E9%80%B8/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>Node.js</title>
-    <link>http://localhost:1313/tags/node.js/</link>
-    <pubDate>Tue, 26 Mar 2024 19:44:34 &#43;0000</pubDate>
-    <author>gaorenyusi</author>
-    <guid>http://localhost:1313/tags/node.js/</guid>
+    <guid>http://localhost:1313/tags/shiro/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>

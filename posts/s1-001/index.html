@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>S2-001 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/s1-001/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="S2-001">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-01-22T20:58:47+00:00">
+    <meta property="article:modified_time" content="2025-01-22T20:58:47+00:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="Struts2">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="S2-001">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/s1-001/" /><link rel="prev" href="http://localhost:1313/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" /><link rel="next" href="http://localhost:1313/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "S2-001",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/s1-001\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "java, struts2","wordcount":  1954 ,
+        "url": "http:\/\/localhost:1313\/posts\/s1-001\/","datePublished": "2025-01-22T20:58:47+00:00","dateModified": "2025-01-22T20:58:47+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">S2-001</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/javasec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Javasec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-01-22">2025-01-22</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 1954 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 4 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#漏洞介绍">漏洞介绍</a></li>
+    <li><a href="#影响版本">影响版本</a></li>
+    <li><a href="#环境搭建">环境搭建</a></li>
+    <li><a href="#漏洞复现">漏洞复现</a></li>
+    <li><a href="#漏洞分析">漏洞分析</a>
+      <ul>
+        <li><a href="#将-action-类的相关属性放到-valuestack">将 Action 类的相关属性放到 ValueStack</a></li>
+        <li><a href="#调用拦截链的拦截器">调用拦截链的拦截器</a></li>
+        <li><a href="#调用完所有拦截器后调用-action-方法">调用完所有拦截器后调用 Action 方法</a></li>
+        <li><a href="#表单执行失败处理">表单执行失败处理</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="s2-001">S2-001</h1>
+<h2 id="漏洞介绍">漏洞介绍</h2>
+<p>Struts2对OGNL表达式解析使用了开源组件 <code>opensymphony.xwork</code> 组件，OGNL解析代码实际上位于XWork中，而不是 WebWork2 或Struts2 中</p>
+<p>该漏洞是由于WebWork 2.1+ 和 Struts 2 的&quot;altSyntax&quot;特性引起的。altSyntax特性允许将OGNL表达式插入文本字符串<strong>并进行递归处理</strong>。这允许恶意用户通过HTML文本字段提交一个包含OGNL表达式的字符串，如果表单验证失败，服务器将执行该表达式。</p>
+<h2 id="影响版本">影响版本</h2>
+<p>WebWork 2.1 (with altSyntax enabled), WebWork 2.2.0 - WebWork 2.2.5, Struts 2.0.0 - Struts 2.0.8</p>
+<h2 id="环境搭建">环境搭建</h2>
+<p>这里学习 nivia 师傅的环境搭建方法，下载 vulhub 靶场，然后参考 war 包运行：<a href="../Tomcat/Tomcat%20%e6%9c%8d%e5%8a%a1%e6%90%ad%e5%bb%ba.md" rel="">Tomcat 服务搭建</a>，</p>
+<p>但是这个教程只是能运行 war 包，还不能调试，如果直接搜索调试的话是类似 <a href="../../CTF%e4%b8%ad%e7%9a%84java%e9%a2%98/IDEA%20%e8%b0%83%e8%af%95%20jar%20%e5%8c%85.md" rel="">IDEA 调试 jar 包</a>这个这种调试，没什么用，这里可以直接把解压后的文件配置依次复制过来，然后选择部署 facet，这样就行了。</p>
+<p>还可以直接配置远程调试。</p>
+<h2 id="漏洞复现">漏洞复现</h2>
+<p>访问漏洞环境，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015406818.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015406818.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015406818.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015406818.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015406818.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015406818.png" /></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">POST：username=%{1+1}&amp;password=1</span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015632125.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015632125.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015632125.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015632125.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015632125.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123015632125.png" /></p>
+<h2 id="漏洞分析">漏洞分析</h2>
+<p>调用栈，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123020824146.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123020824146.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123020824146.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123020824146.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123020824146.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123020824146.png" /></p>
+<p>在相应的漏洞版本下，核心Filter为<code>org.apache.struts2.dispatcher.FilterDispatcher</code>，从web.xml中也可以看出</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123021448146.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123021448146.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123021448146.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123021448146.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123021448146.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123021448146.png" /></p>
+<h3 id="将-action-类的相关属性放到-valuestack">将 Action 类的相关属性放到 ValueStack</h3>
+<p>那么在 <code>org.apache.struts2.dispatcher.FilterDispatcher#dofilter</code> 处下断点，先获得 Actionmapping，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022112925.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022112925.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022112925.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022112925.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022112925.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022112925.png" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022211815.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022211815.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022211815.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022211815.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022211815.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022211815.png" /></p>
+<p>然后 <code>mapping</code> 不为 null，调用 <code>dispatcher#serviceAction</code> 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022230386.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022230386.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022230386.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022230386.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022230386.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022230386.png" /></p>
+<p>该方法始化<code>extraContext</code>，封装了session、HttpServletRequest、HttpServletResponse等信息。获取ValueStack，调试时为null。</p>
+<p>初始化ActionProxy。<code>proxy.getInvocation().getStack()</code> 初始化 <code>ValueStack</code>，通过 <code>setAttribute</code> 方法封装进 <code>request</code>，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022321798.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022321798.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022321798.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022321798.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022321798.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123022321798.png" /></p>
+<p>调用 <code>ActionProxy#execute</code>，这里对应会调用到 <code>ActionInvocation#invoke</code>，这里开始执行拦截器</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023110229.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023110229.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023110229.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023110229.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023110229.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023110229.png" /></p>
+<h3 id="调用拦截链的拦截器">调用拦截链的拦截器</h3>
+<p>其中到 <code>ParametersInterceptor</code> 拦截器时跟进 <code>doIntercept</code> 方法，是获取对应Action，获取<code>ActionInvocation</code>和<code>parameters</code>，parameters对应请求中的参数。由于parameters不为null，这里会获取StackValue，调用setParameters方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023303212.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023303212.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023303212.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023303212.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023303212.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023303212.png" /></p>
+<p>在 <code>ParametersInterceptor#setParameters</code> 方法中，会遍历这个 <code>parameters</code>，将键值对存进Stack中，对应 <code>OgnlValueStack#setValue</code> 方法，这个过滤器就是单纯存个参数值，（这里也可以注意一下就是后面的 <code>s2-003</code> 漏洞）</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023634949.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023634949.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023634949.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023634949.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023634949.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123023634949.png" /></p>
+<p>然后调用到 <code>DefaultWorkflowInterceptor#doIntercept</code> 方法，在这个方法最后调用了<code>ActionInvocation#invoke</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024345665.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024345665.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024345665.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024345665.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024345665.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024345665.png" /></p>
+<h3 id="调用完所有拦截器后调用-action-方法">调用完所有拦截器后调用 Action 方法</h3>
+<p>跟进然后一路调用到了 <code>invokeActionOnly()</code> 方法，这里开始调用对应<code>Action#execute</code>方法了，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024420042.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024420042.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024420042.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024420042.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024420042.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024420042.png" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024852691.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024852691.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024852691.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024852691.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024852691.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024852691.png" /></p>
+<p>来到了 <code>LoginAction#execute</code>，也就是自己写的逻辑，这里会执行失败返回 <code>error</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024651206.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024651206.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024651206.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024651206.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024651206.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024651206.png" /></p>
+<h3 id="表单执行失败处理">表单执行失败处理</h3>
+<p>看到 <code>struts.xml</code> 配置中如果返回 error 就会回到 <code>index.jsp</code> 页面</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024809915.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024809915.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024809915.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024809915.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024809915.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123024809915.png" /></p>
+<p>返回结果以后就开始调用 <code>ActionInvocation#executeResult</code> 方法，调用Result实现类里的execute方法开始处理请求结果，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025053837.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025053837.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025053837.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025053837.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025053837.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025053837.png" /></p>
+<p>然后一路调用，处理结果</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025926663.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025926663.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025926663.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025926663.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025926663.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123025926663.png" /></p>
+<p>如果返回结果是一个 jsp 文件，则会调用 <code>JspServlet</code> 来处理请求，调用栈如下（用一下nivia师傅的图）</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030114775.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030114775.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030114775.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030114775.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030114775.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030114775.png" /></p>
+<p>最后交由 Struts 来处理解析相关的标签，</p>
+<p>例如在解析Struts标签如<code>&lt;s:textfield name=&quot;username&quot; label=&quot;username&quot; /&gt;</code>，在标签的开始和结束位置，会分别调用对应实现类中的<code>doStartTag</code>和<code>doEndTag</code>方法：</p>
+<ul>
+<li>doStartTag：获取一些组件信息和属性赋值，总之是些初始化的工作</li>
+<li>doEndTag：在标签解析结束后需要做的事，如调用组件的end</li>
+</ul>
+<p>这里会调用到<code>ComponentTagSupport</code>这个实现类，漏洞触发点位于<code>ComponentTagSupport#doEndTag</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030258565.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030258565.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030258565.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030258565.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030258565.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030258565.png" />
+<img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030422294.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030422294.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030422294.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030422294.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030422294.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030422294.png" /></p>
+<p>当解析 <code>&lt;s:textfield name=&quot;username&quot; label=&quot;username&quot; /&gt;</code>，<code>doEndTag</code> 方法会getBean方法获取到TextField对象赋值给 <code>component</code>，调用其end方法</p>
+<p>跟进 <code>evaluateParams</code> 方法，判断是否开启<code>altSyntax</code>，若开启会套上一层<code>%{}</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030602987.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030602987.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030602987.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030602987.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030602987.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030602987.png" /></p>
+<p>跟进 <code>findValue</code> 方法，满足条件调用 <code>TextParseUtil.translateVariables </code> 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030721766.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030721766.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030721766.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030721766.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030721766.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123030721766.png" /></p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="nf">translateVariables</span><span class="p">(</span><span class="kt">char</span><span class="w"> </span><span class="n">open</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">expression</span><span class="p">,</span><span class="w"> </span><span class="n">ValueStack</span><span class="w"> </span><span class="n">stack</span><span class="p">,</span><span class="w"> </span><span class="n">Class</span><span class="w"> </span><span class="n">asType</span><span class="p">,</span><span class="w"> </span><span class="n">ParsedValueEvaluator</span><span class="w"> </span><span class="n">evaluator</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Object</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expression</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="kc">true</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expression</span><span class="p">.</span><span class="na">indexOf</span><span class="p">(</span><span class="n">open</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;{&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expression</span><span class="p">.</span><span class="na">length</span><span class="p">();</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">start</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">2</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">end</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">char</span><span class="w"> </span><span class="n">c</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="kt">int</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">start</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">-</span><span class="n">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">count</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">c</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expression</span><span class="p">.</span><span class="na">charAt</span><span class="p">(</span><span class="n">x</span><span class="o">++</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;{&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">count</span><span class="o">++</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="sc">&#39;}&#39;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">count</span><span class="o">--</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">end</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">1</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">start</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">-</span><span class="n">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">end</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="o">-</span><span class="n">1</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">count</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">0</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="kd">var</span><span class="w"> </span><span class="err">= </span><span class="n">expression</span><span class="p">.</span><span class="na">substring</span><span class="p">(</span><span class="n">start</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">2</span><span class="p">,</span><span class="w"> </span><span class="n">end</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">Object</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">stack</span><span class="p">.</span><span class="na">findValue</span><span class="p">(</span><span class="n">var</span><span class="p">,</span><span class="w"> </span><span class="n">asType</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">evaluator</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            	</span><span class="n">o</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">evaluator</span><span class="p">.</span><span class="na">evaluate</span><span class="p">(</span><span class="n">o</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expression</span><span class="p">.</span><span class="na">substring</span><span class="p">(</span><span class="n">0</span><span class="p">,</span><span class="w"> </span><span class="n">start</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">String</span><span class="w"> </span><span class="n">right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">expression</span><span class="p">.</span><span class="na">substring</span><span class="p">(</span><span class="n">end</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="kc">null</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">TextUtils</span><span class="p">.</span><span class="na">stringSet</span><span class="p">(</span><span class="n">left</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">o</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">o</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">TextUtils</span><span class="p">.</span><span class="na">stringSet</span><span class="p">(</span><span class="n">right</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">right</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">expression</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">right</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">right</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">expression</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">left</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">right</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="k">break</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">XWorkConverter</span><span class="p">.</span><span class="na">getInstance</span><span class="p">().</span><span class="na">convertValue</span><span class="p">(</span><span class="n">stack</span><span class="p">.</span><span class="na">getContext</span><span class="p">(),</span><span class="w"> </span><span class="n">result</span><span class="p">,</span><span class="w"> </span><span class="n">asType</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p>方法使用while true的方式递归执行ognl表达式，执行逻辑位于 <code>Object o = stack.findValue(var, asType);</code>，解析过后将解析结果替换回原来的表达式中，继续第一步，直到不出现 <code>%{}</code>，</p>
+<p>比如第一次 <code>%{username}</code>，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032505859.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032505859.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032505859.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032505859.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032505859.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032505859.png" /></p>
+<p>解析得到，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032539697.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032539697.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032539697.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032539697.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032539697.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032539697.png" /></p>
+<p>然后回替换回原来表达式，因为还有 <code>%{}</code>，所以会继续解析，造成二次解析，再次调用 <code>stack.findValue(var, asType)</code> 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032806256.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032806256.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032806256.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032806256.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032806256.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250123032806256.png" /></p>
+<p>最后执行命令。</p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-01-22</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/s1-001/" data-title="S2-001" data-hashtags="java,struts2"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/s1-001/" data-hashtag="java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/struts2/">Struts2</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/dom%E5%9E%8Bxss%E5%AD%A6%E4%B9%A0/" class="prev" rel="prev" title="DOM型XSS学习"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>DOM型XSS学习</a>
+            <a href="/posts/github_pages%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B/" class="next" rel="next" title="Github Pages博客搭建教程">Github Pages博客搭建教程<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

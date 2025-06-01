@@ -3,7 +3,47 @@
         <title>Java - 标签 - Gaorenyusi&#39;s Blog</title>
         <link>http://localhost:1313/tags/java/</link>
         <description>Java - 标签 - Gaorenyusi&#39;s Blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sun, 09 Feb 2025 00:10:48 &#43;0800</lastBuildDate><atom:link href="http://localhost:1313/tags/java/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 26 Apr 2025 20:58:47 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/java/" rel="self" type="application/rss+xml" /><item>
+    <title>华夏 ERP CMS v2.3代码审计</title>
+    <link>http://localhost:1313/posts/%E5%8D%8E%E5%A4%8Fcms/</link>
+    <pubDate>Sat, 26 Apr 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/%E5%8D%8E%E5%A4%8Fcms/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Apache OfBiz 反序列化命令（CVE-2020-9496）</title>
+    <link>http://localhost:1313/posts/apacheofbiz/</link>
+    <pubDate>Sun, 06 Apr 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/apacheofbiz/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>JNDI 之 LDAP 过程原理</title>
+    <link>http://localhost:1313/posts/jndi-ldap/</link>
+    <pubDate>Tue, 01 Apr 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/jndi-ldap/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Hessian 反序列化</title>
+    <link>http://localhost:1313/posts/hessian/</link>
+    <pubDate>Thu, 06 Mar 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/hessian/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
+    <title>Java JNDI 注入</title>
+    <link>http://localhost:1313/posts/java-jndi/</link>
+    <pubDate>Thu, 27 Feb 2025 20:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/posts/java-jndi/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Log4j2 漏洞复现</title>
     <link>http://localhost:1313/posts/log4j2/</link>
     <pubDate>Sun, 09 Feb 2025 00:10:48 &#43;0800</pubDate>
@@ -12,51 +52,35 @@
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>CC1补充-LazyMap利用</title>
-    <link>http://localhost:1313/posts/cc1%E8%A1%A5%E5%85%85-lazymap%E5%88%A9%E7%94%A8/</link>
-    <pubDate>Sat, 22 Jun 2024 23:03:27 &#43;0000</pubDate>
+    <title>S2-001</title>
+    <link>http://localhost:1313/posts/s1-001/</link>
+    <pubDate>Wed, 22 Jan 2025 20:58:47 &#43;0000</pubDate>
     <author>gaorenyusi</author>
-    <guid>http://localhost:1313/posts/cc1%E8%A1%A5%E5%85%85-lazymap%E5%88%A9%E7%94%A8/</guid>
+    <guid>http://localhost:1313/posts/s1-001/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>java动态代理</title>
-    <link>http://localhost:1313/posts/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</link>
-    <pubDate>Fri, 21 Jun 2024 21:43:43 &#43;0000</pubDate>
+    <title>jdk7u21 链子分析</title>
+    <link>http://localhost:1313/posts/jdk7u21/</link>
+    <pubDate>Sun, 20 Oct 2024 20:58:47 &#43;0000</pubDate>
     <author>gaorenyusi</author>
-    <guid>http://localhost:1313/posts/java%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86/</guid>
+    <guid>http://localhost:1313/posts/jdk7u21/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>CC1链的分析与利用</title>
-    <link>http://localhost:1313/posts/cc1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/</link>
-    <pubDate>Thu, 20 Jun 2024 20:58:47 &#43;0000</pubDate>
+    <title>C3P0 链子分析学习</title>
+    <link>http://localhost:1313/posts/c3p0/</link>
+    <pubDate>Wed, 16 Oct 2024 20:58:47 &#43;0000</pubDate>
     <author>gaorenyusi</author>
-    <guid>http://localhost:1313/posts/cc1%E9%93%BE%E7%9A%84%E5%88%86%E6%9E%90%E4%B8%8E%E5%88%A9%E7%94%A8/</guid>
+    <guid>http://localhost:1313/posts/c3p0/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
-    <title>URLDNS链分析</title>
-    <link>http://localhost:1313/posts/urldns%E9%93%BE%E5%88%86%E6%9E%90/</link>
-    <pubDate>Wed, 05 Jun 2024 13:27:36 &#43;0000</pubDate>
+    <title>shiro 反序列化漏洞</title>
+    <link>http://localhost:1313/posts/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+    <pubDate>Sat, 12 Oct 2024 20:58:47 &#43;0000</pubDate>
     <author>gaorenyusi</author>
-    <guid>http://localhost:1313/posts/urldns%E9%93%BE%E5%88%86%E6%9E%90/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>java反序列化</title>
-    <link>http://localhost:1313/posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link>
-    <pubDate>Mon, 03 Jun 2024 17:31:05 &#43;0000</pubDate>
-    <author>gaorenyusi</author>
-    <guid>http://localhost:1313/posts/java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>java反射机制</title>
-    <link>http://localhost:1313/posts/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/</link>
-    <pubDate>Mon, 03 Jun 2024 13:30:03 &#43;0000</pubDate>
-    <author>gaorenyusi</author>
-    <guid>http://localhost:1313/posts/java%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6/</guid>
+    <guid>http://localhost:1313/posts/shiro%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
     <description><![CDATA[]]></description>
 </item>
 </channel>
