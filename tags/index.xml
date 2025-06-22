@@ -3,7 +3,15 @@
         <title>Tags - 标签 - Gaorenyusi&#39;s Blog</title>
         <link>http://localhost:1313/tags/</link>
         <description>Tags - 标签 - Gaorenyusi&#39;s Blog</description>
-        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 26 Apr 2025 20:58:47 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/" rel="self" type="application/rss+xml" /><item>
+        <generator>Hugo -- gohugo.io</generator><language>zh-CN</language><copyright>This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.</copyright><lastBuildDate>Sat, 21 Jun 2025 12:58:47 &#43;0000</lastBuildDate><atom:link href="http://localhost:1313/tags/" rel="self" type="application/rss+xml" /><item>
+    <title>CTF</title>
+    <link>http://localhost:1313/tags/ctf/</link>
+    <pubDate>Sat, 21 Jun 2025 12:58:47 &#43;0000</pubDate>
+    <author>gaorenyusi</author>
+    <guid>http://localhost:1313/tags/ctf/</guid>
+    <description><![CDATA[]]></description>
+</item>
+<item>
     <title>Java</title>
     <link>http://localhost:1313/tags/java/</link>
     <pubDate>Sat, 26 Apr 2025 20:58:47 &#43;0000</pubDate>
@@ -25,14 +33,6 @@
     <pubDate>Thu, 27 Feb 2025 20:58:47 &#43;0000</pubDate>
     <author>gaorenyusi</author>
     <guid>http://localhost:1313/tags/jndi/</guid>
-    <description><![CDATA[]]></description>
-</item>
-<item>
-    <title>CTF</title>
-    <link>http://localhost:1313/tags/ctf/</link>
-    <pubDate>Tue, 25 Feb 2025 00:00:00 &#43;0000</pubDate>
-    <author>gaorenyusi</author>
-    <guid>http://localhost:1313/tags/ctf/</guid>
     <description><![CDATA[]]></description>
 </item>
 <item>
